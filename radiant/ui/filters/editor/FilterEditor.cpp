@@ -56,7 +56,7 @@ FilterEditor::FilterEditor(Filter& filter, wxWindow* parent, bool viewOnly) :
 
 void FilterEditor::populateWindow()
 {
-    loadNamedPanel(this, "FilterEditorMainPanel");
+    wxPanel* mainPanel = loadNamedPanel(this, "FilterEditorMainPanel");
 
     // Create the name entry box
     auto* topLabel = findNamedObject<wxStaticText>(this, "FilterEditorTopLabel");
@@ -88,6 +88,10 @@ void FilterEditor::populateWindow()
     okButton->Bind(wxEVT_BUTTON, &FilterEditor::onCancel, this);
     saveButton->Bind(wxEVT_BUTTON, &FilterEditor::onSave, this);
     cancelButton->Bind(wxEVT_BUTTON, &FilterEditor::onCancel, this);
+
+    wxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
+    mainSizer->Add(mainPanel, 1, wxEXPAND);
+    SetSizerAndFit(mainSizer);
 }
 
 void FilterEditor::update()
