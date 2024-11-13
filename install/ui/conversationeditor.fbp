@@ -807,7 +807,7 @@
                     <property name="resize">Resizable</property>
                     <property name="show">1</property>
                     <property name="size">-1,-1</property>
-                    <property name="style"></property>
+                    <property name="style">wxBU_EXACTFIT</property>
                     <property name="subclass"></property>
                     <property name="toolbar_pane">0</property>
                     <property name="tooltip">Add a new actor</property>
@@ -881,7 +881,7 @@
                     <property name="resize">Resizable</property>
                     <property name="show">1</property>
                     <property name="size">-1,-1</property>
-                    <property name="style"></property>
+                    <property name="style">wxBU_EXACTFIT</property>
                     <property name="subclass"></property>
                     <property name="toolbar_pane">0</property>
                     <property name="tooltip">Delete the selected actor</property>
@@ -955,7 +955,7 @@
                     <property name="resize">Resizable</property>
                     <property name="show">1</property>
                     <property name="size">-1,-1</property>
-                    <property name="style"></property>
+                    <property name="style">wxBU_EXACTFIT</property>
                     <property name="subclass"></property>
                     <property name="toolbar_pane">0</property>
                     <property name="tooltip">Validate all actors</property>
@@ -1177,7 +1177,7 @@
                     <property name="resize">Resizable</property>
                     <property name="show">1</property>
                     <property name="size">-1,-1</property>
-                    <property name="style"></property>
+                    <property name="style">wxBU_EXACTFIT</property>
                     <property name="subclass"></property>
                     <property name="toolbar_pane">0</property>
                     <property name="tooltip">Add a new command</property>
@@ -1251,7 +1251,7 @@
                     <property name="resize">Resizable</property>
                     <property name="show">1</property>
                     <property name="size">-1,-1</property>
-                    <property name="style"></property>
+                    <property name="style">wxBU_EXACTFIT</property>
                     <property name="subclass"></property>
                     <property name="toolbar_pane">0</property>
                     <property name="tooltip">Edit the selected command</property>
@@ -1325,7 +1325,7 @@
                     <property name="resize">Resizable</property>
                     <property name="show">1</property>
                     <property name="size">-1,-1</property>
-                    <property name="style"></property>
+                    <property name="style">wxBU_EXACTFIT</property>
                     <property name="subclass"></property>
                     <property name="toolbar_pane">0</property>
                     <property name="tooltip">Move selected command up</property>
@@ -1399,7 +1399,7 @@
                     <property name="resize">Resizable</property>
                     <property name="show">1</property>
                     <property name="size">-1,-1</property>
-                    <property name="style"></property>
+                    <property name="style">wxBU_EXACTFIT</property>
                     <property name="subclass"></property>
                     <property name="toolbar_pane">0</property>
                     <property name="tooltip">Move selected command down</property>
@@ -1473,7 +1473,7 @@
                     <property name="resize">Resizable</property>
                     <property name="show">1</property>
                     <property name="size">-1,-1</property>
-                    <property name="style"></property>
+                    <property name="style">wxBU_EXACTFIT</property>
                     <property name="subclass"></property>
                     <property name="toolbar_pane">0</property>
                     <property name="tooltip">Delete the selected command</property>
