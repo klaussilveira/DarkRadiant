@@ -1,9 +1,10 @@
 #pragma once
 
 #include "ieclass.h"
+#include "ientity.h"
 #include "ui/ideclpreview.h"
-#include "ModelPreview.h"
 #include "../dialog/MessageBox.h"
+#include "wxutil/preview/EntityPreview.h"
 
 namespace wxutil
 {

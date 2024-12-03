@@ -18,10 +18,8 @@ namespace wxutil
 * Subclass of EntityPreview (showing a hidden func_static entity)
 * which holds a model and displays it optionally with a skin.
 */
-class ModelPreview :
-    public EntityPreview
+class ModelPreview: public EntityPreview
 {
-private:
     // The name of the model to render
     std::string _model;
 

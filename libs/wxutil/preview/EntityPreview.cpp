@@ -14,9 +14,7 @@ namespace wxutil
 {
 
 EntityPreview::EntityPreview(wxWindow* parent) :
-    RenderPreview(parent, false),
-    _sceneIsReady(false),
-    _defaultCamDistanceFactor(2.8f)
+    RenderPreview(parent, false)
 {}
 
 void EntityPreview::setDefaultCamDistanceFactor(float factor)

@@ -43,24 +43,14 @@ namespace
 	const std::string RKEY_RENDERPREVIEW_FONTSTYLE("user/ui/renderPreview/fontStyle");
 }
 
-RenderPreview::RenderPreview(wxWindow* parent, bool enableAnimation) :
+RenderPreview::RenderPreview(wxWindow* parent, bool enableAnimation):
     _mainPanel(loadNamedPanel(parent, "RenderPreviewPanel")),
-	_glWidget(new wxutil::GLWidget(_mainPanel, std::bind(&RenderPreview::drawPreview, this), "RenderPreview")),
-    _initialised(false),
-	_renderGrid(registry::getValue<bool>(RKEY_RENDERPREVIEW_SHOWGRID)),
-    _enableLightingModeAtStart(false),
+    _glWidget(new wxutil::GLWidget(
+        _mainPanel, std::bind(&RenderPreview::drawPreview, this), "RenderPreview"
+    )),
+    _renderGrid(registry::getValue<bool>(RKEY_RENDERPREVIEW_SHOWGRID)),
     _renderSystem(GlobalRenderSystemFactory().createRenderSystem()),
-    _viewOrigin(0, 0, 0),
-    _viewAngles(0, 0, 0),
-    _modelView(Matrix4::getIdentity()),
-    _modelRotation(Matrix4::getIdentity()),
-    _lastX(0),
-    _lastY(0),
-    _renderingInProgress(false),
-    _timer(this),
-    _previewWidth(0),
-    _previewHeight(0),
-	_filterTool(nullptr)
+    _timer(this)
 {
 	Bind(wxEVT_TIMER, &RenderPreview::_onFrame, this);
 

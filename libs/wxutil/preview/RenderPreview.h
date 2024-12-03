@@ -38,7 +38,6 @@ class RenderPreview :
     public sigc::trackable,
     private XmlResourceBasedWidget
 {
-private:
     void connectToolbarSignals();
     bool drawPreview();
     void onGLScroll(wxMouseEvent& ev);
@@ -84,7 +83,7 @@ private:
     // GL widget
     GLWidget* _glWidget;
 
-    bool _initialised;
+    bool _initialised = false;
 
     FreezePointer _freezePointer;
 
@@ -92,7 +91,7 @@ private:
 
     render::CamRenderer::HighlightShaders _shaders;
 
-    bool _enableLightingModeAtStart;
+    bool _enableLightingModeAtStart = false;
 
 protected:
     const unsigned int MSEC_PER_FRAME = 16;
@@ -104,30 +103,30 @@ protected:
     render::NopRenderView _view;
 
     // Current viewer position and view angles
-    Vector3 _viewOrigin;
-    Vector3 _viewAngles;
+    Vector3 _viewOrigin = {0, 0, 0};
+    Vector3 _viewAngles = {0, 0, 0};
 
     // Current modelview matrix
-    Matrix4 _modelView;
+    Matrix4 _modelView = Matrix4::getIdentity();
 
     // The local model orientation
-    Matrix4 _modelRotation;
+    Matrix4 _modelRotation = Matrix4::getIdentity();
 
-    int _lastX;
-    int _lastY;
+    int _lastX = 0;
+    int _lastY = 0;
 
     // Mutex flag to avoid draw call bunching
-    bool _renderingInProgress;
+    bool _renderingInProgress = false;
 
     wxTimer _timer;
 
-    int _previewWidth;
-    int _previewHeight;
+    int _previewWidth = 0;
+    int _previewHeight = 0;
 
 	wxSizer* _toolbarSizer;
 
     // The filters menu
-	wxToolBarToolBase* _filterTool;
+	wxToolBarToolBase* _filterTool = nullptr;
 
     IGLFont::Ptr _glFont;
 

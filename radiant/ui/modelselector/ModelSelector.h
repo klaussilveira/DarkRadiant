@@ -5,15 +5,11 @@
 
 #include <sigc++/connection.h>
 
-#include "modelskin.h"
-#include "iradiant.h"
-
 #include "wxutil/dialog/DialogBase.h"
 #include "wxutil/preview/ModelPreview.h"
 #include "wxutil/WindowPosition.h"
 #include "wxutil/PanedPosition.h"
 #include "wxutil/dataview/ResourceTreeView.h"
-#include "wxutil/dataview/TreeModelFilter.h"
 #include "wxutil/XmlResourceBasedWidget.h"
 #include "wxutil/dataview/KeyValueTable.h"
 
@@ -65,7 +61,7 @@ private:
     std::unique_ptr<wxutil::ModelPreview> _modelPreview;
 
     // Main tree view with model hierarchy
-	ModelTreeView* _treeView;
+	ModelTreeView* _treeView = nullptr;
     wxToggleButton* _showSkinsBtn = nullptr;
 
     // The model name which the info panels are currently displaying info for
@@ -73,10 +69,10 @@ private:
     std::string _infoSkin;
 
     // Key/value table for model information
-    wxutil::KeyValueTable* _infoTable;
+    wxutil::KeyValueTable* _infoTable = nullptr;
 
     // Materials list table
-    MaterialsList* _materialsList;
+    MaterialsList* _materialsList = nullptr;
 
     struct RelatedEntityColumns :
         public wxutil::TreeModel::ColumnRecord
@@ -92,7 +88,7 @@ private:
 
     RelatedEntityColumns _relatedEntityColumns;
     wxutil::TreeModel::Ptr _relatedEntityStore;
-    wxutil::TreeView* _relatedEntityView;
+    wxutil::TreeView* _relatedEntityView = nullptr;
     wxutil::PopupMenuPtr _relatedEntityContextMenu;
 
 	// The window position tracker
@@ -100,7 +96,7 @@ private:
 	wxutil::PanedPosition _panedPosition;
 
     // Whether to show advanced options panel
-    bool _showOptions;
+    bool _showOptions = true;
 
 	sigc::connection _modelsReloadedConn;
 	sigc::connection _skinsReloadedConn;

@@ -1,9 +1,7 @@
 #include "ModelSelector.h"
 
-#include "math/Vector3.h"
 #include "ifilesystem.h"
 #include "itextstream.h"
-#include "iregistry.h"
 #include "ieclass.h"
 #include "ui/imainframe.h"
 #include "imodelcache.h"
@@ -15,9 +13,6 @@
 #include <cstdlib>
 #include <cmath>
 #include <iostream>
-#include <vector>
-#include <map>
-#include <sstream>
 #include "string/convert.h"
 
 #include <wx/button.h>
@@ -52,12 +47,7 @@ namespace
 
 ModelSelector::ModelSelector() :
 	DialogBase(_(MODELSELECTOR_TITLE)),
-	_dialogPanel(loadNamedPanel(this, "ModelSelectorPanel")),
-    _treeView(nullptr),
-	_infoTable(nullptr),
-    _materialsList(nullptr),
-    _relatedEntityView(nullptr),
-	_showOptions(true)
+	_dialogPanel(loadNamedPanel(this, "ModelSelectorPanel"))
 {
     // Set the default size of the window
     _position.connect(this);

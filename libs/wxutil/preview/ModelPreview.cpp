@@ -1,5 +1,4 @@
 #include "ModelPreview.h"
-#include "../GLWidget.h"
 
 #include "ifilter.h"
 #include "imodelcache.h"
@@ -8,12 +7,8 @@
 #include "math/AABB.h"
 #include "modelskin.h"
 #include "entitylib.h"
-#include "scenelib.h"
 #include "scene/Node.h"
-#include "scene/BasicRootNode.h"
 #include "wxutil/dialog/MessageBox.h"
-#include "string/convert.h"
-#include "fmt/format.h"
 
 namespace wxutil
 {
