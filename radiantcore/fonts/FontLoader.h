@@ -1,7 +1,5 @@
 #pragma once
 
-#include "ifonts.h"
-
 #include "ifilesystem.h"
 #include "parser/ThreadedDefLoader.h"
 
@@ -10,10 +8,8 @@ namespace fonts
 
 class FontManager;
 
-class FontLoader :
-    public parser::ThreadedDefLoader<void>
+class FontLoader: public parser::ThreadedDefLoader<void>
 {
-private:
 	// The manager for registering the fonts
 	FontManager& _manager;
 
