@@ -88,30 +88,12 @@ bool SceneFilter::isEntityVisible(const FilterRule::Type type, const Entity& ent
 	return visible;
 }
 
-const std::string& SceneFilter::getEventName() const {
-	return _eventName;
-}
-
-const std::string& SceneFilter::getName() const
-{
-	return _name;
-}
-
 void SceneFilter::setName(const std::string& newName) {
 	// Set the name ...
 	_name = newName;
 
 	// ...and update the event name
 	updateEventName();
-}
-
-bool SceneFilter::isReadOnly() const {
-	return _readonly;
-}
-
-const FilterRules& SceneFilter::getRuleSet() const
-{
-	return _rules;
 }
 
 void SceneFilter::setRules(const FilterRules& rules) {

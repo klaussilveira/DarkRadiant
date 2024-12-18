@@ -100,21 +100,33 @@ public:
 	* It's lacking any spaces or other incompatible characters, compared to the actual
 	* name returned in getName().
 	 */
-	const std::string& getEventName() const;
+	const std::string& getEventName() const
+	{
+		return _eventName;
+	}
 
-	// The name of this Filter
-	const std::string& getName() const;
+	/// The name of this Filter
+	const std::string& getName() const
+	{
+		return _name;
+	}
 
 	/**
 	 * greebo: Renames the filter to <newName>. This also updates the event name.
 	 */
 	void setName(const std::string& newName);
 
-	// Whether this filter is read-only
-	bool isReadOnly() const;
+	/// Whether this filter is read-only
+	bool isReadOnly() const
+	{
+		return _readonly;
+	}
 
-	// Returns the ruleset
-	const FilterRules& getRuleSet() const;
+	/// Returns the ruleset
+	const FilterRules& getRuleSet() const
+	{
+		return _rules;
+	}
 
 	// Applies the given ruleset, replacing the existing one.
 	void setRules(const FilterRules& rules);

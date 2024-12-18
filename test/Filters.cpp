@@ -3,6 +3,7 @@
 #include "ifilter.h"
 #include "scene/Node.h"
 #include "imap.h"
+#include "scene/filters/SceneFilter.h"
 #include "scenelib.h"
 
 namespace test
@@ -35,6 +36,34 @@ public:
 };
 
 using FilterTest = RadiantTest;
+
+TEST_F(FilterTest, ConstructSceneFilter)
+{
+    // Normal filter
+    {
+        filters::SceneFilter filter("StuffToHide", false);
+        EXPECT_EQ(filter.getName(), "StuffToHide");
+        EXPECT_EQ(filter.getEventName(), "FilterStuffToHide");
+        EXPECT_FALSE(filter.isReadOnly());
+        EXPECT_EQ(filter.getRuleSet().size(), 0);
+    }
+
+    // Read-only filter
+    {
+        filters::SceneFilter roFilter("ROFilter", true);
+        EXPECT_TRUE(roFilter.isReadOnly());
+    }
+}
+
+TEST_F(FilterTest, RenameSceneFilter)
+{
+    filters::SceneFilter f("OriginalName", false);
+    EXPECT_EQ(f.getName(), "OriginalName");
+
+    f.setName("AdjustedName");
+    EXPECT_EQ(f.getName(), "AdjustedName");
+    EXPECT_EQ(f.getEventName(), "FilterAdjustedName");
+}
 
 TEST_F(FilterTest, OnFiltersChangedInvoked)
 {
