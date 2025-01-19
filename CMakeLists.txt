@@ -87,6 +87,13 @@ configure_file(config.h.in config.h)
 add_compile_definitions(HAVE_CONFIG_H)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
+# Set up a usable installation tree within the binary dir so developers don't
+# have to install to a temporary location
+set(DR_STAGING_LIBDIR "${CMAKE_BINARY_DIR}/darkradiant/lib/darkradiant")
+set(DR_STAGING_MODULESDIR "${DR_STAGING_LIBDIR}/modules")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/darkradiant/bin")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${DR_STAGING_LIBDIR}")
+
 # Supporting libraries
 add_subdirectory(libs/math)
 add_subdirectory(libs/xmlutil)

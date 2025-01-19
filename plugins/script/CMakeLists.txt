@@ -35,8 +35,11 @@ target_include_directories(script SYSTEM PUBLIC
 target_link_libraries(script PUBLIC
                       math scene
                       ${Python_LIBRARIES} ${SIGC_LIBRARIES})
+set_target_properties(
+    script PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${DR_STAGING_MODULESDIR}"
+)
 
 # Enable precompiled header for script plugin
 if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.16.0")
-target_precompile_headers(script PRIVATE "precompiled.h")
+    target_precompile_headers(script PRIVATE "precompiled.h")
 endif()

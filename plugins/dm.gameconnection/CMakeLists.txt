@@ -10,6 +10,10 @@ add_library(dm_gameconnection MODULE
             MessageTcp.cpp)
 target_compile_options(dm_gameconnection PUBLIC ${SIGC_CFLAGS})
 target_link_libraries(dm_gameconnection PUBLIC wxutil)
+set_target_properties(
+    dm_gameconnection PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${DR_STAGING_MODULESDIR}"
+)
+
 
 file(GLOB PNG_FILES "*.png")
 install(FILES ${PNG_FILES} DESTINATION ${PKGDATADIR}/bitmaps)

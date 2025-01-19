@@ -307,9 +307,12 @@ target_include_directories(radiantcore PRIVATE .)
 target_link_libraries(radiantcore PUBLIC
                       math xmlutil scene wxutil module
                       ${JPEG_LIBRARIES} ${PNG_LIBRARIES} ${ZLIB_LIBRARIES})
+set_target_properties(
+    radiantcore PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${DR_STAGING_MODULESDIR}"
+)
 
 # Enable precompiled header for radiantcore
 if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.16.0")
-target_precompile_headers(radiantcore PRIVATE
-                          "$<$<COMPILE_LANGUAGE:CXX>:precompiled.h>")
+    target_precompile_headers(radiantcore PRIVATE
+                            "$<$<COMPILE_LANGUAGE:CXX>:precompiled.h>")
 endif()
