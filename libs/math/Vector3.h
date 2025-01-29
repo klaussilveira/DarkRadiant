@@ -108,6 +108,26 @@ public:
     T y() const { return _v[1]; }
     T z() const { return _v[2]; }
 
+    /// Access a const element by indexing (no bounds checking)
+    const T& operator[](std::size_t index) const {
+        return _v[index];
+    }
+
+    /// Access a non-const element by indexing (no bounds checking)
+    T& operator[](std::size_t index) {
+        return _v[index];
+    }
+
+    /// Return a pointer to the internal data
+    T* data() {
+        return _v.data();
+    }
+
+    /// Return a const pointer to the internal data
+    const T* data() const {
+        return _v.data();
+    }
+
     /// Compare this BasicVector3 against another for equality.
     bool operator== (const BasicVector3& other) const {
         return (other.x() == x()
@@ -180,20 +200,6 @@ public:
     BasicVector3<T> cross(const BasicVector3<T>& other) const
     {
         return BasicVector3<T>(_v.cross(other._v));
-    }
-
-    /** Implicit cast to C-style array. This allows a Vector3 to be
-     * passed directly to GL functions that expect an array (e.g.
-     * glFloat3dv()). These functions implicitly provide operator[]
-     * as well, since the C-style array provides this function.
-     */
-
-    operator const T* () const {
-        return _v.data();
-    }
-
-    operator T* () {
-        return _v.data();
     }
 
     /// Returns a "snapped" copy of this Vector, each component rounded to the given precision.

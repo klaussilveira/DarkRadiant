@@ -25,18 +25,6 @@ public:
 		vertex(vector)
 	{}
 
-	bool operator< (const VertexCb& other) const {
-		if (vertex != other.vertex) {
-			return vertex < other.vertex;
-		}
-
-		if (colour != other.colour) {
-			return colour < other.colour;
-		}
-
-		return false;
-	}
-
 	bool operator== (const VertexCb& other) const {
 		return colour == other.colour && vertex == other.vertex;
 	}

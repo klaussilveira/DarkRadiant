@@ -468,47 +468,23 @@ TEST(VectorTest, Vector3MidPoint)
     EXPECT_EQ(math::midPoint(v1, Vector3()), v1 / 2);
 }
 
-TEST(VectorTest, Vector3AsCArray)
+TEST(VectorTest, Vector3Indexing)
 {
     Vector3 vec(256, -10, 10000);
 
-    // Ensure that X, Y and Z are at consecutive memory locations and can be
-    // treated as a 3-element array.
-    EXPECT_EQ(&vec.y(), &vec.x() + 1);
-    EXPECT_EQ(&vec.z(), &vec.y() + 1);
-
-    double* array = vec;
-    EXPECT_EQ(array[0], 256);
-    EXPECT_EQ(array[1], -10);
-    EXPECT_EQ(array[2], 10000);
+    EXPECT_EQ(vec[0], 256);
+    EXPECT_EQ(vec[1], -10);
+    EXPECT_EQ(vec[2], 10000);
 }
 
-TEST(VectorTest, Vector3fAsCArray)
-{
-    Vector3f vec(-0.5, 485, 0);
-
-    EXPECT_EQ(&vec.y(), &vec.x() + 1);
-    EXPECT_EQ(&vec.z(), &vec.y() + 1);
-
-    float* array = vec;
-    EXPECT_EQ(array[0], -0.5);
-    EXPECT_EQ(array[1], 485);
-    EXPECT_EQ(array[2], 0);
-}
-
-TEST(VectorTest, Vector4AsCArray)
+TEST(VectorTest, Vector4Indexing)
 {
     Vector4 vec(-15, 15, 36.9, -0.5);
 
-    EXPECT_EQ(&vec.y(), &vec.x() + 1);
-    EXPECT_EQ(&vec.z(), &vec.y() + 1);
-    EXPECT_EQ(&vec.w(), &vec.z() + 1);
-
-    double* array = vec;
-    EXPECT_EQ(array[0], -15);
-    EXPECT_EQ(array[1], 15);
-    EXPECT_EQ(array[2], 36.9);
-    EXPECT_EQ(array[3], -0.5);
+    EXPECT_EQ(vec[0], -15);
+    EXPECT_EQ(vec[1], 15);
+    EXPECT_EQ(vec[2], 36.9);
+    EXPECT_EQ(vec[3], -0.5);
 }
 
 TEST(VectorTest, ProjectVector4To3)

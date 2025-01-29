@@ -1056,7 +1056,10 @@ TEST_F(OrthoViewSelectionTest, DragManipulateBrushesByPlanePrimitiveMode)
 
     // Construct a selection test at a point a few pixels off the node's bounding box
     render::View view(false);
-    algorithm::constructCenteredOrthoview(view, selectionBounds.getOrigin() + Vector3(selectionBounds.getExtents().x(), 0, 0) + 40);
+    algorithm::constructCenteredOrthoview(
+        view,
+        selectionBounds.getOrigin() + Vector3(selectionBounds.getExtents().x() + 40, 40, 40)
+    );
     auto test = algorithm::constructOrthoviewSelectionTest(view);
 
     auto pivot2World = GlobalSelectionSystem().getPivot2World();

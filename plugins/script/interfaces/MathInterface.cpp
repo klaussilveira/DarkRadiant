@@ -37,7 +37,6 @@ void MathInterface::registerInterface(py::module& scope, py::dict& globals)
 	vec3.def(py::self - py::self);		// __sub__
 	vec3.def(py::self += py::self);		// __iadd__
 	vec3.def(py::self -= py::self);		// __isub__
-	vec3.def(py::self < py::self);	// __lt__
 	vec3.def("__repr__", [](const Vector3& vec)
 	{
 		return "(" + string::to_string(vec.x()) + " " + string::to_string(vec.y()) +

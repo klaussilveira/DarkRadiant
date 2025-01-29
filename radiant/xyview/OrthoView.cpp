@@ -694,7 +694,7 @@ void OrthoView::drawGrid()
                     continue;
                 }
 
-                glColor3dv(colourGridMajor);
+                glColor3dv(colourGridMajor.data());
                 look = GlobalGrid().getMajorLook();
                 cur_step = step;
                 density = 4;
@@ -709,7 +709,7 @@ void OrthoView::drawGrid()
                     continue;
                 }
 
-                glColor3dv(colourGridMinor);
+                glColor3dv(colourGridMinor.data());
                 look = GlobalGrid().getMinorLook();
                 cur_step = minor_step;
                 density = 4;
@@ -835,7 +835,7 @@ void OrthoView::drawGrid()
     {
         char text[32];
 
-        glColor3dv(GlobalColourSchemeManager().getColour("grid_text"));
+        glColor3dv(GlobalColourSchemeManager().getColour("grid_text").data());
 
         double offx = _origin[nDim2] + h - 12 / _scale;
         double offy = _origin[nDim1] - w + 1 / _scale;
@@ -856,7 +856,7 @@ void OrthoView::drawGrid()
 
         if (isActive())
         {
-            glColor3dv(GlobalColourSchemeManager().getColour("active_view_name"));
+            glColor3dv(GlobalColourSchemeManager().getColour("active_view_name").data());
         }
 
         // we do this part (the old way) only if show_axis is disabled
@@ -886,12 +886,12 @@ void OrthoView::drawGrid()
         // horizontal line: nDim1 color
         glLineWidth(2);
         glBegin( GL_LINES );
-        glColor3dv (colourX);
+        glColor3dv (colourX.data());
         glVertex2f( _origin[nDim1] - w + 40 / _scale, _origin[nDim2] + h - 45 / _scale );
         glVertex2f( _origin[nDim1] - w + 65 / _scale, _origin[nDim2] + h - 45 / _scale );
         glVertex2f( 0, 0 );
         glVertex2f( 32 / _scale, 0 );
-        glColor3dv (colourY);
+        glColor3dv (colourY.data());
         glVertex2f( _origin[nDim1] - w + 40 / _scale, _origin[nDim2] + h - 45 / _scale );
         glVertex2f( _origin[nDim1] - w + 40 / _scale, _origin[nDim2] + h - 20 / _scale );
         glVertex2f( 0, 0 );
@@ -899,12 +899,12 @@ void OrthoView::drawGrid()
         glEnd();
         glLineWidth(1);
         // now print axis symbols
-        glColor3dv (colourX);
+        glColor3dv (colourX.data());
         glRasterPos2f ( _origin[nDim1] - w + 55 / _scale, _origin[nDim2] + h - 55 / _scale );
         _font->drawString(g_AxisName[nDim1]);
         glRasterPos2f (28 / _scale, -10 / _scale );
         _font->drawString(g_AxisName[nDim1]);
-        glColor3dv (colourY);
+        glColor3dv (colourY.data());
         glRasterPos2f ( _origin[nDim1] - w + 25 / _scale, _origin[nDim2] + h - 30 / _scale );
         _font->drawString(g_AxisName[nDim2]);
         glRasterPos2f ( -10 / _scale, 28 / _scale );
@@ -920,7 +920,7 @@ void OrthoView::drawGrid()
 
         if (wz.bounds.isValid())
         {
-            glColor3dv(GlobalColourSchemeManager().getColour("workzone"));
+            glColor3dv(GlobalColourSchemeManager().getColour("workzone").data());
             glBegin( GL_LINES );
 
             glVertex2f( xb, wz.min[nDim2] );
@@ -982,7 +982,7 @@ void OrthoView::drawSelectionFocusArea(int nDim1, int nDim2, float xMin, float x
     glBlendFunc(GL_CONSTANT_ALPHA_EXT, GL_ONE_MINUS_CONSTANT_ALPHA_EXT);
 
     Vector3 dragBoxColour(0, 0, 0);
-    glColor3dv(dragBoxColour);
+    glColor3dv(dragBoxColour.data());
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     // Flood everything outside the bounds with an overlay
@@ -1058,7 +1058,7 @@ void OrthoView::drawBlockGrid()
 
     // draw major blocks
 
-    glColor3dv(GlobalColourSchemeManager().getColour("grid_block"));
+    glColor3dv(GlobalColourSchemeManager().getColour("grid_block").data());
     glLineWidth (2);
 
     glBegin (GL_LINES);
@@ -1123,7 +1123,7 @@ void OrthoView::drawCameraIcon()
             a = degrees_to_radians(angles[camera::CAMERA_PITCH]);
         }
 
-        glColor3dv(GlobalColourSchemeManager().getColour("camera_icon"));
+        glColor3dv(GlobalColourSchemeManager().getColour("camera_icon").data());
         glBegin(GL_LINE_STRIP);
         glVertex3f(x - box, y, 0);
         glVertex3f(x, y + (box / 2), 0);
@@ -1163,7 +1163,7 @@ void OrthoView::drawSizeInfo(int nDim1, int nDim2, const Vector3& vMinBounds, co
 
   Vector3 vSize(vMaxBounds - vMinBounds);
 
-  glColor3dv(GlobalColourSchemeManager().getColour("brush_size_info"));
+  glColor3dv(GlobalColourSchemeManager().getColour("brush_size_info").data());
 
   std::ostringstream dimensions;
 
@@ -1505,7 +1505,7 @@ void OrthoView::draw()
 
     // greebo: Draw the clipper's control points
     {
-        glColor3dv(GlobalColourSchemeManager().getColour("clipper"));
+        glColor3dv(GlobalColourSchemeManager().getColour("clipper").data());
         glPointSize(4);
 
         if (GlobalClipper().clipMode()) {
@@ -1550,13 +1550,13 @@ void OrthoView::draw()
 
             switch (_orientation) {
                 case OrthoOrientation::YZ:
-                    glColor3dv(GlobalColourSchemeManager().getColour("axis_x"));
+                    glColor3dv(GlobalColourSchemeManager().getColour("axis_x").data());
                     break;
                 case OrthoOrientation::XZ:
-                    glColor3dv(GlobalColourSchemeManager().getColour("axis_y"));
+                    glColor3dv(GlobalColourSchemeManager().getColour("axis_y").data());
                     break;
                 case OrthoOrientation::XY:
-                    glColor3dv(GlobalColourSchemeManager().getColour("axis_z"));
+                    glColor3dv(GlobalColourSchemeManager().getColour("axis_z").data());
                     break;
             }
 

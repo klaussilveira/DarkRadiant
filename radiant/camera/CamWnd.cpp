@@ -676,11 +676,11 @@ void CamWnd::drawGrid()
         Vector3 start2(GRID_MAX_DIM, x, 0);
         Vector3 end2(-GRID_MAX_DIM, x, 0);
 
-        glVertex2dv(start);
-        glVertex2dv(end);
+        glVertex2dv(start.data());
+        glVertex2dv(end.data());
 
-        glVertex2dv(start2);
-        glVertex2dv(end2);
+        glVertex2dv(start2.data());
+        glVertex2dv(end2.data());
     }
 
     glEnd();
