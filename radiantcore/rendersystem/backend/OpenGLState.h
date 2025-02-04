@@ -446,7 +446,7 @@ public:
         {
             setColour(stage0->getColour());
         }
-        glColor4fv(getColour());
+        glColor4fv(getColour().data());
         current.setColour(getColour());
         debug::assertNoGlErrors();
 

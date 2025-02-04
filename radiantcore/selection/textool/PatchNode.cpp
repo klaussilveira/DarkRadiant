@@ -115,7 +115,7 @@ void PatchNode::render(SelectionMode mode)
     glBlendFunc(GL_CONSTANT_ALPHA_EXT, GL_ONE_MINUS_CONSTANT_ALPHA_EXT);
 
     auto surfaceColour = getSurfaceColour(mode);
-    glColor4fv(surfaceColour);
+    glColor4fv(surfaceColour.data());
 
     // Get the tesselation and the first
     auto tess = _patch.getTesselatedPatchMesh();

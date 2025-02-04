@@ -590,7 +590,7 @@ void TexTool::drawGrid()
     {
         // Draw the manipulation grid
         auto minorGrid = GlobalTextureToolColourSchemeManager().getColour(textool::SchemeElement::MinorGrid);
-        glColor4fv(minorGrid);
+        glColor4fv(minorGrid.data());
 
         for (float y = startY; y <= endY; y += gridSpacing)
         {
@@ -621,7 +621,7 @@ void TexTool::drawGrid()
 
 	// Draw the integer grid
     auto majorGrid = GlobalTextureToolColourSchemeManager().getColour(textool::SchemeElement::MajorGrid);
-    glColor4fv(majorGrid);
+    glColor4fv(majorGrid.data());
 
 	for (float y = startY; y <= endY; y += yIntStep)
 	{
@@ -636,7 +636,7 @@ void TexTool::drawGrid()
 	}
 
 	// Draw the axes through the origin
-	glColor4fv(majorGrid);
+	glColor4fv(majorGrid.data());
 	glVertex2f(0, startY);
 	glVertex2f(0, endY);
 
@@ -657,7 +657,7 @@ void TexTool::drawGrid()
     }
 
     auto gridText = GlobalTextureToolColourSchemeManager().getColour(textool::SchemeElement::GridText);
-    glColor4fv(gridText);
+    glColor4fv(gridText.data());
 
     float uvPerPixel = _texSpaceAABB.extents.y() / _windowDims.y();
     float uvFontHeight = (GlobalOpenGL().getFontHeight() + 3) * uvPerPixel;

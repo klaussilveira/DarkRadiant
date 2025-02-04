@@ -208,7 +208,7 @@ void TextureToolRotateManipulator::renderComponents(const render::IRenderView& v
     auto angle = _rotator.getCurAngle();
 
     // Crosshair
-    glColor3fv(deselectedColour);
+    glColor3fv(deselectedColour.data());
     glBegin(GL_LINES);
 
     auto crossHairSize = transformedDeviceUnit * DefaultCrossHairSize;
@@ -228,7 +228,7 @@ void TextureToolRotateManipulator::renderComponents(const render::IRenderView& v
         glBlendFunc(GL_CONSTANT_ALPHA_EXT, GL_ONE_MINUS_CONSTANT_ALPHA_EXT);
 
         auto surfaceColour = GlobalTextureToolColourSchemeManager().getColour(SchemeElement::ManipulatorSurface);
-        glColor3fv(surfaceColour);
+        glColor3fv(surfaceColour.data());
 
         glBegin(GL_TRIANGLE_FAN);
 
@@ -276,7 +276,7 @@ void TextureToolRotateManipulator::renderComponents(const render::IRenderView& v
 
     if (_selectableZ.isSelected())
     {
-        glColor3fv(deselectedColour);
+        glColor3fv(deselectedColour.data());
 
         auto transformedOffset = inverseView.transformDirection(Vector3(0.02, 0.02, 0));
         glRasterPos3dv(transformedOffset.data());

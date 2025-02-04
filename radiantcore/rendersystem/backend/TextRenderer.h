@@ -61,7 +61,7 @@ public:
 
             if (text.empty()) continue;
 
-            glColor4dv(renderable.getColour());
+            glColor4dv(renderable.getColour().data());
             glRasterPos3dv(renderable.getWorldPosition().data());
 
             _font->drawString(text);

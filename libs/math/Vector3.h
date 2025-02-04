@@ -20,7 +20,6 @@
 
 #include <float.h>
 #include "math/pi.h"
-#include "lrint.h"
 #include "FloatTools.h"
 
 #ifdef _MSC_VER
