@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 
+#include "math/Vector2.h"
 #include "math/Vector3.h"
 #include "math/Vector4.h"
 
@@ -466,6 +467,14 @@ TEST(VectorTest, Vector3MidPoint)
     EXPECT_EQ(math::midPoint(v1, v2), Vector3(6.75, 61, -170));
     EXPECT_EQ(math::midPoint(v2, v1), Vector3(6.75, 61, -170));
     EXPECT_EQ(math::midPoint(v1, Vector3()), v1 / 2);
+}
+
+TEST(VectorTest, Vector2Indexing)
+{
+    Vector2 vec(18.5, -600);
+
+    EXPECT_EQ(vec[0], 18.5);
+    EXPECT_EQ(vec[1], -600);
 }
 
 TEST(VectorTest, Vector3Indexing)

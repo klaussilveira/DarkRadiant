@@ -63,7 +63,6 @@ void MathInterface::registerInterface(py::module& scope, py::dict& globals)
 	vec2.def(py::self - py::self);		// __sub__
 	vec2.def(py::self += py::self);
 	vec2.def(py::self -= py::self);
-	vec2.def(py::self < py::self);	// __lt__
 	vec2.def("__repr__", [](const Vector2& vec)
 	{
 		return "(" + string::to_string(vec.x()) + " " + string::to_string(vec.y()) + ")";
@@ -74,11 +73,12 @@ void MathInterface::registerInterface(py::module& scope, py::dict& globals)
 	vec4.def(py::init<double, double, double, double>());
 	vec4.def(py::init<const Vector4&>());
 
-	// greebo: Pick the correct overload - this is hard to read, but it is necessary
-	vec4.def("x", static_cast<double& (Vector4::*)()>(&Vector4::x), py::return_value_policy::reference);
-	vec4.def("y", static_cast<double& (Vector4::*)()>(&Vector4::y), py::return_value_policy::reference);
-	vec4.def("z", static_cast<double& (Vector4::*)()>(&Vector4::z), py::return_value_policy::reference);
-	vec4.def("w", static_cast<double& (Vector4::*)()>(&Vector4::w), py::return_value_policy::reference);
+	// greebo: Pick the correct overload
+    using Accessor_T = double& (Vector4::*) ();
+	vec4.def("x", static_cast<Accessor_T>(&Vector4::x), py::return_value_policy::reference);
+	vec4.def("y", static_cast<Accessor_T>(&Vector4::y), py::return_value_policy::reference);
+	vec4.def("z", static_cast<Accessor_T>(&Vector4::z), py::return_value_policy::reference);
+	vec4.def("w", static_cast<Accessor_T>(&Vector4::w), py::return_value_policy::reference);
 	vec4.def("getVector3", &Vector4::getVector3);
 	vec4.def("getProjected", &Vector4::getProjected);
 	vec4.def("dot", &Vector4::dot);
