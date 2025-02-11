@@ -1,6 +1,7 @@
 #pragma once
 
 #include "iscenegraph.h"
+#include "irender.h"
 #include "render/RenderableCollectorBase.h"
 
 namespace render
@@ -29,11 +30,11 @@ public:
         });
 
         // Prepare any renderables that have been directly attached to the RenderSystem
-		// without belonging to an actual scene object
-		GlobalRenderSystem().forEachRenderable([&](Renderable& renderable)
-		{
+        // without belonging to an actual scene object
+        GlobalRenderSystem().forEachRenderable([&](Renderable& renderable)
+        {
             renderable.onPreRender(volume);
-		});
+        });
     }
 };
 
