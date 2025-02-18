@@ -267,7 +267,7 @@ void EffectEditor::populateEntityListStore()
 		// Visit function
 		bool pre(const scene::INodePtr& node)
 		{
-			Entity* entity = Node_getEntity(node);
+			Entity* entity = node->tryGetEntity();
 
 			if (entity != NULL)
 			{

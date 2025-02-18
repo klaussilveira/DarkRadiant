@@ -863,7 +863,7 @@ void RadiantSelectionSystem::onManipulationCancelled()
         }
 
         // In case of entities, we need to inform the child nodes as well
-        if (Node_getEntity(node))
+        if (node->tryGetEntity())
         {
             node->foreachNode([&](const scene::INodePtr& child)
             {

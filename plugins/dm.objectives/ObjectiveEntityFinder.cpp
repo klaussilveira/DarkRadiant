@@ -8,7 +8,7 @@ namespace objectives
 bool ObjectiveEntityFinder::pre(const scene::INodePtr& node)
 {
     // Get the entity and check the classname
-    Entity* ePtr = Node_getEntity(node);
+    Entity* ePtr = node->tryGetEntity();
     if (!ePtr)
         return true;
 

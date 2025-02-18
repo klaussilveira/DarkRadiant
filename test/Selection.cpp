@@ -94,7 +94,7 @@ TEST_F(SelectionTest, LightBoundsChangedAfterRadiusChange)
     auto entityNode = GlobalEntityModule().createEntity(eclass);
 
     EXPECT_TRUE(Node_getLightNode(entityNode));
-    auto* entity = Node_getEntity(entityNode);
+    auto* entity = entityNode->tryGetEntity();
     entity->setKeyValue("light_radius", "300 200 100");
     GlobalMapModule().getRoot()->addChildNode(entityNode);
 
@@ -120,7 +120,7 @@ TEST_F(SelectionTest, SelectionBoundsOfProjectedLights)
     auto entityNode = GlobalEntityModule().createEntity(eclass);
 
     EXPECT_TRUE(Node_getLightNode(entityNode));
-    auto* entity = Node_getEntity(entityNode);
+    auto* entity = entityNode->tryGetEntity();
 
     entity->setKeyValue("origin", "0 0 0");
     entity->setKeyValue("light_target", "0 0 -256");
@@ -1016,7 +1016,7 @@ TEST_F(OrthoViewSelectionTest, DragManipulateChildBrushByDirectHitPrimitiveMode)
     auto funcStaticMiddle = algorithm::getEntityByName(GlobalMapModule().getRoot(), "func_static_middle");
     auto brush = algorithm::findFirstBrushWithMaterial(funcStaticMiddle, "textures/numbers/2");
 
-    auto originalEntityOrigin = Node_getEntity(funcStaticMiddle)->getKeyValue("origin");
+    auto originalEntityOrigin = funcStaticMiddle->tryGetEntity()->getKeyValue("origin");
 
     // Select the child brush (like the user was tabbing through the func_static children)
     Node_setSelected(brush, true);
@@ -1025,7 +1025,7 @@ TEST_F(OrthoViewSelectionTest, DragManipulateChildBrushByDirectHitPrimitiveMode)
     performDragOperation(originalAABB.getOrigin());
     auto newAABB = brush->worldAABB();
 
-    auto newEntityOrigin = Node_getEntity(funcStaticMiddle)->getKeyValue("origin");
+    auto newEntityOrigin = funcStaticMiddle->tryGetEntity()->getKeyValue("origin");
 
     EXPECT_FALSE(math::isNear(originalAABB.getOrigin(), newAABB.getOrigin(), 20)) << "Item should have moved";
     EXPECT_TRUE(math::isNear(originalAABB.getExtents(), newAABB.getExtents(), 0.01)) << "Item should not have changed form";
@@ -1119,8 +1119,8 @@ TEST_F(OrthoViewSelectionTest, DragManipulateEntityByPlaneEntityMode)
 
     // Select the light and attempt to drag-resize
     Node_setSelected(light, true);
-    auto oldRadius = Node_getEntity(light)->getKeyValue("light_radius");
-    auto oldOrigin = Node_getEntity(light)->getKeyValue("origin");
+    auto oldRadius = light->tryGetEntity()->getKeyValue("light_radius");
+    auto oldOrigin = light->tryGetEntity()->getKeyValue("origin");
 
     // Drag starting from the right side of the bounding box
     auto originalAABB = light->worldAABB();
@@ -1131,14 +1131,14 @@ TEST_F(OrthoViewSelectionTest, DragManipulateEntityByPlaneEntityMode)
 
     if (registry::getValue<bool>(RKEY_DRAG_RESIZE_SYMMETRICALLY))
     {
-        EXPECT_EQ(Node_getEntity(light)->getKeyValue("origin"), oldOrigin) << "Entity origin shouldn't have changed";
+        EXPECT_EQ(light->tryGetEntity()->getKeyValue("origin"), oldOrigin) << "Entity origin shouldn't have changed";
     }
     else
     {
-        EXPECT_NE(Node_getEntity(light)->getKeyValue("origin"), oldOrigin) << "Entity origin should have changed";
+        EXPECT_NE(light->tryGetEntity()->getKeyValue("origin"), oldOrigin) << "Entity origin should have changed";
     }
 
-    auto newRadius = Node_getEntity(light)->getKeyValue("light_radius");
+    auto newRadius = light->tryGetEntity()->getKeyValue("light_radius");
     EXPECT_NE(newRadius, oldRadius) << "Light radius should have changed";
 }
 
@@ -1153,7 +1153,7 @@ TEST_F(OrthoViewSelectionTest, DragManipulateChildBrushByDirectHitGroupPartMode)
     auto funcStaticMiddle = algorithm::getEntityByName(GlobalMapModule().getRoot(), "func_static_middle");
     auto middleBrush = algorithm::findFirstBrushWithMaterial(funcStaticMiddle, "textures/numbers/2");
 
-    auto originalEntityOrigin = Node_getEntity(funcStaticMiddle)->getKeyValue("origin");
+    auto originalEntityOrigin = funcStaticMiddle->tryGetEntity()->getKeyValue("origin");
 
     // Select the item and attempt to drag-manipulate
     Node_setSelected(middleBrush, true);
@@ -1161,7 +1161,7 @@ TEST_F(OrthoViewSelectionTest, DragManipulateChildBrushByDirectHitGroupPartMode)
     auto originalAABB = middleBrush->worldAABB();
     performDragOperation(originalAABB.getOrigin());
     auto newAABB = middleBrush->worldAABB();
-    auto newEntityOrigin = Node_getEntity(funcStaticMiddle)->getKeyValue("origin");
+    auto newEntityOrigin = funcStaticMiddle->tryGetEntity()->getKeyValue("origin");
 
     EXPECT_FALSE(math::isNear(originalAABB.getOrigin(), newAABB.getOrigin(), 20)) << "Item should have moved";
     EXPECT_TRUE(math::isNear(originalAABB.getExtents(), newAABB.getExtents(), 0.01)) << "Item should not have changed form";
@@ -1534,11 +1534,11 @@ TEST_F(OrthoViewSelectionTest, ToggleSelectFuncStaticInFocusMode)
     expectNodeSelectionStatus({ funcStaticTop }, { topBrush });
 
     // Move the func_static
-    auto originalEntityOrigin = Node_getEntity(funcStaticTop)->getKeyValue("origin");
+    auto originalEntityOrigin = funcStaticTop->tryGetEntity()->getKeyValue("origin");
     auto originalAABB = topBrush->worldAABB();
     performDragOperation(originalAABB.getOrigin());
     auto newAABB = topBrush->worldAABB();
-    auto newEntityOrigin = Node_getEntity(funcStaticTop)->getKeyValue("origin");
+    auto newEntityOrigin = funcStaticTop->tryGetEntity()->getKeyValue("origin");
 
     EXPECT_FALSE(math::isNear(originalAABB.getOrigin(), newAABB.getOrigin(), 20)) << "Item should have moved";
     EXPECT_NE(newEntityOrigin, originalEntityOrigin) << "Entity should have moved";

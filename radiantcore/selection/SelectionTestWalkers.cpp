@@ -17,7 +17,7 @@ void SelectionTestWalker::printNodeName(const scene::INodePtr& node)
 
 	if (node->getNodeType() == scene::INode::Type::Entity)
 	{
-		rMessage() << " - " << Node_getEntity(node)->getKeyValue("name");
+		rMessage() << " - " << node->tryGetEntity()->getKeyValue("name");
 	}
 
 	rMessage() << std::endl;

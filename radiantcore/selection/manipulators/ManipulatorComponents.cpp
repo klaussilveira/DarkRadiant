@@ -280,7 +280,7 @@ void ModelScaleComponent::beginTransformation(const Matrix4& pivot2world, const 
 
 	assert(!_entityNode.expired());
 
-	Entity* entity = Node_getEntity(_entityNode.lock());
+	Entity* entity = _entityNode.lock()->tryGetEntity();
 
 	_startOrigin = string::convert<Vector3>(entity->getKeyValue("origin"));
 }

@@ -141,7 +141,7 @@ void StimResponseEditor::rescanSelection()
 		// Get the entity instance
 		const scene::INodePtr& node = GlobalSelectionSystem().ultimateSelected();
 
-		_entity = Node_getEntity(node);
+		_entity = node->tryGetEntity();
 
 		_srEntity = SREntityPtr(new SREntity(_entity, _stimTypes));
 		_stimEditor->setEntity(_srEntity);

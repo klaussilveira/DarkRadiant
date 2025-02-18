@@ -84,7 +84,7 @@ void exportSelectedAsModel(const model::ModelExportOptions& options)
 
         GlobalSelectionSystem().foreachSelected([&](const scene::INodePtr& node)
         {
-            auto entity = Node_getEntity(node);
+            auto entity = node->tryGetEntity();
             if (!foundEntity && entity && entity->getKeyValue("name") == options.entityName)
             {
                 foundEntity = entity;
@@ -134,7 +134,7 @@ void exportSelectedAsModel(const model::ModelExportOptions& options)
 
         // Remember the last selected entity to preserve spawnargs
         auto lastSelectedNode = GlobalSelectionSystem().ultimateSelected();
-        auto lastSelectedEntity = Node_getEntity(lastSelectedNode);
+        auto lastSelectedEntity = lastSelectedNode->tryGetEntity();
         auto root = lastSelectedNode->getRootNode();
 
         // Remove the selection, but remember its layers first
@@ -161,7 +161,7 @@ void exportSelectedAsModel(const model::ModelExportOptions& options)
         auto modelNode = GlobalEntityModule().createEntity(eclass);
         scene::addNodeToContainer(modelNode, root);
 
-        auto newEntity = Node_getEntity(modelNode);
+        auto newEntity = modelNode->tryGetEntity();
         newEntity->setKeyValue("model", relativeModelPath);
         newEntity->setKeyValue("origin", string::to_string(modelPos));
         modelNode->assignToLayers(previousLayerSet);

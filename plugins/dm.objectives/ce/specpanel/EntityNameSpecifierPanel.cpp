@@ -30,7 +30,7 @@ EntityNameSpecifierPanel::EntityNameSpecifierPanel(wxWindow* parent) :
     {
         if (Node_isEntity(node))
         {
-            names.push_back(Node_getEntity(node)->getKeyValue("name"));
+            names.push_back(node->tryGetEntity()->getKeyValue("name"));
         }
 
         return true;

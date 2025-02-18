@@ -31,7 +31,7 @@ public:
 
 	bool pre(const scene::INodePtr& node)
 	{
-		Entity* ent = Node_getEntity(node);
+		Entity* ent = node->tryGetEntity();
 
         if (ent != NULL)
         {
@@ -79,7 +79,7 @@ public:
 				}
 				else
 				{
-					Entity* entity = Node_getEntity(ent);
+					Entity* entity = ent->tryGetEntity();
 					assert(entity != NULL);
 
 					entity->setKeyValue(*i, _newVal);

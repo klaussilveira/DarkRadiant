@@ -151,11 +151,11 @@ void ExportAsModelDialog::populateWindow()
         if (!Node_isEntity(node)) return;
 
         auto caption = fmt::format("{0} at ({1})",
-            Node_getEntity(node)->getKeyValue("name"),
-            Node_getEntity(node)->getKeyValue("origin"));
+            node->tryGetEntity()->getKeyValue("name"),
+            node->tryGetEntity()->getKeyValue("origin"));
 
         // Store the entity name as client data
-        entitySelector->Append(caption, new wxStringClientData(Node_getEntity(node)->getKeyValue("name")));
+        entitySelector->Append(caption, new wxStringClientData(node->tryGetEntity()->getKeyValue("name")));
     });
 
     if (entitySelector->GetCount() > 0)

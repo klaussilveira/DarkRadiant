@@ -149,7 +149,7 @@ inline void checkVertexColoursOfExportedModel(const model::IModelExporterPtr& ex
         scene::addNodeToContainer(entity, GlobalMapModule().getRoot());
 
         // This should assign the model node to the entity
-        Node_getEntity(entity)->setKeyValue("model", "models/" + filename.string());
+        entity->tryGetEntity()->setKeyValue("model", "models/" + filename.string());
 
         // Locate the IModel node among the entity's children
         model::ModelNodePtr model = getChildModelNode(entity);
@@ -378,8 +378,8 @@ TEST_F(ModelExportTest, ExportedModelTriggersEntityRefresh)
     scene::addNodeToContainer(entity2, GlobalMapModule().getRoot());
 
     // This should assign the model node to the entity
-    Node_getEntity(entity1)->setKeyValue("model", modRelativePath);
-    Node_getEntity(entity2)->setKeyValue("model", modRelativePath);
+    entity1->tryGetEntity()->setKeyValue("model", modRelativePath);
+    entity2->tryGetEntity()->setKeyValue("model", modRelativePath);
     model::ModelNodePtr model1 = getChildModelNode(entity1);
     model::ModelNodePtr model2 = getChildModelNode(entity2);
 
@@ -424,7 +424,7 @@ TEST_F(ModelExportTest, ExportedModelInheritsSpawnargs)
     scene::addNodeToContainer(entity, GlobalMapModule().getRoot());
 
     // This should assign the model node to the entity
-    Node_getEntity(entity)->setKeyValue("model", modelPath);
+    entity->tryGetEntity()->setKeyValue("model", modelPath);
 
     auto brush = algorithm::createCubicBrush(
         GlobalMapModule().findOrInsertWorldspawn(), Vector3(0, 0, 0), "textures/numbers/1");
@@ -432,13 +432,13 @@ TEST_F(ModelExportTest, ExportedModelInheritsSpawnargs)
     // Add another entity, which is just around to be selected
     auto entity2 = GlobalEntityModule().createEntity(eclass);
     scene::addNodeToContainer(entity2, GlobalMapModule().getRoot());
-    Node_getEntity(entity2)->setKeyValue("name", "HenryTheFifth");
-    Node_getEntity(entity2)->setKeyValue("henrys_key", "henrys_value");
+    entity2->tryGetEntity()->setKeyValue("name", "HenryTheFifth");
+    entity2->tryGetEntity()->setKeyValue("henrys_key", "henrys_value");
 
     // Set some spawnargs which should be preserved after export and give it a name
-    Node_getEntity(entity)->setKeyValue("name", "HarryTheTorch");
-    Node_getEntity(entity)->setKeyValue("dummy1", "value1");
-    Node_getEntity(entity)->setKeyValue("dummy2", "value2");
+    entity->tryGetEntity()->setKeyValue("name", "HarryTheTorch");
+    entity->tryGetEntity()->setKeyValue("dummy1", "value1");
+    entity->tryGetEntity()->setKeyValue("dummy2", "value2");
 
     // Select the named entity as last item, it should dictate which spawnargs to preserve
     GlobalSelectionSystem().setSelectedAll(false);
@@ -474,7 +474,7 @@ TEST_F(ModelExportTest, ExportedModelInheritsSpawnargs)
     auto newEntityNode = algorithm::getEntityByName(GlobalMapModule().getRoot(), "HarryTheTorch");
 
     EXPECT_TRUE(newEntityNode) << "Could not locate the named entity after replacing it with a model";
-    auto newEntity = Node_getEntity(newEntityNode);
+    auto newEntity = newEntityNode->tryGetEntity();
 
     EXPECT_EQ(newEntity->getKeyValue("name"), "HarryTheTorch");
     EXPECT_EQ(newEntity->getKeyValue("model"), exportedModelPath);
@@ -503,7 +503,7 @@ TEST_F(ModelExportTest, ExportedModelInheritsLayers)
     scene::addNodeToContainer(entity, GlobalMapModule().getRoot());
 
     // This should assign the model node to the entity
-    Node_getEntity(entity)->setKeyValue("model", modelPath);
+    entity->tryGetEntity()->setKeyValue("model", modelPath);
 
     auto brush1 = algorithm::createCubicBrush(
         GlobalMapModule().findOrInsertWorldspawn(), Vector3(0, 0, 0), "textures/numbers/1");
@@ -554,7 +554,7 @@ TEST_F(ModelExportTest, ExportedModelInheritsLayers)
     EXPECT_EQ(GlobalSelectionSystem().countSelected(), 1) << "One item should be selected after export";
     auto newEntity = GlobalSelectionSystem().ultimateSelected();
 
-    EXPECT_EQ(Node_getEntity(newEntity)->getKeyValue("model"), exportedModelPath);
+    EXPECT_EQ(newEntity->tryGetEntity()->getKeyValue("model"), exportedModelPath);
 
     // Check the layers of this new entity, it should contain the union of all layers
     auto layers = newEntity->getLayers();
@@ -579,9 +579,9 @@ TEST_F(ModelExportTest, ExportUsingEntityOrigin)
     scene::addNodeToContainer(entity, GlobalMapModule().getRoot());
 
     // This should assign the model node to the entity
-    Node_getEntity(entity)->setKeyValue("model", modelPath);
+    entity->tryGetEntity()->setKeyValue("model", modelPath);
     // Offset this entity from the origin
-    Node_getEntity(entity)->setKeyValue("origin", "300 400 50");
+    entity->tryGetEntity()->setKeyValue("origin", "300 400 50");
 
     Node_setSelected(entity, true);
 
@@ -600,7 +600,7 @@ TEST_F(ModelExportTest, ExportUsingEntityOrigin)
     argList.push_back(outputFilename.string());
     argList.push_back(std::string("lwo"));
     argList.push_back(model::getExportOriginString(model::ModelExportOrigin::EntityOrigin)); // center objects
-    argList.push_back(Node_getEntity(entity)->getKeyValue("name")); // OriginEntityName
+    argList.push_back(entity->tryGetEntity()->getKeyValue("name")); // OriginEntityName
     argList.push_back(Vector3()); // CustomOrigin
     argList.push_back(true); // skipCaulk
     argList.push_back(false); // replaceSelectionWithModel
@@ -632,9 +632,9 @@ TEST_F(ModelExportTest, ExportUsingCustomOrigin)
     scene::addNodeToContainer(entity, GlobalMapModule().getRoot());
 
     // This should assign the model node to the entity
-    Node_getEntity(entity)->setKeyValue("model", modelPath);
+    entity->tryGetEntity()->setKeyValue("model", modelPath);
     // Offset this entity from the origin
-    Node_getEntity(entity)->setKeyValue("origin", "300 400 50");
+    entity->tryGetEntity()->setKeyValue("origin", "300 400 50");
 
     Node_setSelected(entity, true);
 

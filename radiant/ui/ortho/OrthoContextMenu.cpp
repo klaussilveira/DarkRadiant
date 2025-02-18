@@ -6,7 +6,6 @@
 #include "ui/iresourcechooser.h"
 #include "ui/idialogmanager.h"
 #include "entitylib.h" // EntityFindByClassnameWalker
-#include "scene/Entity.h" // Node_getEntity()
 #include "iregistry.h"
 #include "ui/imainframe.h"
 
@@ -19,10 +18,8 @@
 #include "ui/prefabselector/PrefabSelector.h"
 #include "ui/particles/ParticleChooserDialog.h"
 
-#include "string/convert.h"
 #include "scene/GroupNodeChecker.h"
 #include "scene/ModelFinder.h"
-#include "math/AABB.h"
 
 #include <wx/window.h>
 #include <wx/menu.h>

@@ -110,7 +110,7 @@ struct Light
     {
         if (node)
         {
-            entity = Node_getEntity(node);
+            entity = node->tryGetEntity();
             iLightNode = Node_getLightNode(node);
         }
     }

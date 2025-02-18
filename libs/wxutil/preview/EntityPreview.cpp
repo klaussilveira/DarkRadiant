@@ -76,8 +76,8 @@ void EntityPreview::setupSceneGraph()
         _light = GlobalEntityModule().createEntity(
             GlobalEntityClassManager().findClass("light"));
 
-        Node_getEntity(_light)->setKeyValue("light_radius", "600 600 600");
-        Node_getEntity(_light)->setKeyValue("origin", "0 0 300");
+        _light->tryGetEntity()->setKeyValue("light_radius", "600 600 600");
+        _light->tryGetEntity()->setKeyValue("origin", "0 0 300");
 
         _rootNode->addChildNode(_light);
     }
@@ -138,7 +138,7 @@ bool EntityPreview::onPreRender()
         Vector3 lightOrigin = _viewOrigin + Vector3(0, 0, 20);
 
         // Position the light just above the camera
-        Node_getEntity(_light)->setKeyValue("origin", string::to_string(lightOrigin));
+        _light->tryGetEntity()->setKeyValue("origin", string::to_string(lightOrigin));
 
         // Let the light encompass the object
         float radius = (getSceneBounds().getOrigin() - lightOrigin).getLength() * 2.0f;
@@ -147,9 +147,9 @@ bool EntityPreview::onPreRender()
         std::ostringstream value;
         value << radius << ' ' << radius << ' ' << radius;
 
-        Node_getEntity(_light)->setKeyValue("light_radius", value.str());
+        _light->tryGetEntity()->setKeyValue("light_radius", value.str());
 
-        Node_getEntity(_light)->setKeyValue("_color", "0.6 0.6 0.6");
+        _light->tryGetEntity()->setKeyValue("_color", "0.6 0.6 0.6");
     }
 
     return _entity != nullptr;
@@ -171,7 +171,7 @@ void EntityPreview::onModelRotationChanged()
             << _modelRotation.zy() << ' '
             << _modelRotation.zz();
 
-        Node_getEntity(_entity)->setKeyValue("rotation", value.str());
+        _entity->tryGetEntity()->setKeyValue("rotation", value.str());
     }
 }
 

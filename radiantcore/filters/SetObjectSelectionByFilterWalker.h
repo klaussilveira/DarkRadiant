@@ -34,7 +34,7 @@ public:
 		// Check entity eclass and spawnargs
 		if (Node_isEntity(node))
 		{
-			Entity* entity = Node_getEntity(node);
+			Entity* entity = node->tryGetEntity();
 
 			bool isVisible = _filter.isEntityVisible(FilterType::ECLASS, *entity) &&
 				_filter.isEntityVisible(FilterType::SPAWNARG, *entity);

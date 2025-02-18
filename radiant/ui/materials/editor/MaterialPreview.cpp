@@ -254,7 +254,7 @@ void MaterialPreview::enableFrobHighlight(bool enable)
 {
     if (!_entity) return;
 
-    Node_getEntity(_entity)->setKeyValue("shaderParm11", enable ? "1" : "0");
+    _entity->tryGetEntity()->setKeyValue("shaderParm11", enable ? "1" : "0");
     queueDraw();
 }
 
@@ -278,7 +278,7 @@ bool MaterialPreview::onPreRender()
         // one full rotation per 10 seconds
         auto newAngle = 2 * math::PI * time / 10000;
 
-        Node_getEntity(_entity)->setKeyValue("angle", string::to_string(radians_to_degrees(newAngle)));
+        _entity->tryGetEntity()->setKeyValue("angle", string::to_string(radians_to_degrees(newAngle)));
     }
 
     return RenderPreview::onPreRender();
@@ -311,8 +311,8 @@ void MaterialPreview::setupSceneGraph()
             GlobalEntityClassManager().findClass(FUNC_STATIC_CLASS));
 
         // Make sure the shaderParm11 spawnarg is present
-        Node_getEntity(_entity)->setKeyValue("shaderParm11", "0");
-        Node_getEntity(_entity)->setKeyValue("model", "-");
+        _entity->tryGetEntity()->setKeyValue("shaderParm11", "0");
+        _entity->tryGetEntity()->setKeyValue("model", "-");
 
         _rootNode->addChildNode(_entity);
 
@@ -333,8 +333,8 @@ void MaterialPreview::setupSceneGraph()
         // Set up the light
         _light = GlobalEntityModule().createEntity(GlobalEntityClassManager().findClass(_lightClassname));
 
-        Node_getEntity(_light)->setKeyValue("light_radius", "750 750 750");
-        Node_getEntity(_light)->setKeyValue("origin", "150 150 150");
+        _light->tryGetEntity()->setKeyValue("light_radius", "750 750 750");
+        _light->tryGetEntity()->setKeyValue("origin", "150 150 150");
 
         scene::addNodeToContainer(_light, _rootNode);
 
@@ -451,7 +451,7 @@ Vector3 MaterialPreview::getLightColour()
 {
     if (!_light) return Vector3(0,0,0);
 
-    auto value = Node_getEntity(_light)->getKeyValue("_color");
+    auto value = _light->tryGetEntity()->getKeyValue("_color");
 
     if (value.empty())
     {
@@ -465,7 +465,7 @@ void MaterialPreview::setLightColour(const Vector3& colour)
 {
     if (!_light) return;
 
-    Node_getEntity(_light)->setKeyValue("_color", string::to_string(colour));
+    _light->tryGetEntity()->setKeyValue("_color", string::to_string(colour));
     signal_SceneChanged().emit();
 }
 
@@ -473,7 +473,7 @@ void MaterialPreview::resetLightColour()
 {
     if (!_light) return;
 
-    Node_getEntity(_light)->setKeyValue("_color", "");
+    _light->tryGetEntity()->setKeyValue("_color", "");
     signal_SceneChanged().emit();
 }
 

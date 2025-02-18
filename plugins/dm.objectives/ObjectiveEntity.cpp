@@ -31,7 +31,7 @@ namespace objectives {
 ObjectiveEntity::ObjectiveEntity(const scene::INodePtr& node) :
 	_entityNode(node)
 {
-	Entity* entity = Node_getEntity(node);
+	Entity* entity = node->tryGetEntity();
 	assert(entity != NULL);
 
 	// Use an ObjectiveKeyExtractor to populate the ObjectiveMap from the keys
@@ -364,7 +364,7 @@ void ObjectiveEntity::deleteObjective(int index) {
 // Test for targeting
 bool ObjectiveEntity::isOnTargetList(const TargetList& list) const {
 	// Try to convert the weak_ptr reference to a shared_ptr
-	Entity* entity = Node_getEntity(_entityNode.lock());
+	Entity* entity = _entityNode.lock()->tryGetEntity();
 	assert(entity != NULL);
 
 	return list.isTargeted(entity);
@@ -529,7 +529,7 @@ void ObjectiveEntity::writeToEntity()
 	UndoableCommand cmd("saveObjectives");
 
 	// Try to convert the weak_ptr reference to a shared_ptr
-	Entity* entity = Node_getEntity(_entityNode.lock());
+	Entity* entity = _entityNode.lock()->tryGetEntity();
 	assert(entity != NULL);
 
 	// greebo: Remove all objective-related spawnargs first

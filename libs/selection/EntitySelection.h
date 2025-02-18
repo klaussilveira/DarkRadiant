@@ -45,7 +45,7 @@ private:
     public:
         SpawnargTracker(CollectiveSpawnargs& spawnargCollection, const scene::INodePtr& node) :
             _spawnargCollection(spawnargCollection),
-            _entity(Node_getEntity(node)),
+            _entity(node->tryGetEntity()),
             _node(node),
             _destroySilently(false)
         {

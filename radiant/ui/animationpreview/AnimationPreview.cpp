@@ -196,7 +196,7 @@ void AnimationPreview::onModelRotationChanged()
             << _modelRotation.zy() << ' '
             << _modelRotation.zz();
 
-        Node_getEntity(_entity)->setKeyValue("rotation", value.str());
+        _entity->tryGetEntity()->setKeyValue("rotation", value.str());
     }
 }
 

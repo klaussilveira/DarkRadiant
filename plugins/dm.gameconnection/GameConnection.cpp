@@ -611,7 +611,7 @@ void GameConnection::respawnSelectedEntities()
         std::set<std::string> selectedEntityNames;
         GlobalSelectionSystem().foreachSelected([&](const scene::INodePtr &node) {
             //Node_isEntity
-            if (Entity* entity = Node_getEntity(node)) {
+            if (Entity* entity = node->tryGetEntity()) {
                 const std::string &name = entity->getKeyValue("name");
                 if (!name.empty()) {
                     selectedEntityNames.insert(name);

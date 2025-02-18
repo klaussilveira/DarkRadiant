@@ -161,7 +161,7 @@ void checkAltarSceneGeometry(const scene::IMapRootNodePtr& root)
     auto worldspawn = algorithm::findWorldspawn(root);
 
     // Check a specific spawnarg on worldspawn
-    EXPECT_EQ(Node_getEntity(worldspawn)->getKeyValue("_color"), "0.286 0.408 0.259");
+    EXPECT_EQ(worldspawn->tryGetEntity()->getKeyValue("_color"), "0.286 0.408 0.259");
 
     // Check if all entities are present
     auto knownEntities = { "func_static_153", "func_static_154", "func_static_156",
@@ -195,7 +195,7 @@ void checkAltarSceneGeometry(const scene::IMapRootNodePtr& root)
     EXPECT_EQ(algorithm::getChildCount(root, isLight), 1); // 1 light
 
     // Check a specific model
-    auto religiousSymbol = Node_getEntity(algorithm::getEntityByName(root, "religious_symbol_1"));
+    auto religiousSymbol = algorithm::getEntityByName(root, "religious_symbol_1")->tryGetEntity();
     EXPECT_EQ(religiousSymbol->getKeyValue("classname"), "altar_moveable_loot_religious_symbol");
     EXPECT_EQ(religiousSymbol->getKeyValue("origin"), "-0.0448253 12.0322 -177");
 }
@@ -1232,7 +1232,7 @@ TEST_F(MapSavingTest, AutoSaverDoesntChangeSaveCopyAsFilename)
     // Now trigger an autosave
     GlobalAutoSaver().performAutosave();
 
-    // This will (again) ask for a file name, now we check what map file name it remembered and 
+    // This will (again) ask for a file name, now we check what map file name it remembered and
     // sent to the request handler as default file name
     GlobalCommandSystem().executeCommand("SaveMapCopyAs");
 
@@ -1263,7 +1263,7 @@ TEST_F(MapSavingTest, AutoSaveSnapshotsSupportRelativePaths)
     GlobalAutoSaver().performAutosave();
 
     EXPECT_TRUE(GlobalFileSystem().openTextFile(expectedSnapshotPath)) << "Snapshot should now exist in " << expectedSnapshotPath;
-    
+
     // Load and confirm the saved scene
     GlobalCommandSystem().executeCommand("OpenMap", expectedSnapshotPath);
     checkAltarScene();
@@ -1644,11 +1644,11 @@ TEST_F(MapSavingTest, EscapeCharactersInEntityKeyValues)
 
     auto entity = algorithm::findFirstEntity(GlobalMapModule().getRoot(), [](auto&) { return true; });
 
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("name"), "light") << "Wrong entity found after loading";
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("name"), "light") << "Wrong entity found after loading";
 
     // Check the quoted keyvalue pairs
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("with\"quote"), "--") << "Failed to deserialise quoted entity key";
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("test"), "Test \"quoted\" test") << "Failed to deserialise quoted entity key value";
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("with\"quote"), "--") << "Failed to deserialise quoted entity key";
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("test"), "Test \"quoted\" test") << "Failed to deserialise quoted entity key value";
 
     // Save the map
     GlobalCommandSystem().executeCommand("SaveMapCopyAs", mapPath.string());

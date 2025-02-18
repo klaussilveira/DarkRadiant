@@ -48,7 +48,7 @@ inline std::ostream& operator<< (std::ostream& os, const Entity& entity) {
  */
 inline bool Node_isWorldspawn(const scene::INodePtr& node)
 {
-	Entity* entity = Node_getEntity(node);
+	Entity* entity = node->tryGetEntity();
 
 	return entity != nullptr && entity->isWorldspawn();
 }
@@ -82,7 +82,7 @@ inline scene::INodePtr changeEntityClassname(const scene::INodePtr& node,
 	// Create a new entity with the given class
 	EntityNodePtr newNode(GlobalEntityModule().createEntity(eclass));
 
-	Entity* oldEntity = Node_getEntity(oldNode);
+	Entity* oldEntity = oldNode->tryGetEntity();
 
 	// Traverse the old entity with a walker
 	Entity& newEntity = newNode->getEntity();
@@ -141,7 +141,7 @@ public:
     bool pre(const scene::INodePtr& node) override
     {
         // Try to cast this node onto an entity
-        auto* ent = Node_getEntity(node);
+        auto* ent = node->tryGetEntity();
 
         if (ent != nullptr)
         {
@@ -203,7 +203,7 @@ inline void foreachSelectedEntity(const std::function<void(Entity&)>& functor)
     {
         if (Node_isEntity(node))
         {
-            functor(*Node_getEntity(node));
+            functor(*node->tryGetEntity());
         }
     });
 }

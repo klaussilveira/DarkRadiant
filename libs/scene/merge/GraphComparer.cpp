@@ -150,7 +150,7 @@ namespace
     {
         KeyValueMap result;
 
-        auto entity = Node_getEntity(entityNode);
+        auto entity = entityNode->tryGetEntity();
 
         entity->forEachKeyValue([&](const std::string& key, const std::string& value)
         {

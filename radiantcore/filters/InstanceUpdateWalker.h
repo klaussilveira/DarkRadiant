@@ -112,7 +112,7 @@ private:
 	{
 		assert(Node_isEntity(node));
 
-		Entity* entity = Node_getEntity(node);
+		Entity* entity = node->tryGetEntity();
 
 		// Check the eclass first
 		return _filterSystem.isEntityVisible(FilterType::ECLASS, *entity) &&

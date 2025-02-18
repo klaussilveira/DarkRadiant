@@ -49,7 +49,7 @@ void ModelScalePreserver::forEachScaledModel(const scene::IMapRootNodePtr& root,
 				if (model && model->hasModifiedScale())
 				{
 					// Found a model with modified scale
-					func(*Node_getEntity(node), *model);
+					func(*node->tryGetEntity(), *model);
 				}
 
 				return true;
@@ -91,7 +91,7 @@ void ModelScalePreserver::restoreModelScale(const scene::IMapRootNodePtr& root)
 	{
 		if (Node_isEntity(node))
 		{
-			Entity* entity = Node_getEntity(node);
+			Entity* entity = node->tryGetEntity();
 
 			// Search for the editor_ key and apply the scale if found
 			auto savedScale = entity->getKeyValue(_modelScaleKey);

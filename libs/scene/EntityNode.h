@@ -187,6 +187,7 @@ public:
 
 	virtual std::string name() const override;
 	Type getNodeType() const override;
+    Entity* tryGetEntity() override { return &_spawnArgs; }
 
 	// Renderable implementation, can be overridden by subclasses
 	virtual void onPreRender(const VolumeTest& volume) override;
@@ -311,14 +312,6 @@ private:
     void detachFromRenderSystem();
 };
 
-inline Entity* Node_getEntity(const scene::INodePtr& node)
-{
-    if (EntityNodePtr entityNode = std::dynamic_pointer_cast<EntityNode>(node); entityNode) {
-        return &(entityNode->getEntity());
-    }
-    return nullptr;
-}
-
 class EntityNodeFindByClassnameWalker :
 	public scene::NodeVisitor
 {
@@ -340,14 +333,14 @@ public:
 	}
 
 	Entity* getEntity() {
-		return _entityNode != NULL ? Node_getEntity(_entityNode) : NULL;
+		return _entityNode != NULL ? _entityNode->tryGetEntity() : NULL;
 	}
 
 	// Pre-descent callback
 	bool pre(const scene::INodePtr& node) {
 		if (_entityNode == NULL) {
 			// Entity not found yet
-			Entity* entity = Node_getEntity(node);
+			Entity* entity = node->tryGetEntity();
 
 			if (entity != NULL) {
 				// Got an entity, let's see if the name matches
@@ -397,7 +390,7 @@ inline bool curSelectionIsSuitableForReparent()
 	}
 
 	scene::INodePtr lastSelected = GlobalSelectionSystem().ultimateSelected();
-	Entity* entity = Node_getEntity(lastSelected);
+	Entity* entity = lastSelected->tryGetEntity();
 
 	// Reject non-entities or models
 	if (entity == nullptr || entity->isModel())

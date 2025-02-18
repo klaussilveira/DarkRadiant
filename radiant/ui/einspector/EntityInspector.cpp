@@ -910,7 +910,7 @@ void EntityInspector::_onAddKey()
 {
     assert(_entitySelection->size() == 1);
 
-    auto selectedEntity = Node_getEntity(_entitySelection->getSingleSelectedEntity());
+    auto selectedEntity = _entitySelection->getSingleSelectedEntity()->tryGetEntity();
 
     // Obtain the entity class to provide to the AddPropertyDialog
     auto ec = selectedEntity->getEntityClass();
@@ -1706,7 +1706,7 @@ void EntityInspector::handleMergeActions(const scene::INodePtr& selectedNode)
     });
 
     // Now load the regular key values from the entity into the view
-    auto affectedEntity = Node_getEntity(mergeNode->getAffectedNode());
+    auto affectedEntity = mergeNode->getAffectedNode()->tryGetEntity();
 
     if (!affectedEntity) return; // not an entity we're looking at
 

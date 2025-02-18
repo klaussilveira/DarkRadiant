@@ -31,7 +31,7 @@ public:
             return true;
         }
 
-        const auto* entity = Node_getEntity(node);
+        const auto* entity = node->tryGetEntity();
         assert(entity != nullptr);
 
         if (_predicate(*entity))

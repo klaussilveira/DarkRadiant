@@ -209,7 +209,7 @@ TEST_F(EntityTest, CopySpawnargs)
 
     // Clone the entity node
     auto lightCopy = light->clone();
-    Entity* clonedEnt = Node_getEntity(lightCopy);
+    Entity* clonedEnt = lightCopy->tryGetEntity();
     ASSERT_TRUE(clonedEnt);
 
     // Clone should have all the same spawnarg strings
@@ -1158,7 +1158,7 @@ inline void expectKeyValuesAreEquivalent(const std::vector<std::pair<std::string
 TEST_F(EntityTest, EntityObserverAttachDetach)
 {
     auto guardNode = algorithm::createEntityByClassName("atdm:ai_builder_guard");
-    auto guard = Node_getEntity(guardNode);
+    auto guard = guardNode->tryGetEntity();
 
     TestEntityObserver observer;
 
@@ -1202,7 +1202,7 @@ TEST_F(EntityTest, EntityObserverAttachDetach)
 TEST_F(EntityTest, EntityObserverKeyAddition)
 {
     auto guardNode = algorithm::createEntityByClassName("atdm:ai_builder_guard");
-    auto guard = Node_getEntity(guardNode);
+    auto guard = guardNode->tryGetEntity();
 
     TestEntityObserver observer;
 
@@ -1235,7 +1235,7 @@ TEST_F(EntityTest, EntityObserverKeyAddition)
 TEST_F(EntityTest, EntityObserverKeyRemoval)
 {
     auto guardNode = algorithm::createEntityByClassName("atdm:ai_builder_guard");
-    auto guard = Node_getEntity(guardNode);
+    auto guard = guardNode->tryGetEntity();
 
     TestEntityObserver observer;
 
@@ -1271,7 +1271,7 @@ TEST_F(EntityTest, EntityObserverKeyRemoval)
 TEST_F(EntityTest, EntityObserverKeyChange)
 {
     auto guardNode = algorithm::createEntityByClassName("atdm:ai_builder_guard");
-    auto guard = Node_getEntity(guardNode);
+    auto guard = guardNode->tryGetEntity();
 
     TestEntityObserver observer;
 
@@ -1479,7 +1479,7 @@ TEST_F(EntityTest, EntityObserverUndoSingleKeyValue)
 TEST_F(EntityTest, KeyObserverAttachDetach)
 {
     auto guardNode = algorithm::createEntityByClassName("atdm:ai_builder_guard");
-    auto guard = Node_getEntity(guardNode);
+    auto guard = guardNode->tryGetEntity();
 
     constexpr const char* NewKeyName = "New_Unique_Key";
     constexpr const char* NewKeyValue = "New_Unique_Value";
@@ -1509,7 +1509,7 @@ TEST_F(EntityTest, KeyObserverAttachDetach)
 TEST_F(EntityTest, KeyObserverValueChange)
 {
     auto guardNode = algorithm::createEntityByClassName("atdm:ai_builder_guard");
-    auto guard = Node_getEntity(guardNode);
+    auto guard = guardNode->tryGetEntity();
 
     constexpr const char* NewKeyName = "New_Unique_Key";
     constexpr const char* NewKeyValue = "New_Unique_Value";
@@ -1761,17 +1761,17 @@ TEST_F(EntityTest, MovePlayerStart)
         GlobalEntityClassManager().findOrInsert("info_player_start", false)
     );
     scene::addNodeToContainer(playerStart, GlobalMapModule().getRoot());
-    Node_getEntity(playerStart)->setKeyValue("origin", originalPosition);
+    playerStart->tryGetEntity()->setKeyValue("origin", originalPosition);
 
     Vector3 position(7, 2, -4);
     GlobalCommandSystem().executeCommand("PlacePlayerStart", cmd::Argument(position));
-    EXPECT_EQ(Node_getEntity(playerStart)->getKeyValue("origin"), string::to_string(position)) << "Origin didn't get updated";
+    EXPECT_EQ(playerStart->tryGetEntity()->getKeyValue("origin"), string::to_string(position)) << "Origin didn't get updated";
 
     EXPECT_TRUE(Node_isSelected(playerStart)) << "Player start should be selected after placement";
 
     // Ensure this action is undoable
     GlobalUndoSystem().undo();
-    EXPECT_EQ(Node_getEntity(playerStart)->getKeyValue("origin"), originalPosition) << "Origin change didn't get undone";
+    EXPECT_EQ(playerStart->tryGetEntity()->getKeyValue("origin"), originalPosition) << "Origin change didn't get undone";
 }
 
 TEST_F(EntityTest, CreateSpeaker)

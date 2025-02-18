@@ -21,7 +21,7 @@ public:
     static std::string GetEntityName(const INodePtr& node)
     {
         assert(node->getNodeType() == INode::Type::Entity);
-        auto entity = Node_getEntity(node);
+        auto entity = node->tryGetEntity();
 
         return entity->isWorldspawn() ? "worldspawn" : entity->getKeyValue("name");
     }

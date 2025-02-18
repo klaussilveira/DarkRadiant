@@ -1,7 +1,6 @@
 #pragma once
 
 #include "imap.h"
-#include "scene/EntityNode.h"
 
 namespace map
 {
@@ -16,7 +15,7 @@ inline Entity* getWorldspawn(bool createIfNotFound = false)
         createIfNotFound ? GlobalMapModule().findOrInsertWorldspawn()
                          : GlobalMapModule().getWorldspawn()
     };
-    return Node_getEntity(wsNode);
+    return wsNode ? wsNode->tryGetEntity() : nullptr;
 }
 
 }

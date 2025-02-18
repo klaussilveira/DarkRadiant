@@ -78,7 +78,7 @@ TEST_F(FilterTest, FilterRules)
 
     // Entity class filtering
     scene::INodePtr worldNode = GlobalMapModule().findOrInsertWorldspawn();
-    Entity* worldEnt = Node_getEntity(worldNode);
+    Entity* worldEnt = worldNode->tryGetEntity();
     ASSERT_TRUE(worldEnt);
 
     filter.addRule(FilterType::ECLASS, "func_static", false);
