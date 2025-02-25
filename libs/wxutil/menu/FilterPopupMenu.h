@@ -1,6 +1,5 @@
 #pragma once
 
-#include <map>
 #include "wxutil/menu/PopupMenu.h"
 
 namespace wxutil
@@ -10,18 +9,16 @@ namespace wxutil
  * Utility class for generating a Filters fly-out menu. 
  * Provides a menu with a check button for each of the registered filters.
  */
-class FilterPopupMenu: public wxutil::PopupMenu
+class FilterPopupMenu: public PopupMenu
 {
-	std::map<std::string, wxMenuItem*> _filterItems;
+    std::vector<std::string> _filterItems;
 
 public:
-	// Constructs the filter items
+    // Constructs the filter items
     FilterPopupMenu();
 
-	virtual ~FilterPopupMenu();
-
 private:
-	void visitFilter(const std::string& filterName);
+    void menuItemToggled(wxCommandEvent&);
 };
 
 } // namespace
