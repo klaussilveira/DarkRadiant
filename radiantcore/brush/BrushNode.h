@@ -12,7 +12,6 @@
 #include "VertexInstance.h"
 #include "BrushClipPlane.h"
 #include "transformlib.h"
-#include "scene/Node.h"
 #include "RenderableBrushVertices.h"
 
 class BrushNode final :
@@ -85,7 +84,7 @@ public:
     std::string getFingerprint() override;
 
 	// Bounded implementation
-	const AABB& localAABB() const override;
+	AABB localAABB() const override;
 
 	// SelectionTestable implementation
 	void testSelect(Selector& selector, SelectionTest& test) override;

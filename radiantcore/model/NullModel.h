@@ -16,7 +16,7 @@ class NullModel final :
 public:
 	NullModel();
 
-	const AABB& localAABB() const override;
+	AABB localAABB() const override;
 
 	// IModel implementation
 	std::string getFilename() const override;

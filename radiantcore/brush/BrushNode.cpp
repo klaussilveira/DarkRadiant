@@ -55,7 +55,7 @@ scene::INode::Type BrushNode::getNodeType() const
 	return Type::Brush;
 }
 
-const AABB& BrushNode::localAABB() const {
+AABB BrushNode::localAABB() const {
 	return _brush.localAABB();
 }
 

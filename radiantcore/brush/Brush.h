@@ -221,7 +221,7 @@ public:
 
 	void aabbChanged();
 
-	const AABB& localAABB() const override;
+	AABB localAABB() const override;
 
 	void transform(const Matrix4& matrix);
 

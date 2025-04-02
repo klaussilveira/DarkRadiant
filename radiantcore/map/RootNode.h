@@ -88,7 +88,7 @@ public:
 	virtual void onChildAdded(const scene::INodePtr& child) override;
 	virtual void onChildRemoved(const scene::INodePtr& child) override;
 
-	const AABB& localAABB() const override
+	AABB localAABB() const override
 	{
 		return _emptyAABB;
 	}

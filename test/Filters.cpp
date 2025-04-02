@@ -22,10 +22,9 @@ public:
         ++onFiltersChangedInvocationCount;
     }
 
-    const AABB& localAABB() const override
+    AABB localAABB() const override
     {
-        static AABB _aabb;
-        return _aabb;
+        return {};
     }
 
     void onPreRender(const VolumeTest& volume) override {}

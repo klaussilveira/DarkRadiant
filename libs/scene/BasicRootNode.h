@@ -83,7 +83,7 @@ public:
         return *_undoSystem;
     }
 
-    const AABB& localAABB() const override
+    AABB localAABB() const override
     {
         return _emptyAABB;
     }

@@ -96,7 +96,7 @@ public:
 	virtual void convertCurveType() override;
 
 	// Bounded implementation
-	virtual const AABB& localAABB() const override;
+	AABB localAABB() const override;
 
 	/** greebo: Tests the contained Doom3Group for selection.
 	 *

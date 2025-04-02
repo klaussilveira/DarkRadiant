@@ -117,7 +117,7 @@ public:
 	virtual float getShaderParm(int parmNum) const override;
 
 	// Bounded implementation
-	const AABB& localAABB() const override;
+	AABB localAABB() const override;
 
 	// override scene::Node methods to deselect the child components
 	virtual void onRemoveFromScene(scene::IMapRootNode& root) override;

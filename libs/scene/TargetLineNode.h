@@ -31,7 +31,7 @@ public:
     // Returns the type of this node
 	Type getNodeType() const override;
 
-    const AABB& localAABB() const override;
+    AABB localAABB() const override;
 
     void onPreRender(const VolumeTest& volume) override;
     void renderHighlights(IRenderableCollector& collector, const VolumeTest& volumeTest) override;

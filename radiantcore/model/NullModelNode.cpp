@@ -67,7 +67,7 @@ void NullModelNode::setRenderSystem(const RenderSystemPtr& renderSystem)
     detachFromShaders();
 }
 
-const AABB& NullModelNode::localAABB() const
+AABB NullModelNode::localAABB() const
 {
 	return _nullModel->localAABB();
 }

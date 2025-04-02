@@ -257,7 +257,7 @@ void Brush::aabbChanged()
     _owner.boundsChanged();
 }
 
-const AABB& Brush::localAABB() const {
+AABB Brush::localAABB() const {
     evaluateBRep();
     return m_aabb_local;
 }

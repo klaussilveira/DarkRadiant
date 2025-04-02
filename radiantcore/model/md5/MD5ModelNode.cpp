@@ -57,7 +57,7 @@ const MD5ModelPtr& MD5ModelNode::getModel() const
 }
 
 // Bounded implementation
-const AABB& MD5ModelNode::localAABB() const
+AABB MD5ModelNode::localAABB() const
 {
     return _model->localAABB();
 }

@@ -141,7 +141,7 @@ public:
     const IModelSurface& getSurface(unsigned surfaceNum) const override;
 
     /// Return the enclosing AABB for this model.
-    const AABB& localAABB() const override
+    AABB localAABB() const override
     {
         return _localAABB;
     }

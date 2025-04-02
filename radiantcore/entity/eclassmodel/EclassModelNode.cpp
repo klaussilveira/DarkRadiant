@@ -63,7 +63,7 @@ void EclassModelNode::snapto(float snap)
 	_originKey.write(_spawnArgs);
 }
 
-const AABB& EclassModelNode::localAABB() const
+AABB EclassModelNode::localAABB() const
 {
 	return _localAABB;
 }

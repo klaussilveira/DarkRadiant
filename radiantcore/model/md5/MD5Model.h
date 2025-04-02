@@ -73,7 +73,7 @@ public:
 
 	void updateAABB();
 
-	virtual const AABB& localAABB() const;
+	AABB localAABB() const override;
 
 	void testSelect(Selector& selector, SelectionTest& test, const Matrix4& localToWorld);
 

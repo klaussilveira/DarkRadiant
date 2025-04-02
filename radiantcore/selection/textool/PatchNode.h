@@ -30,7 +30,7 @@ public:
     void transform(const Matrix3& transform) override;
     void transformComponents(const Matrix3& transform) override;
 
-    const AABB& localAABB() const override;
+    AABB localAABB() const override;
     void testSelect(Selector& selector, SelectionTest& test) override;
 
     void render(SelectionMode mode) override;

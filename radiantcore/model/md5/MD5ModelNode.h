@@ -52,7 +52,7 @@ public:
 	const MD5ModelPtr& getModel() const;
 
 	// Bounded implementation
-	const AABB& localAABB() const override;
+	AABB localAABB() const override;
 
 	std::string name() const override;
 

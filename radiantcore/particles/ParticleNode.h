@@ -32,7 +32,7 @@ public:
 	Type getNodeType() const override;
 
 	IRenderableParticlePtr getParticle() const override;
-	const AABB& localAABB() const override;
+	AABB localAABB() const override;
 	std::size_t getHighlightFlags() override;
 
 	void onPreRender(const VolumeTest& volume) override;

@@ -66,7 +66,7 @@ Vector3 StaticModelNode::getModelScale()
 	return _model->getScale();
 }
 
-const AABB& StaticModelNode::localAABB() const {
+AABB StaticModelNode::localAABB() const {
     return _model->localAABB();
 }
 

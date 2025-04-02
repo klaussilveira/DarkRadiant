@@ -47,7 +47,7 @@ public:
 
     bool supportsStateFlag(unsigned int state) const override;
 
-    const AABB& localAABB() const override;
+    AABB localAABB() const override;
     const Matrix4& localToWorld() const override;
 
     void onPreRender(const VolumeTest& volume) override;

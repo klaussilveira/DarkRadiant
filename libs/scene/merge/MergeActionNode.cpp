@@ -86,7 +86,7 @@ bool MergeActionNodeBase::supportsStateFlag(unsigned int state) const
     return Node::supportsStateFlag(state);
 }
 
-const AABB& MergeActionNodeBase::localAABB() const
+AABB MergeActionNodeBase::localAABB() const
 {
     // We report the contained node's world AABB and an identity transform
     return _affectedNode->worldAABB();

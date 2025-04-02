@@ -90,7 +90,7 @@ void FaceNode::commitTransformation()
     _face.freezeTransform();
 }
 
-const AABB& FaceNode::localAABB() const
+AABB FaceNode::localAABB() const
 {
     _bounds = AABB();
 

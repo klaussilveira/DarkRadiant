@@ -159,7 +159,7 @@ void SpeakerNode::snapto(float snap)
 	m_originKey.write(_spawnArgs);
 }
 
-const AABB& SpeakerNode::localAABB() const
+AABB SpeakerNode::localAABB() const
 {
 	return m_aabb_border;
 }

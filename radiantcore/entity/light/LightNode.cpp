@@ -881,7 +881,7 @@ void LightNode::rotate(const Quaternion& rotation)
 
 // greebo: This returns the AABB of the WHOLE light (this includes the volume and all its selectable vertices)
 // Used to test the light for selection on mouse click.
-const AABB& LightNode::localAABB() const
+AABB LightNode::localAABB() const
 {
     if (isProjected()) {
         // start with an empty AABB and include all the projection vertices

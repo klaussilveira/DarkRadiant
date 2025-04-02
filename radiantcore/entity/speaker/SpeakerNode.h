@@ -94,7 +94,7 @@ public:
     void snapto(float snap) override;
 
     // Bounded implementation
-    const AABB& localAABB() const override;
+    AABB localAABB() const override;
 
     AABB getSpeakerAABB() const override;
 

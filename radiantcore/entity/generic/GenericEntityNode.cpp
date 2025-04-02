@@ -75,7 +75,7 @@ void GenericEntityNode::snapto(float snap)
 	m_originKey.write(_spawnArgs);
 }
 
-const AABB& GenericEntityNode::localAABB() const
+AABB GenericEntityNode::localAABB() const
 {
 	return m_aabb_local;
 }

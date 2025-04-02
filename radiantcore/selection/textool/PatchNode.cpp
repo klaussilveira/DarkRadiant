@@ -68,7 +68,7 @@ void PatchNode::commitTransformation()
     _patch.freezeTransform();
 }
 
-const AABB& PatchNode::localAABB() const
+AABB PatchNode::localAABB() const
 {
     _bounds = AABB();
 

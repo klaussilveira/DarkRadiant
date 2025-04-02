@@ -64,7 +64,7 @@ public:
 	virtual void snapto(float snap) override;
 
 	// Bounded implementation
-	virtual const AABB& localAABB() const override;
+	AABB localAABB() const override;
 
 	scene::INodePtr clone() const override;
 

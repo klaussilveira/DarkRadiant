@@ -169,7 +169,7 @@ void Patch::disconnectUndoSystem(IUndoSystem& undoSystem)
 }
 
 // Return the interally stored AABB
-const AABB& Patch::localAABB() const
+AABB Patch::localAABB() const
 {
     return _localAABB;
 }
