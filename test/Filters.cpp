@@ -86,6 +86,43 @@ TEST_F(FilterTest, FilterRules)
     EXPECT_FALSE(filter.isEntityVisible(FilterType::ECLASS, *worldEnt));
 }
 
+TEST_F(FilterTest, FiltersLoadedFromGameXML)
+{
+    std::set<std::string> filterNames;
+    GlobalFilterSystem().forEachFilter([&filterNames](const std::string& fname) {
+        filterNames.insert(fname); }
+    );
+
+    static const std::set<std::string> EXPECTED_FILTERS{
+        "All entities",
+        "Brushes",
+        "Caulk",
+        "Clip Textures",
+        "Collision surfaces",
+        "Decals",
+        "Func_static Entities",
+        "Lights",
+        "Location Entities",
+        "Nodraw Textures",
+        "Patches",
+        "Paths",
+        "Player Start Entity",
+        "Shadow Textures",
+        "Sky Portals",
+        "Trigger Textures",
+        "Visportals",
+        "Weather Textures",
+        "World geometry"
+    };
+    EXPECT_EQ(filterNames, EXPECTED_FILTERS);
+
+    // Filters in the game file are read only and inactive by default
+    for (const std::string name: EXPECTED_FILTERS) {
+        EXPECT_TRUE(GlobalFilterSystem().filterIsReadOnly(name));
+        EXPECT_FALSE(GlobalFilterSystem().getFilterState(name));
+    }
+}
+
 TEST_F(FilterTest, OnFiltersChangedInvoked)
 {
     auto worldspawn = GlobalMapModule().findOrInsertWorldspawn();
