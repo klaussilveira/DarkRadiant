@@ -121,6 +121,53 @@ TEST_F(FilterTest, FiltersLoadedFromGameXML)
         EXPECT_TRUE(GlobalFilterSystem().filterIsReadOnly(name));
         EXPECT_FALSE(GlobalFilterSystem().getFilterState(name));
     }
+
+    // Check some rule sets
+    FilterRules lightRules = GlobalFilterSystem().getRuleSet("Lights");
+    ASSERT_EQ(lightRules.size(), 2);
+    EXPECT_EQ(lightRules[0].type, FilterType::ECLASS);
+    EXPECT_EQ(lightRules[0].match, "light");
+    EXPECT_FALSE(lightRules[0].show);
+    EXPECT_EQ(lightRules[1].type, FilterType::ECLASS);
+    EXPECT_EQ(lightRules[1].match, "light_.*");
+    EXPECT_FALSE(lightRules[1].show);
+
+    FilterRules brushRules = GlobalFilterSystem().getRuleSet("Brushes");
+    ASSERT_EQ(brushRules.size(), 1);
+    EXPECT_EQ(brushRules[0].type, FilterType::OBJECT);
+    EXPECT_EQ(brushRules[0].match, "brush");
+
+    FilterRules trigRules = GlobalFilterSystem().getRuleSet("Trigger Textures");
+    ASSERT_EQ(trigRules.size(), 1);
+    EXPECT_EQ(trigRules[0].type, FilterType::TEXTURE);
+    EXPECT_EQ(trigRules[0].match, "textures/common/trig(.*)");
+}
+
+TEST_F(FilterTest, FilterStates)
+{
+    int signalCount = 0;
+    GlobalFilterSystem().filterConfigChangedSignal().connect([&signalCount]() {
+        ++signalCount;
+    });
+
+    EXPECT_FALSE(GlobalFilterSystem().getFilterState("Caulk"));
+    EXPECT_EQ(signalCount, 0);
+
+    // Signal is currently emitted unconditionally even if nothing actually changed
+    GlobalFilterSystem().setFilterState("Caulk", false); // nop
+    EXPECT_EQ(signalCount, 1);
+    EXPECT_FALSE(GlobalFilterSystem().getFilterState("Caulk"));
+
+    // Actually change some filter states
+    GlobalFilterSystem().setFilterState("Caulk", true);
+    GlobalFilterSystem().setFilterState("Visportals", true);
+    EXPECT_EQ(signalCount, 3);
+    EXPECT_TRUE(GlobalFilterSystem().getFilterState("Caulk"));
+    EXPECT_TRUE(GlobalFilterSystem().getFilterState("Visportals"));
+
+    GlobalFilterSystem().setFilterState("Visportals", false);
+    EXPECT_EQ(signalCount, 4);
+    EXPECT_FALSE(GlobalFilterSystem().getFilterState("Visportals"));
 }
 
 TEST_F(FilterTest, OnFiltersChangedInvoked)

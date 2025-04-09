@@ -372,7 +372,6 @@ void BasicFilterSystem::setFilterState(const std::string& filter, bool state)
 	}
 	else
 	{
-		assert(!_activeFilters.empty());
 		// Remove filter from active filters list
 		_activeFilters.erase(filter);
 	}
