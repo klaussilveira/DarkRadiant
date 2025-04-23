@@ -170,6 +170,32 @@ TEST_F(FilterTest, FilterStates)
     GlobalFilterSystem().setFilterState("Visportals", false);
     EXPECT_EQ(signalCount, 4);
     EXPECT_FALSE(GlobalFilterSystem().getFilterState("Visportals"));
+
+    // Pushing state should not change any states
+    GlobalFilterSystem().pushState();
+    EXPECT_EQ(signalCount, 4);
+    EXPECT_TRUE(GlobalFilterSystem().getFilterState("Caulk"));
+    EXPECT_FALSE(GlobalFilterSystem().getFilterState("Visportals"));
+    EXPECT_FALSE(GlobalFilterSystem().getFilterState("All entities"));
+
+    GlobalFilterSystem().setFilterState("Visportals", true);
+    GlobalFilterSystem().setFilterState("All entities", true);
+    GlobalFilterSystem().setFilterState("Patches", true);
+    EXPECT_EQ(signalCount, 7);
+
+    // Pop state should restore the previous state (and emit the signal since
+    // states are changing)
+    GlobalFilterSystem().popState();
+    EXPECT_EQ(signalCount, 8);
+    EXPECT_TRUE(GlobalFilterSystem().getFilterState("Caulk"));
+    EXPECT_FALSE(GlobalFilterSystem().getFilterState("Visportals"));
+    EXPECT_FALSE(GlobalFilterSystem().getFilterState("All entities"));
+    EXPECT_FALSE(GlobalFilterSystem().getFilterState("Patches"));
+
+    // Popping too many times should just do nothing (not crash or throw an exception)
+    GlobalFilterSystem().popState();
+    GlobalFilterSystem().popState();
+    EXPECT_EQ(signalCount, 8);
 }
 
 TEST_F(FilterTest, OnFiltersChangedInvoked)

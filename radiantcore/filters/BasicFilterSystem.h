@@ -6,6 +6,7 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
 #include "xmlutil/Node.h"
 #include "scene/filters/SceneFilter.h"
@@ -35,6 +36,9 @@ class BasicFilterSystem: public IFilterSystem
     typedef std::map<std::string, XmlFilterEventAdapter::Ptr> FilterAdapters;
     FilterAdapters _eventAdapters;
 
+    // Stack for saved filter states
+    std::vector<FilterTable> _stateStack;
+
 private:
 
     // Perform a traversal of the scenegraph, setting or clearing the filtered
@@ -42,17 +46,12 @@ private:
     void updateScene();
 
     void updateShaders();
-
     void addFiltersFromXML(const xml::NodeList& nodes, bool readOnly);
-
     XmlFilterEventAdapter::Ptr ensureEventAdapter(SceneFilter& filter);
-
     void setFilterStateCmd(const cmd::ArgumentList& args);
     void toggleFilterStateCmd(const cmd::ArgumentList& args);
-
     void selectObjectsByFilterCmd(const cmd::ArgumentList& args);
     void deselectObjectsByFilterCmd(const cmd::ArgumentList& args);
-
     void setObjectSelectionByFilter(const std::string& filterName, bool select);
 
     // Activates or deactivates all known filters.
@@ -66,7 +65,7 @@ public:
     void updateSubgraph(const scene::INodePtr& root) override;
     void forEachFilter(const std::function<void(const SceneFilter&)>& func) override;
     std::string getFilterEventName(const std::string& filter) override;
-    bool getFilterState(const std::string& filter) override;
+    bool getFilterState(const std::string& filter) const override;
     void setFilterState(const std::string& filter, bool state) override;
     bool isVisible(const FilterType type, const std::string& name) override;
     bool isEntityVisible(const FilterType type, const Entity& entity) override;
@@ -75,6 +74,8 @@ public:
     bool renameFilter(const std::string& oldFilterName, const std::string& newFilterName) override;
     FilterRules getRuleSet(const std::string& filter) override;
     bool setFilterRules(const std::string& filter, const FilterRules& ruleSet) override;
+    void pushState() override;
+    void popState() override;
 
     // RegisterableModule implementation
     const std::string& getName() const override;

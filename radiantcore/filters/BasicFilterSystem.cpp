@@ -355,7 +355,7 @@ std::string BasicFilterSystem::getFilterEventName(const std::string& filter)
     return f != _availableFilters.end() ? f->second->getEventName() : std::string();
 }
 
-bool BasicFilterSystem::getFilterState(const std::string& filter)
+bool BasicFilterSystem::getFilterState(const std::string& filter) const
 {
     return _activeFilters.find(filter) != _activeFilters.end();
 }
@@ -596,6 +596,26 @@ bool BasicFilterSystem::setFilterRules(const std::string& filter, const FilterRu
     }
 
     return false; // not found or readonly
+}
+
+void BasicFilterSystem::pushState()
+{
+    // Store the current active filters state
+    _stateStack.push_back(_activeFilters);
+}
+
+void BasicFilterSystem::popState()
+{
+    if (_stateStack.empty()) return;
+
+    // Restore the previous state
+    _activeFilters = _stateStack.back();
+    _stateStack.pop_back();
+
+    // Clear cache and update
+    _visibilityCache.clear();
+    update();
+    _filterConfigChangedSignal.emit();
 }
 
 void BasicFilterSystem::updateSubgraph(const scene::INodePtr& root)
