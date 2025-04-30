@@ -38,9 +38,9 @@ namespace
     const std::string PAUSE_BUTTON("pauseButton");
     const std::string STOP_BUTTON("stopButton");
 
-	const std::string RKEY_RENDERPREVIEW_SHOWGRID("user/ui/renderPreview/showGrid");
-	const std::string RKEY_RENDERPREVIEW_FONTSIZE("user/ui/renderPreview/fontSize");
-	const std::string RKEY_RENDERPREVIEW_FONTSTYLE("user/ui/renderPreview/fontStyle");
+    const std::string RKEY_RENDERPREVIEW_SHOWGRID("user/ui/renderPreview/showGrid");
+    const std::string RKEY_RENDERPREVIEW_FONTSIZE("user/ui/renderPreview/fontSize");
+    const std::string RKEY_RENDERPREVIEW_FONTSTYLE("user/ui/renderPreview/fontStyle");
 }
 
 RenderPreview::RenderPreview(wxWindow* parent, bool enableAnimation):
@@ -52,15 +52,15 @@ RenderPreview::RenderPreview(wxWindow* parent, bool enableAnimation):
     _renderSystem(GlobalRenderSystemFactory().createRenderSystem()),
     _timer(this)
 {
-	Bind(wxEVT_TIMER, &RenderPreview::_onFrame, this);
+    Bind(wxEVT_TIMER, &RenderPreview::_onFrame, this);
 
     // Insert GL widget
-	_mainPanel->GetSizer()->Prepend(_glWidget, 1, wxEXPAND);
+    _mainPanel->GetSizer()->Prepend(_glWidget, 1, wxEXPAND);
 
-	_glWidget->Connect(wxEVT_SIZE, wxSizeEventHandler(RenderPreview::onSizeAllocate), NULL, this);
-	_glWidget->Connect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(RenderPreview::onGLScroll), NULL, this);
+    _glWidget->Connect(wxEVT_SIZE, wxSizeEventHandler(RenderPreview::onSizeAllocate), NULL, this);
+    _glWidget->Connect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(RenderPreview::onGLScroll), NULL, this);
     _glWidget->Connect(wxEVT_MOTION, wxMouseEventHandler(RenderPreview::onGLMotion), NULL, this);
-	_glWidget->Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(RenderPreview::onGLMouseClick), NULL, this);
+    _glWidget->Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(RenderPreview::onGLMouseClick), NULL, this);
     _glWidget->Connect(wxEVT_LEFT_DCLICK, wxMouseEventHandler(RenderPreview::onGLMouseClick), NULL, this);
     _glWidget->Connect(wxEVT_RIGHT_DOWN, wxMouseEventHandler(RenderPreview::onGLMouseClick), NULL, this);
     _glWidget->Connect(wxEVT_RIGHT_DCLICK, wxMouseEventHandler(RenderPreview::onGLMouseClick), NULL, this);
@@ -102,7 +102,7 @@ void RenderPreview::setupToolbars(bool enableAnimation)
                                                            wxutil::GetLocalBitmap("iconFilter16.png"),
                                                            _("Filters"), wxITEM_DROPDOWN);
 
-	// By setting a drodown menu the toolitem will take ownership and delete the menu on destruction
+    // By setting a drodown menu the toolitem will take ownership and delete the menu on destruction
     filterToolbar->SetDropdownMenu(filterTool->GetId(), new wxutil::FilterPopupMenu());
 
     filterToolbar->Realize();
@@ -121,24 +121,24 @@ void RenderPreview::setupToolbars(bool enableAnimation)
 
     updateActiveRenderModeButton();
 
-	wxToolBar* utilToolbar = findNamedObject<wxToolBar>(_mainPanel, "RenderPreviewUtilToolbar");
+    wxToolBar* utilToolbar = findNamedObject<wxToolBar>(_mainPanel, "RenderPreviewUtilToolbar");
 
-	utilToolbar->Bind(wxEVT_TOOL, &RenderPreview::onGridButtonClick, this,
+    utilToolbar->Bind(wxEVT_TOOL, &RenderPreview::onGridButtonClick, this,
         getToolBarToolByLabel(utilToolbar, "gridButton")->GetId());
 
-	utilToolbar->ToggleTool(getToolBarToolByLabel(utilToolbar, "gridButton")->GetId(), _renderGrid);
+    utilToolbar->ToggleTool(getToolBarToolByLabel(utilToolbar, "gridButton")->GetId(), _renderGrid);
 }
 
 void RenderPreview::connectToolbarSignals()
 {
-	wxToolBar* toolbar = findNamedObject<wxToolBar>(_mainPanel, "RenderPreviewAnimToolbar");
+    wxToolBar* toolbar = findNamedObject<wxToolBar>(_mainPanel, "RenderPreviewAnimToolbar");
 
-	toolbar->Bind(wxEVT_TOOL, &RenderPreview::onStartPlaybackClick, this, getToolBarToolByLabel(toolbar, "startTimeButton")->GetId());
-	toolbar->Bind(wxEVT_TOOL, &RenderPreview::onPausePlaybackClick, this, getToolBarToolByLabel(toolbar, "pauseTimeButton")->GetId());
-	toolbar->Bind(wxEVT_TOOL, &RenderPreview::onStopPlaybackClick, this, getToolBarToolByLabel(toolbar, "stopTimeButton")->GetId());
+    toolbar->Bind(wxEVT_TOOL, &RenderPreview::onStartPlaybackClick, this, getToolBarToolByLabel(toolbar, "startTimeButton")->GetId());
+    toolbar->Bind(wxEVT_TOOL, &RenderPreview::onPausePlaybackClick, this, getToolBarToolByLabel(toolbar, "pauseTimeButton")->GetId());
+    toolbar->Bind(wxEVT_TOOL, &RenderPreview::onStopPlaybackClick, this, getToolBarToolByLabel(toolbar, "stopTimeButton")->GetId());
 
-	toolbar->Bind(wxEVT_TOOL, &RenderPreview::onStepBackClick, this, getToolBarToolByLabel(toolbar, "prevButton")->GetId());
-	toolbar->Bind(wxEVT_TOOL, &RenderPreview::onStepForwardClick, this, getToolBarToolByLabel(toolbar, "nextButton")->GetId());
+    toolbar->Bind(wxEVT_TOOL, &RenderPreview::onStepBackClick, this, getToolBarToolByLabel(toolbar, "prevButton")->GetId());
+    toolbar->Bind(wxEVT_TOOL, &RenderPreview::onStepForwardClick, this, getToolBarToolByLabel(toolbar, "nextButton")->GetId());
 
     // Connect the frame selector
     auto frameSelector = getToolBarControlByName(toolbar, "FrameSelector")->GetControl();
@@ -151,7 +151,7 @@ RenderPreview::~RenderPreview()
 {
     _scene.reset();
     _renderSystem.reset();
-	_timer.Stop();
+    _timer.Stop();
 }
 
 void RenderPreview::updateActiveRenderModeButton()
@@ -178,7 +178,7 @@ void RenderPreview::onFilterConfigChanged()
 
 void RenderPreview::addToolbar(wxToolBar* toolbar)
 {
-	_toolbarSizer->Add(toolbar, 0, wxEXPAND);
+    _toolbarSizer->Add(toolbar, 0, wxEXPAND);
 }
 
 void RenderPreview::queueDraw()
@@ -191,7 +191,7 @@ void RenderPreview::queueDraw()
 
 void RenderPreview::setSize(int width, int height)
 {
-	_glWidget->SetClientSize(width, height);
+    _glWidget->SetClientSize(width, height);
 }
 
 void RenderPreview::initialisePreview()
@@ -291,7 +291,7 @@ const scene::GraphPtr& RenderPreview::getScene()
 
         // Set our render time to 0
         _renderSystem->setTime(0);
-        
+
         // Invoke subclass method to set up the specific scene graph required,
         // then attach it to the render system
         setupSceneGraph();
@@ -383,10 +383,10 @@ void RenderPreview::stopPlayback()
     _renderSystem->setTime(0);
     _timer.Stop();
 
-	wxToolBar* toolbar = findNamedObject<wxToolBar>(_mainPanel, "RenderPreviewAnimToolbar");
+    wxToolBar* toolbar = findNamedObject<wxToolBar>(_mainPanel, "RenderPreviewAnimToolbar");
 
-	toolbar->EnableTool(getToolBarToolByLabel(toolbar, "pauseTimeButton")->GetId(), false);
-	toolbar->EnableTool(getToolBarToolByLabel(toolbar, "stopTimeButton")->GetId(), false);
+    toolbar->EnableTool(getToolBarToolByLabel(toolbar, "pauseTimeButton")->GetId(), false);
+    toolbar->EnableTool(getToolBarToolByLabel(toolbar, "stopTimeButton")->GetId(), false);
 
     updateFrameSelector();
 
@@ -481,13 +481,13 @@ bool RenderPreview::drawPreview()
     // Make sure the scene is ready
     getScene();
 
-	// Pre-Render event
-	if (!onPreRender())
-	{
-		// a return value of false means to cancel rendering
-		drawInfoText();
-		return true; // swap buffers
-	}
+    // Pre-Render event
+    if (!onPreRender())
+    {
+        // a return value of false means to cancel rendering
+        drawInfoText();
+        return true; // swap buffers
+    }
 
     // Set up the camera
     Matrix4 projection = camera::calculateProjectionMatrix(NEAR_CLIP_PLANE, FAR_CLIP_PLANE, PREVIEW_FOV, _previewWidth, _previewHeight);
@@ -496,14 +496,14 @@ bool RenderPreview::drawPreview()
     _view.construct(projection, getModelViewMatrix(), _previewWidth, _previewHeight);
     _view.setViewer(_viewOrigin);
 
-	// Set the projection and modelview matrices
-	glMatrixMode(GL_PROJECTION);
-	glLoadMatrixd(projection);
+    // Set the projection and modelview matrices
+    glMatrixMode(GL_PROJECTION);
+    glLoadMatrixd(projection);
 
-	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixd(_view.GetModelview());
+    glMatrixMode(GL_MODELVIEW);
+    glLoadMatrixd(_view.GetModelview());
 
-	// Front-end render phase, collect OpenGLRenderable objects from the scene
+    // Front-end render phase, collect OpenGLRenderable objects from the scene
     render::CamRenderer renderer(_view, _shaders);
     render::SceneRenderWalker sceneWalker(renderer, _view);
     getScene()->foreachVisibleNodeInVolume(_view, sceneWalker);
@@ -693,21 +693,21 @@ void RenderPreview::onRenderModeChanged(wxCommandEvent& ev)
 
 void RenderPreview::onGridButtonClick(wxCommandEvent& ev)
 {
-	_renderGrid = (ev.GetInt() != 0);
+    _renderGrid = (ev.GetInt() != 0);
 
-	registry::setValue<bool>(RKEY_RENDERPREVIEW_SHOWGRID, _renderGrid);
+    registry::setValue<bool>(RKEY_RENDERPREVIEW_SHOWGRID, _renderGrid);
 
-	queueDraw();
+    queueDraw();
 }
 
 void RenderPreview::onStartPlaybackClick(wxCommandEvent& ev)
 {
-	startPlayback();
+    startPlayback();
 }
 
 void RenderPreview::onStopPlaybackClick(wxCommandEvent& ev)
 {
-	stopPlayback();
+    stopPlayback();
 }
 
 void RenderPreview::onPausePlaybackClick(wxCommandEvent& ev)
@@ -727,10 +727,10 @@ void RenderPreview::onPausePlaybackClick(wxCommandEvent& ev)
 void RenderPreview::onStepForwardClick(wxCommandEvent& ev)
 {
     // Disable the button
-	wxToolBar* toolbar = findNamedObject<wxToolBar>(_mainPanel, "RenderPreviewAnimToolbar");
-	toolbar->EnableTool(getToolBarToolByLabel(toolbar, "pauseTimeButton")->GetId(), false);
+    wxToolBar* toolbar = findNamedObject<wxToolBar>(_mainPanel, "RenderPreviewAnimToolbar");
+    toolbar->EnableTool(getToolBarToolByLabel(toolbar, "pauseTimeButton")->GetId(), false);
 
-	if (_timer.IsRunning())
+    if (_timer.IsRunning())
     {
         _timer.Stop();
     }
@@ -744,9 +744,9 @@ void RenderPreview::onStepBackClick(wxCommandEvent& ev)
 {
     // Disable the button
     wxToolBar* toolbar = findNamedObject<wxToolBar>(_mainPanel, "RenderPreviewAnimToolbar");
-	toolbar->EnableTool(getToolBarToolByLabel(toolbar, "pauseTimeButton")->GetId(), false);
+    toolbar->EnableTool(getToolBarToolByLabel(toolbar, "pauseTimeButton")->GetId(), false);
 
-	if (_timer.IsRunning())
+    if (_timer.IsRunning())
     {
         _timer.Stop();
     }
@@ -790,7 +790,7 @@ void RenderPreview::updateFrameSelector()
 
 void RenderPreview::onSizeAllocate(wxSizeEvent& ev)
 {
-	_previewWidth = ev.GetSize().GetWidth();
+    _previewWidth = ev.GetSize().GetWidth();
     _previewHeight = ev.GetSize().GetHeight();
 }
 
@@ -801,42 +801,42 @@ bool RenderPreview::canDrawGrid()
 
 void RenderPreview::drawGrid()
 {
-	static float GRID_MAX_DIM = 512.0f;
-	static float GRID_STEP = 16.0f;
+    static float GRID_MAX_DIM = 512.0f;
+    static float GRID_STEP = 16.0f;
 
-	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_TEXTURE_1D);
+    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_TEXTURE_1D);
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
     glDepthFunc(GL_LEQUAL);
-	glDisable(GL_BLEND);
+    glDisable(GL_BLEND);
 
-	glLineWidth(1);
-	glColor3f(0.7f, 0.7f, 0.7f);
+    glLineWidth(1);
+    glColor3f(0.7f, 0.7f, 0.7f);
 
     glPushMatrix();
 
     auto gridOrigin = getGridOrigin();
     glTranslated(gridOrigin.x(), gridOrigin.y(), gridOrigin.z());
 
-	glBegin(GL_LINES);
+    glBegin(GL_LINES);
 
-	for (float x = -GRID_MAX_DIM; x < GRID_MAX_DIM; x += GRID_STEP)
-	{
-		Vector3 start(x, -GRID_MAX_DIM, 0);
-		Vector3 end(x, GRID_MAX_DIM, 0);
+    for (float x = -GRID_MAX_DIM; x < GRID_MAX_DIM; x += GRID_STEP)
+    {
+        Vector3 start(x, -GRID_MAX_DIM, 0);
+        Vector3 end(x, GRID_MAX_DIM, 0);
 
-		Vector3 start2(GRID_MAX_DIM, x, 0);
-		Vector3 end2(-GRID_MAX_DIM, x, 0);
+        Vector3 start2(GRID_MAX_DIM, x, 0);
+        Vector3 end2(-GRID_MAX_DIM, x, 0);
 
-		glVertex2dv(start.data());
-		glVertex2dv(end.data());
+        glVertex2dv(start.data());
+        glVertex2dv(end.data());
 
-		glVertex2dv(start2.data());
-		glVertex2dv(end2.data());
-	}
+        glVertex2dv(start2.data());
+        glVertex2dv(end2.data());
+    }
 
-	glEnd();
+    glEnd();
 
     glPopMatrix();
 }

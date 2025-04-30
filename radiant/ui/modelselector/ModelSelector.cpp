@@ -271,7 +271,7 @@ void ModelSelector::onTreeViewPopulationFinished(wxutil::ResourceTreeView::Popul
 
 // Show the dialog and enter recursive main loop
 ModelSelector::Result ModelSelector::showAndBlock(const std::string& curModel,
-    bool showOptions, bool showSkins)
+                                                  bool showOptions, bool showSkins)
 {
     // Hide the Show Skins button if skins should not be shown for this invocation
     if (showSkins) {
@@ -304,7 +304,8 @@ ModelSelector::Result ModelSelector::showAndBlock(const std::string& curModel,
     // it might have been constructed at a time when this was still null
     wxASSERT(GetParent() == GlobalMainFrame().getWxTopLevelWindow());
 
-    // show and enter recursive main loop.
+    // Show and enter recursive main loop.
+    filters::ScopedFilterState filterState(GlobalFilterSystem());
     int returnCode = ShowModal();
 
     // Remove the model from the preview's scenegraph before returning

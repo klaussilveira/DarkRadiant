@@ -170,6 +170,23 @@ public:
     virtual bool setFilterRules(const std::string& filter, const FilterRules& ruleSet) = 0;
 };
 
+/// RAII class to push and pop filter state
+class ScopedFilterState
+{
+    IFilterSystem& _filterSystem;
+
+public:
+    ScopedFilterState(IFilterSystem& filterSystem): _filterSystem(filterSystem)
+    {
+        _filterSystem.pushState();
+    }
+
+    ~ScopedFilterState()
+    {
+        _filterSystem.popState();
+    }
+};
+
 }
 
 inline filters::IFilterSystem& GlobalFilterSystem()

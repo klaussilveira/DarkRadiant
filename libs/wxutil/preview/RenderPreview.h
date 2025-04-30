@@ -41,15 +41,15 @@ class RenderPreview :
     void connectToolbarSignals();
     bool drawPreview();
     void onGLScroll(wxMouseEvent& ev);
-	void onGLMouseClick(wxMouseEvent& ev);
+    void onGLMouseClick(wxMouseEvent& ev);
     void onGLMouseRelease(wxMouseEvent& ev);
     void onGLMotion(wxMouseEvent& ev);
     void onGLMotionDelta(int x, int y, unsigned int mouseState);
     void onGLKeyPress(wxKeyEvent& ev);
 
-	void onStartPlaybackClick(wxCommandEvent& ev);
-	void onStopPlaybackClick(wxCommandEvent& ev);
-	void onPausePlaybackClick(wxCommandEvent& ev);
+    void onStartPlaybackClick(wxCommandEvent& ev);
+    void onStopPlaybackClick(wxCommandEvent& ev);
+    void onPausePlaybackClick(wxCommandEvent& ev);
     void onStepForwardClick(wxCommandEvent& ev);
     void onStepBackClick(wxCommandEvent& ev);
     void onFrameSelected(wxSpinEvent& ev);
@@ -60,10 +60,10 @@ class RenderPreview :
     void onSizeAllocate(wxSizeEvent& ev);
     void onFilterConfigChanged();
     void onRenderModeChanged(wxCommandEvent& ev);
-	void onGridButtonClick(wxCommandEvent& ev);
+    void onGridButtonClick(wxCommandEvent& ev);
 
     void drawInfoText();
-	void drawGrid();
+    void drawGrid();
 
     // Called each frame by wxTimer
     void _onFrame(wxTimerEvent& ev);
@@ -74,7 +74,7 @@ class RenderPreview :
     void setupToolbars(bool enableAnimation);
 
 protected:
-	wxPanel* _mainPanel;
+    wxPanel* _mainPanel;
 
 private:
     // The scene we're rendering
@@ -87,7 +87,7 @@ private:
 
     FreezePointer _freezePointer;
 
-	bool _renderGrid;
+    bool _renderGrid;
 
     render::CamRenderer::HighlightShaders _shaders;
 
@@ -123,10 +123,10 @@ protected:
     int _previewWidth = 0;
     int _previewHeight = 0;
 
-	wxSizer* _toolbarSizer;
+    wxSizer* _toolbarSizer;
 
     // The filters menu
-	wxToolBarToolBase* _filterTool = nullptr;
+    wxToolBarToolBase* _filterTool = nullptr;
 
     IGLFont::Ptr _glFont;
 
@@ -179,7 +179,7 @@ protected:
     // Can be overridden by subclasses to update their scene/models
     virtual void onRenderModeChanged() {}
 
-    // Returns the info text that is rendered in the lower left corner of the preview. 
+    // Returns the info text that is rendered in the lower left corner of the preview.
     // Shows the render time by default, but can be overridden by subclasses.
     virtual std::string getInfoText();
 
@@ -196,10 +196,10 @@ protected:
     virtual ~RenderPreview();
 
 public:
-	wxPanel* getWidget() const
-	{
-		return _mainPanel;
-	}
+    wxPanel* getWidget() const
+    {
+        return _mainPanel;
+    }
 
     void setSize(int width, int height);
 
@@ -238,7 +238,7 @@ public:
     // i.e. at dialog construction time
     void setStartupLightingMode(bool enableAtStart);
 
-	/// Schedule a GL widget redraw operation
+    /// Schedule a GL widget redraw operation
     void queueDraw();
 };
 typedef std::shared_ptr<RenderPreview> RenderPreviewPtr;
