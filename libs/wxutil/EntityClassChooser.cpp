@@ -9,17 +9,16 @@
 
 #include "i18n.h"
 #include "ifavourites.h"
-#include "ideclmanager.h"
 #include "gamelib.h"
 
 #include <wx/button.h>
 #include <wx/panel.h>
+#include "ifilter.h"
 #include "wxutil/Bitmap.h"
 #include "wxutil/Icon.h"
 
 #include "eclass.h"
 
-#include "debugging/ScopedDebugTimer.h"
 #include "preview/EntityClassPreview.h"
 
 namespace wxutil
@@ -227,7 +226,7 @@ EntityClassChooser::EntityClassChooser(Purpose purpose) :
 
     switch (purpose)
     {
-    case Purpose::AddEntity: 
+    case Purpose::AddEntity:
         affirmativeButton->SetLabelText(_("Create"));
         break;
     case Purpose::ConvertEntity:
@@ -253,11 +252,12 @@ std::string EntityClassChooser::ChooseEntityClass(Purpose purpose, const std::st
         instance.SetSelectedDeclName(eclassToSelect);
     }
 
+    filters::ScopedFilterState filterState(GlobalFilterSystem());
     if (instance.ShowModal() == wxID_OK)
     {
         return instance.GetSelectedDeclName();
     }
-    
+
     return ""; // Empty selection on cancel
 }
 
