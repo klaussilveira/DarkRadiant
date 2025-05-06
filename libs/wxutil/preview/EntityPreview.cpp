@@ -99,9 +99,6 @@ void EntityPreview::prepareScene()
     // Clear the flag
     _sceneIsReady = true;
 
-    // Reset the model rotation
-    resetModelRotation();
-
     setupInitialViewPosition();
 
     // Trigger an initial update of the subgraph
