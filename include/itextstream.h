@@ -4,10 +4,8 @@
 /// \brief Text-stream interfaces.
 
 #include <cstddef>
-#include <string>
 #include <stdio.h>
 #include <streambuf>
-#include <istream>
 #include <cassert>
 #include <sstream>
 #include <iostream>
@@ -176,7 +174,7 @@ inline OutputStreamHolder& GlobalDebugStream()
 inline TemporaryThreadsafeStream rMessage()
 {
     return TemporaryThreadsafeStream(
-        GlobalOutputStream().getStream(), 
+        GlobalOutputStream().getStream(),
         GlobalOutputStream().getStreamLock()
     );
 }
@@ -219,7 +217,7 @@ inline TemporaryThreadsafeStream rDebug()
  * the output to std::cout is redirected to the appliation's LogStream buffer.
  * std::cout is not thread-safe itself, that's why it's advisable to use
  * this accessor whenever client code needs to write to std::cout.
- * 
+ *
  * see also: rConsoleError() which wraps std::cerr
  */
 inline TemporaryThreadsafeStream rConsole()

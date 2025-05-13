@@ -12,7 +12,7 @@ using VfsTest = RadiantTest;
 TEST_F(VfsTest, FileSystemModule)
 {
     // Confirm its module properties
-    
+
     EXPECT_EQ(GlobalFileSystem().getName(), "VirtualFileSystem");
     EXPECT_TRUE(GlobalFileSystem().getDependencies().empty());
 }
@@ -57,14 +57,14 @@ TEST_F(VfsTest, GetArchiveFileInfo)
 
     EXPECT_EQ(foundFiles.count(physicalFile), 1); // physical file
     EXPECT_EQ(foundFiles.count(fileInPak), 1); // file in pk4
-    
+
     // Get the file size of example.mtr
     fs::path physicalFilePath = _context.getTestProjectPath();
     physicalFilePath /= physicalFile;
 
     fs::path pk4Path = _context.getTestProjectPath();
     pk4Path /= "tdm_example_mtrs.pk4";
-    
+
     EXPECT_EQ(foundFiles.find(physicalFile)->second.getSize(), os::getFileSize(physicalFilePath.string()));
     EXPECT_EQ(foundFiles.find(physicalFile)->second.getIsPhysicalFile(), true);
     EXPECT_EQ(foundFiles.find(physicalFile)->second.getArchivePath(), _context.getTestProjectPath());
@@ -98,7 +98,7 @@ TEST_F(VfsTest, LeafNamesVsFullPath)
         [&](const vfs::FileInfo& fi) { mtrFiles.insert(std::make_pair(fi.name, fi)); },
         0
     );
-    
+
     // When giving a topdir to visit, the returned file names should be
     // relative to that directory.
     EXPECT_EQ(mtrFiles.count("materials/example.mtr"), 0);
@@ -167,7 +167,7 @@ TEST_F(VfsTest, openArchiveInAbsolutePath)
 
     // Check file existence
     ASSERT_TRUE(archive->containsFile("materials/tdm_bloom_afx.mtr"));
-    
+
     // Check file read access
     auto file = archive->openTextFile("materials/tdm_bloom_afx.mtr");
 
@@ -180,7 +180,7 @@ TEST_F(VfsTest, VisitEachFileInArchive)
 {
     fs::path pk4Path = _context.getTestProjectPath();
     pk4Path /= "tdm_example_mtrs.pk4";
-    
+
     // Use a visitor to walk the tree
     std::set<std::string> foundFiles;
     GlobalFileSystem().forEachFileInArchive(
@@ -211,9 +211,6 @@ TEST_F(VfsTest, VisitEachFileInAbsolutePath)
 
 TEST_F(VfsTest, GetFileInfo)
 {
-    // Use a visitor to walk the tree
-    std::map<std::string, vfs::FileInfo> foundFiles;
-
     auto info = GlobalFileSystem().getFileInfo("models/moss_patch.ase");
     EXPECT_FALSE(info.isEmpty());
     EXPECT_TRUE(info.getIsPhysicalFile());
@@ -238,6 +235,15 @@ TEST_F(VfsTest, GetFileInfo)
     info = GlobalFileSystem().getFileInfo("nonexistentfile.lwo");
     EXPECT_TRUE(info.isEmpty());
     EXPECT_EQ(info.visibility, vfs::Visibility::HIDDEN);
+
+    info = GlobalFileSystem().getFileInfo("sound/parsing_test.sndshd");
+    EXPECT_FALSE(info.isEmpty());
+    EXPECT_EQ(info.visibility, vfs::Visibility::NORMAL);
+
+    info = GlobalFileSystem().getFileInfo("sound/hidden.sndshd");
+    EXPECT_FALSE(info.isEmpty());
+    EXPECT_EQ(info.visibility, vfs::Visibility::HIDDEN);
+
 }
 
 }
