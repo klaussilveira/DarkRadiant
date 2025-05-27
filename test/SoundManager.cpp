@@ -92,4 +92,17 @@ TEST_F(SoundManagerTest, GetSoundFileDurationWithoutExtension)
     EXPECT_NEAR(duration, oggDuration, 0.001) << "The OGG file should have been found, not the wav file";
 }
 
+TEST_F(SoundManagerTest, SoundDeclSupportsVisibility)
+{
+    // Normal decl
+    auto normal = GlobalSoundManager().getSoundShader("test/jorge");
+    ASSERT_TRUE(normal);
+    EXPECT_EQ(normal->getVisibility(), vfs::Visibility::NORMAL);
+
+    // Hidden decl
+    auto hidden = GlobalSoundManager().getSoundShader("test/hidden_sound");
+    ASSERT_TRUE(hidden);
+    EXPECT_EQ(hidden->getVisibility(), vfs::Visibility::HIDDEN);
+}
+
 }

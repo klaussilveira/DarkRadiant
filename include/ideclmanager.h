@@ -65,6 +65,16 @@ public:
     // The type of this declaration
     virtual Type getDeclType() const = 0;
 
+    /// Get the visibility of this declaration, which determines whether it should be
+    /// shown in the relevant UI browser.
+    ///
+    /// The visibility of a particular declaration may be determined by a separate
+    /// assets.lst file, or in any declaration-specific manner.
+    ///
+    /// Logically this method should be const, but currently it isn't because it might
+    /// trigger on-demand parsing in certain subclasses.
+    virtual vfs::Visibility getVisibility() { return vfs::Visibility::NORMAL; }
+
     // The raw syntax block (without the outer curly braces) used to construct this decl
     virtual const DeclarationBlockSyntax& getBlockSyntax() = 0;
 
@@ -81,7 +91,7 @@ public:
     // Returns the value of the internally used parse epoch counter
     virtual std::size_t getParseStamp() const = 0;
 
-    // Sets the internally used parse epoch counter 
+    // Sets the internally used parse epoch counter
     virtual void setParseStamp(std::size_t parseStamp) = 0;
 
     // Fired when this declaration changed (i.e. as result of a reloadDecls

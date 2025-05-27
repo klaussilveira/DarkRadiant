@@ -198,7 +198,7 @@ public:
     EntityClass* getParent();
 
     /// Get the UI visibility of this entity class
-    vfs::Visibility getVisibility();
+    vfs::Visibility getVisibility() override;
 
     /// Query whether this entity class represents a light.
     bool isLight();

@@ -11,17 +11,17 @@ namespace sound
 struct SoundShader::ParsedContents
 {
     // List of sound files
-	SoundFileList soundFiles;
+    SoundFileList soundFiles;
 
-	// min and max radii of the shader
-	SoundRadii soundRadii;
+    // min and max radii of the shader
+    SoundRadii soundRadii;
 
-	// display folder including slashes for sorting the sounds in the sound chooser window
-	std::string displayFolder;
+    // display folder including slashes for sorting the sounds in the sound chooser window
+    std::string displayFolder;
 };
 
 SoundShader::SoundShader(const std::string& name)
-:	DeclarationBase<ISoundShader>(decl::Type::SoundShader, name)
+:   DeclarationBase<ISoundShader>(decl::Type::SoundShader, name)
 {}
 
 // Destructor must be defined with ParsedContents definition visible, otherwise
@@ -36,37 +36,37 @@ void SoundShader::onBeginParsing()
 
 void SoundShader::parseFromTokens(parser::DefTokeniser& tokeniser)
 {
-	while (tokeniser.hasMoreTokens())
+    while (tokeniser.hasMoreTokens())
     {
-		// Get the next token
-		auto nextToken = tokeniser.nextToken();
+        // Get the next token
+        auto nextToken = tokeniser.nextToken();
 
-		// Watch out for sound file definitions
+        // Watch out for sound file definitions
         // Check if the token starts with soundSLASH or soundBACKSLASH
-		if (string::starts_with(nextToken, "sound") && 
+        if (string::starts_with(nextToken, "sound") &&
             nextToken.length() > 5 && (nextToken[5] == '\\' || nextToken[5] == '/'))
         {
-			// Add this to the list, replace backslashes with forward ones
+            // Add this to the list, replace backslashes with forward ones
             std::replace(nextToken.begin(), nextToken.end(), '\\', '/');
 
-			_contents->soundFiles.push_back(nextToken);
-		}
-		else if (nextToken == "minDistance")
+            _contents->soundFiles.push_back(nextToken);
+        }
+        else if (nextToken == "minDistance")
         {
-			// Set the radius and convert to metres
-			_contents->soundRadii.setMin(string::convert<float>(tokeniser.nextToken()), true);
-		}
-		else if (nextToken == "maxDistance")
+            // Set the radius and convert to metres
+            _contents->soundRadii.setMin(string::convert<float>(tokeniser.nextToken()), true);
+        }
+        else if (nextToken == "maxDistance")
         {
-			// Set the radius and convert to metres
-			_contents->soundRadii.setMax(string::convert<float>(tokeniser.nextToken()), true);
-		}
-		else if (nextToken == "editor_displayFolder")
+            // Set the radius and convert to metres
+            _contents->soundRadii.setMax(string::convert<float>(tokeniser.nextToken()), true);
+        }
+        else if (nextToken == "editor_displayFolder")
         {
-			// Set the display folder
-			_contents->displayFolder = tokeniser.nextToken();
-		}
-	}
+            // Set the display folder
+            _contents->displayFolder = tokeniser.nextToken();
+        }
+    }
 }
 
 SoundRadii SoundShader::getRadii()
@@ -85,6 +85,11 @@ const std::string& SoundShader::getDisplayFolder()
 {
     ensureParsed();
     return _contents->displayFolder;
+}
+
+vfs::Visibility SoundShader::getVisibility()
+{
+    return getBlockSyntax().fileInfo.visibility;
 }
 
 } // namespace
