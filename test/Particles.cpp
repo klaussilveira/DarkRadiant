@@ -211,6 +211,19 @@ TEST_F(ParticlesTest, FindOrInsertParticleDef)
     EXPECT_EQ(inserted->getBlockSyntax().contents, "");
 }
 
+TEST_F(ParticlesTest, ParticlesSupportsAssetsLst)
+{
+    // Normal def
+    auto normalDef = GlobalParticlesManager().getDefByName("tdm_fire_torch");
+    ASSERT_TRUE(normalDef);
+    EXPECT_EQ(normalDef->getVisibility(), vfs::Visibility::NORMAL);
+
+    // Hidden def
+    auto hiddenDef = GlobalParticlesManager().getDefByName("should_be_hidden");
+    ASSERT_TRUE(hiddenDef);
+    EXPECT_EQ(hiddenDef->getVisibility(), vfs::Visibility::HIDDEN);
+}
+
 constexpr const char* ParticleSourceTemplate = R"(
 
 	depthHack	0.001
@@ -220,12 +233,12 @@ constexpr const char* ParticleSourceTemplate = R"(
 		time				0.700
 		cycles				0.000
 		bunching			1.000
-		distribution		cylinder 4.000 4.000 10.000 0.000 
-		direction			cone 10.000 
-		orientation			view 
+		distribution		cylinder 4.000 4.000 10.000 0.000
+		direction			cone 10.000
+		orientation			view
 		speed				 86.000  to "-4.000"
 		size				 16.500  to 28.500
-		aspect				 1.000 
+		aspect				 1.000
 		rotation				 24.000  to 29.000
 		fadeIn				0.350
 		fadeOut				0.200
@@ -284,7 +297,7 @@ inline void expectParticleIsPresentInFile(const particles::IParticleDef::Ptr& de
     {
         auto blockContents = block->getBlockContents();
 
-        if (decl->getNumStages() > 0 && 
+        if (decl->getNumStages() > 0 &&
             block->getType() && block->getType()->getString() == "particle" &&
             block->getName() && block->getName()->getString() == particleName)
         {
