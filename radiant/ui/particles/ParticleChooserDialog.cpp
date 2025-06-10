@@ -28,7 +28,7 @@ ParticleChooserDialog::ParticleChooserDialog(bool showClassnameSelector) :
         _funcSmoke = new wxRadioButton(this, wxID_ANY, "func_smoke");
 
         _funcEmitter->SetValue(true);
-        
+
         radioHbox->Add(classText, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, 0);
         radioHbox->Add(_funcEmitter, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, 12);
         radioHbox->Add(_funcSmoke, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, 6);
@@ -49,12 +49,14 @@ std::string ParticleChooserDialog::ChooseParticle(const std::string& currentPart
     return RunDialog(false, currentParticle).selectedParticle;
 }
 
-ParticleChooserDialog::SelectionResult ParticleChooserDialog::ChooseParticleAndEmitter(const std::string& currentParticle)
+ParticleChooserDialog::SelectionResult
+ParticleChooserDialog::ChooseParticleAndEmitter(const std::string& currentParticle)
 {
     return RunDialog(true, currentParticle);
 }
 
-ParticleChooserDialog::SelectionResult ParticleChooserDialog::RunDialog(bool showClassnameSelector, std::string currentParticle)
+ParticleChooserDialog::SelectionResult
+ParticleChooserDialog::RunDialog(bool showClassnameSelector, std::string currentParticle)
 {
     auto* dialog = new ParticleChooserDialog(showClassnameSelector);
 

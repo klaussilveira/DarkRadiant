@@ -1,6 +1,5 @@
 #include "ParticleSelector.h"
 
-#include "wxutil/dataview/ResourceTreeViewToolbar.h"
 #include "ThreadedParticlesLoader.h"
 
 namespace ui
@@ -11,9 +10,9 @@ ParticleSelector::ParticleSelector(wxWindow* parent) :
     _preview(new wxutil::ParticlePreview(this))
 {
     AddPreviewToRightPane(_preview.get());
-    
+
     GlobalParticlesManager().signal_particlesReloaded().connect(
-        sigc::mem_fun(this, &ParticleSelector::reloadParticles)
+        sigc::mem_fun(this, &ParticleSelector::Populate)
     );
 
     Populate();
@@ -22,11 +21,6 @@ ParticleSelector::ParticleSelector(wxWindow* parent) :
 void ParticleSelector::Populate()
 {
     PopulateTreeView(std::make_shared<ThreadedParticlesLoader>(GetColumns()));
-}
-
-void ParticleSelector::reloadParticles()
-{
-    Populate();
 }
 
 std::string ParticleSelector::GetSelectedParticle()
