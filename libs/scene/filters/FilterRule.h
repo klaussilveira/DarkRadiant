@@ -1,6 +1,8 @@
 #pragma once
 
+#include <stdexcept>
 #include <string>
+#include <variant>
 #include <vector>
 #include <cassert>
 
@@ -19,6 +21,37 @@ enum class FilterType
     /// Match on the value of a particular entity spawnarg
     SPAWNARG,
 };
+
+namespace filters
+{
+
+/// Query for a particular material shader
+struct TextureQuery { std::string match; };
+
+/// Query for a particular entity class
+struct EntityClassQuery { std::string match; };
+
+/// Available primitive types to query
+enum class PrimitiveType
+{
+    Brush,
+    Patch
+};
+
+/// Query for a particular primitive type
+struct PrimitiveQuery { PrimitiveType type; };
+
+/// Query for the value of a particular spawnarg
+struct SpawnArgQuery
+{
+    std::string key;
+    std::string valueMatch;
+};
+
+/// Variant specifying the query of a particular rule
+using Query = std::variant<TextureQuery, EntityClassQuery, PrimitiveQuery, SpawnArgQuery>;
+
+}
 
 /// A single rule for hiding or showing objects, maintained by the filter system.
 class FilterRule
@@ -67,6 +100,19 @@ public:
     static FilterRule CreateEntityKeyValueRule(const std::string& key, const std::string& match, bool show)
     {
         return FilterRule(FilterType::SPAWNARG, key, match, show);
+    }
+
+    /// Get a string representing the rule type (e.g. for display in the UI)
+    std::string getTypeString() const
+    {
+        switch (type)
+        {
+            case FilterType::TEXTURE: return "texture";
+            case FilterType::OBJECT: return "object";
+            case FilterType::ECLASS: return "entityclass";
+            case FilterType::SPAWNARG: return "entitykeyvalue";
+        };
+        throw std::logic_error("Invalid filter type");
     }
 };
 typedef std::vector<FilterRule> FilterRules;

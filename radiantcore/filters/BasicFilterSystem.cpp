@@ -291,21 +291,10 @@ void BasicFilterSystem::shutdownModule()
             // Create a new criterion tag
             xml::Node criterion = filter.createChild("filterCriterion");
 
-            std::string typeStr;
-
-            switch (rule.type)
-            {
-            case FilterType::TEXTURE: typeStr = "texture"; break;
-            case FilterType::OBJECT: typeStr = "object"; break;
-            case FilterType::ECLASS: typeStr = "entityclass"; break;
-            case FilterType::SPAWNARG:
-                typeStr = "entitykeyvalue";
+            if (rule.type == FilterType::SPAWNARG) {
                 criterion.setAttributeValue("key", rule.entityKey);
-                break;
-            default: continue;
-            };
-
-            criterion.setAttributeValue("type", typeStr);
+            }
+            criterion.setAttributeValue("type", rule.getTypeString());
             criterion.setAttributeValue("match", rule.match);
             criterion.setAttributeValue("action", rule.show ? "show" : "hide");
         }

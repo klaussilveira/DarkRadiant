@@ -44,7 +44,8 @@ public:
     SceneFilter(const SceneFilter&) = delete;
     SceneFilter& operator=(const SceneFilter&) = delete;
 
-    /** Add a (non entitykeyvalue) rule to this filter.
+    /**
+     * @brief Add a (non entitykeyvalue) rule to this filter.
      *
      * @param type
      * The type of rule - "texture", "entityclass" or "object".
@@ -53,10 +54,12 @@ public:
      * The regex match expression to use for this rule.
      *
      * @param show
-     * true if this filter should show its matches, false if it should
-     * hide them.
+     * true if this filter should show its matches, false if it should hide them. Since
+     * all objects are visible by default, the majority of filters will hide their matched
+     * items, but "show" rules are useful in multi-rule filters to re-show specific
+     * subsets of items that were hidden by an earlier rule.
      */
-    void addRule(const FilterType type, const std::string& match, bool show)
+    void addRule(const FilterType type, const std::string& match, bool show = false)
     {
         _rules.push_back(FilterRule::Create(type, match, show));
     }

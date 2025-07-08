@@ -65,25 +65,52 @@ TEST_F(FilterTest, RenameSceneFilter)
 
 TEST_F(FilterTest, FilterRules)
 {
-    // Texture-based filtering
-    filters::SceneFilter filter("HideStuff", false);
-    filter.addRule(FilterType::TEXTURE, "textures/darkmod/badtex", false);
-
-    EXPECT_TRUE(filter.isVisible(FilterType::TEXTURE, "textures/darkmod/good"));
-    EXPECT_FALSE(filter.isVisible(FilterType::TEXTURE, "textures/darkmod/badtex"));
-    EXPECT_TRUE(filter.isVisible(FilterType::ECLASS, "textures/darkmod/badtex"));
-    EXPECT_TRUE(filter.isVisible(FilterType::TEXTURE, "textures/darkmod/badtex1"));
-
-    // Entity class filtering
     scene::INodePtr worldNode = GlobalMapModule().findOrInsertWorldspawn();
     Entity* worldEnt = worldNode->tryGetEntity();
     ASSERT_TRUE(worldEnt);
 
-    filter.addRule(FilterType::ECLASS, "func_static", false);
-    EXPECT_TRUE(filter.isEntityVisible(FilterType::ECLASS, *worldEnt));
+    {
+        // Texture-based filtering
+        filters::SceneFilter filter("HideStuff", false);
+        filter.addRule(FilterType::TEXTURE, "textures/darkmod/badtex", false);
 
-    filter.addRule(FilterType::ECLASS, "worldspawn", false);
-    EXPECT_FALSE(filter.isEntityVisible(FilterType::ECLASS, *worldEnt));
+        EXPECT_TRUE(filter.isVisible(FilterType::TEXTURE, "textures/darkmod/good"));
+        EXPECT_FALSE(filter.isVisible(FilterType::TEXTURE, "textures/darkmod/badtex"));
+        EXPECT_TRUE(filter.isVisible(FilterType::ECLASS, "textures/darkmod/badtex"));
+        EXPECT_TRUE(filter.isVisible(FilterType::TEXTURE, "textures/darkmod/badtex1"));
+
+        // Entity class filtering
+        filter.addRule(FilterType::ECLASS, "func_static", false);
+        EXPECT_TRUE(filter.isEntityVisible(FilterType::ECLASS, *worldEnt));
+
+        filter.addRule(FilterType::ECLASS, "worldspawn", false);
+        EXPECT_FALSE(filter.isEntityVisible(FilterType::ECLASS, *worldEnt));
+    }
+
+    // Primitive filtering
+    {
+        filters::SceneFilter brushFilter("Filter brushes", false);
+        brushFilter.addRule(FilterType::OBJECT, "brush", false);
+
+        EXPECT_TRUE(brushFilter.isEntityVisible(FilterType::ECLASS, *worldEnt));
+        EXPECT_FALSE(brushFilter.isVisible(FilterType::OBJECT, "brush"));
+        EXPECT_TRUE(brushFilter.isVisible(FilterType::OBJECT, "patch"));
+    }
+}
+
+TEST_F(FilterTest, FilterRuleProperties)
+{
+    FilterRule eclassFilter = FilterRule::Create(FilterType::ECLASS, "func_static", false);
+    EXPECT_EQ(eclassFilter.getTypeString(), "entityclass");
+
+    FilterRule primFilter = FilterRule::Create(FilterType::OBJECT, "brush", false);
+    EXPECT_EQ(primFilter.getTypeString(), "object");
+
+    FilterRule spawnargFilter = FilterRule::CreateEntityKeyValueRule("key", "whatever", false);
+    EXPECT_EQ(spawnargFilter.getTypeString(), "entitykeyvalue");
+
+    FilterRule texFilter = FilterRule::Create(FilterType::TEXTURE, "textures/caulk", false);
+    EXPECT_EQ(texFilter.getTypeString(), "texture");
 }
 
 TEST_F(FilterTest, FilterRuleEquality)

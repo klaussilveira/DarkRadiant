@@ -113,8 +113,7 @@ void FilterEditor::update()
         wxVector<wxVariant> row(Columns::N_COLUMNS);
 
         row[Columns::INDEX] = wxVariant(std::to_string(i));
-        //row[_columns.type] = static_cast<int>(rule.type);
-        row[Columns::TYPE_STRING] = getStringForType(rule.type);
+        row[Columns::TYPE_STRING] = rule.getTypeString();
         row[Columns::MATCH] = rule.match;
         row[Columns::ENTITY_KEY] = rule.entityKey;
         row[Columns::SHOWHIDE] = rule.show ? std::string(_("show")) : std::string(_("hide"));
@@ -155,15 +154,15 @@ void FilterEditor::createCriteriaPanel()
     typeChoices.Add("object");
     typeChoices.Add("entitykeyvalue");
 
-    wxDataViewChoiceRenderer* typeChoiceRenderer = 
+    wxDataViewChoiceRenderer* typeChoiceRenderer =
         new wxDataViewChoiceRenderer(typeChoices, cellMode, wxALIGN_LEFT);
-    
+
     wxDataViewColumn* typeColumn = new wxDataViewColumn(
         _("Type"), typeChoiceRenderer, Columns::TYPE_STRING,
         INITIAL_WIDTH, wxALIGN_LEFT,
         wxDATAVIEW_COL_REORDERABLE | wxDATAVIEW_COL_RESIZABLE
     );
-    
+
     _ruleList->AppendColumn(typeColumn);
 
     // ENTITY_KEY (col 2)
@@ -182,12 +181,12 @@ void FilterEditor::createCriteriaPanel()
     wxDataViewChoiceRenderer* actionChoiceRenderer = new wxDataViewChoiceRenderer(
         actionChoices, cellMode, wxALIGN_LEFT
     );
-    
+
     wxDataViewColumn* actionColumn = new wxDataViewColumn(
         _("Action"), actionChoiceRenderer, Columns::SHOWHIDE,
         INITIAL_WIDTH, wxALIGN_LEFT, FLAGS
     );
-    
+
     _ruleList->AppendColumn(actionColumn);
 
     // Get notified when the user edits an item
@@ -204,18 +203,6 @@ void FilterEditor::createCriteriaPanel()
     moveRuleUpButton->Bind(wxEVT_BUTTON, &FilterEditor::onMoveRuleUp, this);
     moveRuleDownButton->Bind(wxEVT_BUTTON, &FilterEditor::onMoveRuleDown, this);
     deleteRuleButton->Bind(wxEVT_BUTTON, &FilterEditor::onDeleteRule, this);
-}
-
-std::string FilterEditor::getStringForType(const FilterType type)
-{
-    switch (type)
-    {
-    case FilterType::TEXTURE: return "texture";
-    case FilterType::OBJECT: return "object";
-    case FilterType::ECLASS: return "entityclass";
-    case FilterType::SPAWNARG: return "entitykeyvalue";
-    default: return "";
-    };
 }
 
 FilterType FilterEditor::getTypeForString(const std::string& typeStr)
