@@ -357,7 +357,7 @@ void FilterEditor::onRuleSelectionChanged(wxDataViewEvent& ev)
 
 void FilterEditor::onAddRule(wxCommandEvent& ev)
 {
-    FilterRule newRule = FilterRule::Create(FilterType::TEXTURE, GlobalTexturePrefix_get(), false);
+    FilterRule newRule(filters::TextureQuery{GlobalTexturePrefix_get()});
     _filter.rules.push_back(newRule);
 
     update();

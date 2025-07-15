@@ -210,19 +210,26 @@ void BasicFilterSystem::addFiltersFromXML(const xml::NodeList& nodes, bool readO
 
             if (typeStr == "texture")
             {
-                filter->addRule(FilterType::TEXTURE, match, show);
+                filter->addRule(filters::TextureQuery{match}, show);
             }
             else if (typeStr == "entityclass")
             {
-                filter->addRule(FilterType::ECLASS, match, show);
+                filter->addRule(filters::EntityClassQuery{match}, show);
             }
             else if (typeStr == "object")
             {
-                filter->addRule(FilterType::OBJECT, match, show);
+                filter->addRule(
+                    filters::PrimitiveQuery{
+                        match == "brush" ? PrimitiveType::Brush : PrimitiveType::Patch
+                    },
+                    show
+                );
             }
             else if (typeStr == "entitykeyvalue")
             {
-                filter->addEntityKeyValueRule(critNode.getAttributeValue("key"), match, show);
+                filter->addRule(
+                    filters::SpawnArgQuery{critNode.getAttributeValue("key"), match}, show
+                );
             }
         }
 

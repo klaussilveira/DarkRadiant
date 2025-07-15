@@ -69,37 +69,27 @@ public:
     // true for action="show", false for action="hide"
     bool show;
 
-private:
-    // Private Constructor, use the named constructors below
-    FilterRule(const FilterType type_, const std::string& match_, bool show_) :
-        type(type_),
-        match(match_),
-        show(show_)
-    {}
-
-    // Alternative private constructor for the entityKeyValue type
-    FilterRule(const FilterType type_, const std::string& entityKey_, const std::string& match_, bool show_) :
-        type(type_),
-        entityKey(entityKey_),
-        match(match_),
-        show(show_)
-    {}
-
-public:
-    // Named constructors
-
-    // Regular constructor for the non-entitykeyvalue types
-    static FilterRule Create(const FilterType type, const std::string& match, bool show)
+    /// Construct a FilterRule which executes the given query
+    FilterRule(filters::Query query, bool show = false)
+    : show(show)
     {
-        assert(type != FilterType::SPAWNARG);
-
-        return FilterRule(type, match, show);
-    }
-
-    // Constructor for the entity key value type
-    static FilterRule CreateEntityKeyValueRule(const std::string& key, const std::string& match, bool show)
-    {
-        return FilterRule(FilterType::SPAWNARG, key, match, show);
+        if (auto* tex = std::get_if<filters::TextureQuery>(&query)) {
+            type = FilterType::TEXTURE;
+            match = std::move(tex->match);
+        }
+        else if (auto* eclass = std::get_if<filters::EntityClassQuery>(&query)) {
+            type = FilterType::ECLASS;
+            match = std::move(eclass->match);
+        }
+        else if (auto* prim = std::get_if<filters::PrimitiveQuery>(&query)) {
+            type = FilterType::OBJECT;
+            match = (prim->type == filters::PrimitiveType::Brush ? "brush" : "patch");
+        }
+        else if (auto* spawnarg = std::get_if<filters::SpawnArgQuery>(&query)) {
+            type = FilterType::SPAWNARG;
+            entityKey = std::move(spawnarg->key);
+            match = std::move(spawnarg->valueMatch);
+        }
     }
 
     /// Get a string representing the rule type (e.g. for display in the UI)
