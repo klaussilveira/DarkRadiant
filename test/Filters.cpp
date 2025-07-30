@@ -82,10 +82,10 @@ TEST_F(FilterTest, FilterRules)
 
         // Entity class filtering
         filter.addRule(filters::EntityClassQuery{"func_static"}, false);
-        EXPECT_TRUE(filter.isEntityVisible(FilterType::ECLASS, *worldEnt));
+        EXPECT_TRUE(filter.isEntityVisible(*worldEnt));
 
         filter.addRule(filters::EntityClassQuery{"worldspawn"}, false);
-        EXPECT_FALSE(filter.isEntityVisible(FilterType::ECLASS, *worldEnt));
+        EXPECT_FALSE(filter.isEntityVisible(*worldEnt));
     }
 
     // Primitive filtering
@@ -93,7 +93,7 @@ TEST_F(FilterTest, FilterRules)
         filters::SceneFilter brushFilter("Filter brushes", false);
         brushFilter.addRule(filters::PrimitiveQuery{filters::PrimitiveType::Brush}, false);
 
-        EXPECT_TRUE(brushFilter.isEntityVisible(FilterType::ECLASS, *worldEnt));
+        EXPECT_TRUE(brushFilter.isEntityVisible(*worldEnt));
         EXPECT_FALSE(brushFilter.isVisible(FilterType::OBJECT, "brush"));
         EXPECT_TRUE(brushFilter.isVisible(FilterType::OBJECT, "patch"));
     }
@@ -103,14 +103,13 @@ TEST_F(FilterTest, FilterRules)
         filters::SceneFilter spawnargFilter("Hide from spawnarg", false);
         spawnargFilter.addRule(filters::SpawnArgQuery{"hidden", "1"});
 
-        EXPECT_TRUE(spawnargFilter.isEntityVisible(FilterType::ECLASS, *worldEnt));
+        EXPECT_TRUE(spawnargFilter.isEntityVisible(*worldEnt));
         worldEnt->setKeyValue("hidden", "0");
-        EXPECT_TRUE(spawnargFilter.isEntityVisible(FilterType::ECLASS, *worldEnt));
-        EXPECT_TRUE(spawnargFilter.isEntityVisible(FilterType::SPAWNARG, *worldEnt));
+        EXPECT_TRUE(spawnargFilter.isEntityVisible(*worldEnt));
         worldEnt->setKeyValue("hidden", "1");
-        EXPECT_FALSE(spawnargFilter.isEntityVisible(FilterType::SPAWNARG, *worldEnt));
+        EXPECT_FALSE(spawnargFilter.isEntityVisible(*worldEnt));
         worldEnt->setKeyValue("hidden", "10");
-        EXPECT_TRUE(spawnargFilter.isEntityVisible(FilterType::SPAWNARG, *worldEnt));
+        EXPECT_TRUE(spawnargFilter.isEntityVisible(*worldEnt));
     }
 }
 

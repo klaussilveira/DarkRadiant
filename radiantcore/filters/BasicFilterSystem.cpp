@@ -550,8 +550,7 @@ bool BasicFilterSystem::isEntityVisible(const Entity& entity) const
     for (const auto& [name, filter] : _activeFilters)
     {
         // Check if the filter hides the entity class or any matching spawnargs
-        if (!filter->isEntityVisible(FilterType::ECLASS, entity)
-            || !filter->isEntityVisible(FilterType::SPAWNARG, entity))
+        if (!filter->isEntityVisible(entity))
         {
             return false;
         }

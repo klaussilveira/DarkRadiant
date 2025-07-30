@@ -73,16 +73,8 @@ public:
      */
     bool isVisible(const FilterType type, const std::string& name) const;
 
-    /** Test a given entity for visibility against all of the rules
-     * in this SceneFilter.
-     *
-     * @param type
-     * Class of the item to test - "texture", "entityclass" etc
-     *
-     * @param entity
-     * The entity to test
-     */
-    bool isEntityVisible(const FilterType type, const Entity& entity) const;
+    /// Test a given entity for visibility against all of the rules in this SceneFilter.
+    bool isEntityVisible(const Entity& entity) const;
 
     /** greebo: Returns the name of the toggle event associated to this filter.
     * It's lacking any spaces or other incompatible characters, compared to the actual

@@ -44,16 +44,13 @@ bool SceneFilter::isVisible(const FilterType type, const std::string& name) cons
     return visible;
 }
 
-bool SceneFilter::isEntityVisible(const FilterType type, const Entity& entity) const
+bool SceneFilter::isEntityVisible(const Entity& entity) const
 {
     bool visible = true; // default if unmodified by rules
 
     for (const FilterRule& rule: _rules)
     {
-        if (rule.type != type)
-            continue;
-
-        if (type == FilterType::ECLASS)
+        if (rule.type == FilterType::ECLASS)
         {
             scene::EntityClass::CPtr eclass = entity.getEntityClass();
             if (const std::regex ex(rule.match); std::regex_match(eclass->getDeclName(), ex))
@@ -61,7 +58,7 @@ bool SceneFilter::isEntityVisible(const FilterType type, const Entity& entity) c
                 visible = rule.show;
             }
         }
-        else if (type == FilterType::SPAWNARG)
+        else if (rule.type == FilterType::SPAWNARG)
         {
             if (const std::regex ex(rule.match);
                 std::regex_match(entity.getKeyValue(rule.entityKey), ex))
