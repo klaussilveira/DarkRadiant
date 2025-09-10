@@ -5,6 +5,7 @@
 #include "scene/Node.h"
 #include "imap.h"
 #include "scene/filters/SceneFilter.h"
+#include "scene/filters/FilterGroup.h"
 #include "scenelib.h"
 #include "xmlutil/Document.h"
 
@@ -165,6 +166,33 @@ TEST_F(FilterTest, ConstructFilterFromXMLNode)
     EXPECT_EQ(rules.at(0).type, FilterType::TEXTURE);
     EXPECT_EQ(rules.at(0).match, "textures/common/collision");
     EXPECT_EQ(rules.at(0).show, false);
+}
+
+TEST_F(FilterTest, ConstructFilterGroupFromXMLNode)
+{
+    xml::Document filterDoc;
+    xml::Node root = filterDoc.addTopLevelNode("root");
+
+    {
+        // Handle construction from an invalid node
+        xml::Node wrongNode = root.createChild("notAFilterGroup");
+        EXPECT_THROW(filters::FilterGroup group(wrongNode), std::logic_error);
+    }
+
+    // Create the XML node
+    xml::Node filterNode = root.createChild("filterGroup");
+    xml::storeKeyValue(filterNode, "name", "testGroup");
+    xml::Node childrenNode = filterNode.createChild("filters");
+    childrenNode.createChild("filter").setContent("Lights");
+    childrenNode.createChild("filter").setContent("Brushes");
+
+    // Construct the group
+    filters::FilterGroup group(filterNode);
+    EXPECT_EQ(group.getName(), "testGroup");
+    EXPECT_EQ(group.getFilterNames().size(), 2);
+    EXPECT_EQ(group.getFilterNames().count("NotIncluded"), 0);
+    EXPECT_EQ(group.getFilterNames().count("Lights"), 1);
+    EXPECT_EQ(group.getFilterNames().count("Brushes"), 1);
 }
 
 TEST_F(FilterTest, SaveFilterToXMLNode)
