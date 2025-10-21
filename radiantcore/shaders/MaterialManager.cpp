@@ -47,7 +47,7 @@ void MaterialManager::construct()
     _textureManager = std::make_shared<GLTextureManager>();
 
     // Add necessary preference pages
-    IPreferencePage& page = GlobalPreferenceSystem().getPage("Settings/Textures");
+    IPreferencePage& page = GlobalPreferenceSystem().getPage("Textures");
 
     // Quality combo
     const std::list<std::string> percentages = {"12.5%", "25%", "50%", "100%"};

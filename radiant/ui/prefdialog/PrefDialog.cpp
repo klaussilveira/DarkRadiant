@@ -71,19 +71,6 @@ void PrefDialog::showModal(const std::string& requestedPage)
 	{
 		showPage(requestedPage);
 	}
-	else
-	{
-		// To prevent starting up with the "Game" node selected,
-		// select the first page below the Settings path
-		for (const PageMap::value_type& p : _pages)
-		{
-			if (string::starts_with(p.first, _("Settings/")))
-			{
-				showPage(p.first);
-				break;
-			}
-		}
-	}
 
 	if (ShowModal() == wxID_OK)
 	{

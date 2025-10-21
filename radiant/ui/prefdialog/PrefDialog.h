@@ -33,7 +33,7 @@ public:
 
     /** greebo: Displays the page with the specified path.
      *
-     * @path: a string like "Settings/Patches"
+     * @path: a string like "Patches"
      */
     void showPage(const std::string& path);
 
