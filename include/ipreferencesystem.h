@@ -22,68 +22,61 @@ public:
 	virtual void setRegistryKey(const std::string& key) = 0;
 };
 
-class IPreferenceLabel :
-	public virtual IPreferenceItemBase
+class IPreferenceLabel: public virtual IPreferenceItemBase
 {
 public:
-	virtual ~IPreferenceLabel() {}
+    virtual ~IPreferenceLabel() {}
 };
 
-class IPreferenceEntry :
-	public virtual IPreferenceItemBase
+class IPreferenceEntry: public virtual IPreferenceItemBase
 {
 public:
-	virtual ~IPreferenceEntry() {}
+    virtual ~IPreferenceEntry() {}
 };
 
-class IPreferenceCheckbox :
-	public virtual IPreferenceItemBase
+class IPreferenceCheckbox: public virtual IPreferenceItemBase
 {
 public:
-	virtual ~IPreferenceCheckbox() {}
+    virtual ~IPreferenceCheckbox() {}
 };
 
-class IPreferenceCombobox :
-	public virtual IPreferenceItemBase
+class IPreferenceCombobox: public virtual IPreferenceItemBase
 {
 public:
-	virtual ~IPreferenceCombobox() {}
+    virtual ~IPreferenceCombobox() {}
 
-	virtual const ComboBoxValueList& getValues() const = 0;
-	virtual bool storeValueNotIndex() const = 0;
+    virtual const ComboBoxValueList& getValues() const = 0;
+    virtual bool storeValueNotIndex() const = 0;
 };
 
-class IPreferencePathEntry :
-	public virtual IPreferenceItemBase
+class IPreferencePathEntry: public virtual IPreferenceItemBase
 {
 public:
-	virtual ~IPreferencePathEntry() {}
+    virtual ~IPreferencePathEntry() {}
 
-	virtual bool browseDirectories() const = 0;
+    virtual bool browseDirectories() const = 0;
 };
 
-class IPreferenceSpinner :
-	public virtual IPreferenceItemBase
+class IPreferenceSpinner: public virtual IPreferenceItemBase
 {
 public:
-	virtual ~IPreferenceSpinner() {}
+    virtual ~IPreferenceSpinner() {}
 
-	virtual double getLower() = 0;
-	virtual double getUpper() = 0;
-	virtual int getFraction() = 0;
+    virtual double getLower() = 0;
+    virtual double getUpper() = 0;
+    virtual int getFraction() = 0;
 };
 
-class IPreferenceSlider :
-	public virtual IPreferenceItemBase
+class IPreferenceSlider: public virtual IPreferenceItemBase
 {
 public:
-	virtual ~IPreferenceSlider() {}
+    virtual ~IPreferenceSlider() {}
 
-	virtual double getLower() = 0;
-	virtual double getUpper() = 0;
-	virtual double getStepIncrement() = 0;
-	virtual double getPageIncrement() = 0;
-	virtual int getFactor() = 0;
+    virtual double getLower() = 0;
+    virtual double getUpper() = 0;
+    virtual double getStepIncrement() = 0;
+    virtual double getPageIncrement() = 0;
+    virtual int getFactor() = 0;
 };
 
 /* greebo: This is the interface the preference page has to provide for adding
@@ -97,7 +90,7 @@ public:
 	// Returns the title as displayed on top of the page's area
 	virtual const std::string& getTitle() const = 0;
 
-	/** 
+	/**
 	 * greebo: Allows to set a custom title of this page. The default title
 	 * upon construction is "guessed" by adding a " Settings" to
 	 * the page name, "Settings/Patch" gets assigned
@@ -121,7 +114,7 @@ public:
 	virtual void appendCheckBox(const std::string& label, const std::string& registryKey) = 0;
 
 	// greebo: This adds a horizontal slider and connects it to the given registryKey.
-	virtual void appendSlider(const std::string& name, const std::string& registryKey, 
+	virtual void appendSlider(const std::string& name, const std::string& registryKey,
 		double lower, double upper, double step_increment, double page_increment) = 0;
 
    /**
@@ -167,14 +160,19 @@ public:
 	virtual void appendLabel(const std::string& caption) = 0;
 };
 
+namespace preferences
+{
+    // Names of known pages
+    const std::string FILES_PAGE = _("Files");
+}
+
 const char* const MODULE_PREFERENCESYSTEM("PreferenceSystem");
 
-class IPreferenceSystem :
-	public RegisterableModule
+class IPreferenceSystem: public RegisterableModule
 {
 public:
-	/** 
-	 * greebo: Retrieves the page for the given path. If the page 
+	/**
+	 * greebo: Retrieves the page for the given path. If the page
 	 * doesn't exist yet, it will be created at the given path, for example:
 	 *
 	 * "Settings/Patch Settings"

@@ -53,32 +53,35 @@ void ModelFormatManager::initialiseModule(const IApplicationContext& ctx)
 
 void ModelFormatManager::postModuleInitialisation()
 {
-	if (!_exporters.empty())
-	{
-		// Construct and Register the patch-related preferences
-		IPreferencePage& page = GlobalPreferenceSystem().getPage(_("Model Export"));
+    if (!_exporters.empty())
+    {
+        // Construct and Register the patch-related preferences
+        IPreferencePage& page = GlobalPreferenceSystem().getPage(preferences::FILES_PAGE);
 
-		ComboBoxValueList choices;
+        ComboBoxValueList choices;
 
-		for (const ExporterMap::value_type& pair : _exporters)
-		{
-			choices.push_back(pair.first);
-		}
+        for (const ExporterMap::value_type& pair : _exporters)
+        {
+            choices.push_back(pair.first);
+        }
 
-		page.appendCombo(_("Export Format for scaled Models"), RKEY_DEFAULT_MODEL_EXPORT_FORMAT, choices, true);
+        page.appendCombo(
+            _("Export Format for scaled Models"), RKEY_DEFAULT_MODEL_EXPORT_FORMAT, choices,
+            true
+        );
 
-		// Register all exporter extensions to the FileTypeRegistry
+        // Register all exporter extensions to the FileTypeRegistry
 
-		for (const ExporterMap::value_type& pair : _exporters)
-		{
-			std::string extLower = string::to_lower_copy(pair.second->getExtension());
+        for (const ExporterMap::value_type& pair : _exporters)
+        {
+            std::string extLower = string::to_lower_copy(pair.second->getExtension());
 
-			GlobalFiletypes().registerPattern(filetype::TYPE_MODEL_EXPORT, FileTypePattern(
-				pair.second->getDisplayName(),
-				extLower,
-				"*." + extLower));
-		}
-	}
+            GlobalFiletypes().registerPattern(
+                filetype::TYPE_MODEL_EXPORT,
+                FileTypePattern(pair.second->getDisplayName(), extLower, "*." + extLower)
+            );
+        }
+    }
 }
 
 void ModelFormatManager::registerImporter(const IModelImporterPtr& importer)
