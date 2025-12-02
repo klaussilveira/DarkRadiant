@@ -30,7 +30,7 @@ class Quake3MapFormat :
 {
 public:
 	// RegisterableModule implementation
-	virtual const std::string& getName() const override;
+	std::string getName() const override;
 
 	virtual const std::string& getMapFormatName() const override;
 	virtual const std::string& getGameType() const override;
@@ -49,7 +49,7 @@ class Quake3AlternateMapFormat :
 {
 public:
     // RegisterableModule implementation
-    virtual const std::string& getName() const override;
+    std::string getName() const override;
 
     virtual const std::string& getMapFormatName() const override;
     virtual const std::string& getGameType() const override;

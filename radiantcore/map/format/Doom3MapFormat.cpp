@@ -9,7 +9,7 @@ namespace map
 {
 
 // RegisterableModule implementation
-const std::string& Doom3MapFormat::getName() const {
+std::string Doom3MapFormat::getName() const {
 	static std::string _name("Doom3MapLoader");
 	return _name;
 }

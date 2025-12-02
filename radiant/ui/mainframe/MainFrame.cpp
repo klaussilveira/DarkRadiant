@@ -45,7 +45,7 @@ namespace ui
 {
 
 // RegisterableModule implementation
-const std::string& MainFrame::getName() const
+std::string MainFrame::getName() const
 {
     static std::string _name(MODULE_MAINFRAME);
     return _name;

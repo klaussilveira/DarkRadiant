@@ -368,7 +368,7 @@ void OpenGLRenderSystem::setMergeModeEnabled(bool enabled)
 }
 
 // RegisterableModule implementation
-const std::string& OpenGLRenderSystem::getName() const
+std::string OpenGLRenderSystem::getName() const
 {
     static std::string _name(MODULE_RENDERSYSTEM);
     return _name;

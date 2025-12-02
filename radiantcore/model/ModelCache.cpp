@@ -127,7 +127,7 @@ sigc::signal<void> ModelCache::signal_modelsReloaded()
 }
 
 // RegisterableModule implementation
-const std::string& ModelCache::getName() const
+std::string ModelCache::getName() const
 {
 	static std::string _name(MODULE_MODELCACHE);
 	return _name;

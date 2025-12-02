@@ -100,7 +100,7 @@ ISoundShader::Ptr SoundManager::getSoundShader(const std::string& shaderName)
     return found ? found : _emptyShader;
 }
 
-const std::string& SoundManager::getName() const
+std::string SoundManager::getName() const
 {
 	static std::string _name(MODULE_SOUNDMANAGER);
 	return _name;

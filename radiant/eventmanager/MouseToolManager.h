@@ -1,7 +1,6 @@
 #pragma once
 
 #include <map>
-#include "imousetool.h"
 #include "imousetoolmanager.h"
 #include "MouseToolGroup.h"
 #include <wx/event.h>
@@ -36,7 +35,7 @@ public:
     MouseToolManager();
 
     // RegisterableModule implementation
-    const std::string& getName() const;
+    std::string getName() const;
     StringSet getDependencies() const;
     void initialiseModule(const IApplicationContext& ctx);
     void shutdownModule();

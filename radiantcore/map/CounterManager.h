@@ -50,7 +50,7 @@ public:
 
 	void onCounterChanged();
 
-	const std::string& getName() const override;
+	std::string getName() const override;
 };
 
 } // namespace map

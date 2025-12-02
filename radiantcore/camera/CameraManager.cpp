@@ -7,7 +7,7 @@
 namespace camera
 {
 
-const std::string& CameraManager::getName() const
+std::string CameraManager::getName() const
 {
 	static std::string _name(MODULE_CAMERA_MANAGER);
 	return _name;

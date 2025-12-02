@@ -125,7 +125,7 @@ public:
 	sigc::signal<void> signalForKey(const std::string& key) const override;
 
 	// RegisterableModule implementation
-	const std::string& getName() const override;
+	std::string getName() const override { return MODULE_XMLREGISTRY; }
 	void initialiseModule(const IApplicationContext& ctx) override;
 	void shutdownModule() override;
 

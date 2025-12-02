@@ -67,7 +67,7 @@ std::string FileTypeRegistry::getIconForExtension(const std::string& extension)
     return std::string();
 }
 
-const std::string& FileTypeRegistry::getName() const
+std::string FileTypeRegistry::getName() const
 {
 	static std::string _name(MODULE_FILETYPES);
 	return _name;

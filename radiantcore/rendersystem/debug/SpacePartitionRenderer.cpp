@@ -20,7 +20,7 @@ void SpacePartitionRenderer::toggle(const cmd::ArgumentList& args)
 	);
 }
 
-const std::string& SpacePartitionRenderer::getName() const
+std::string SpacePartitionRenderer::getName() const
 {
 	static std::string _name("SpacePartitionRenderer");
 	return _name;

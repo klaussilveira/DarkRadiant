@@ -77,7 +77,7 @@ int OpenGLModule::getFontHeight()
 	return _font ? static_cast<int>(_font->getLineHeight()) : 0;
 }
 
-const std::string& OpenGLModule::getName() const
+std::string OpenGLModule::getName() const
 {
 	static std::string _name(MODULE_OPENGL);
 	return _name;

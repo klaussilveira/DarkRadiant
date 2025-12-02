@@ -37,7 +37,7 @@ void InfoFileManager::foreachModule(const std::function<void(IMapInfoFileModule&
 	}
 }
 
-const std::string& InfoFileManager::getName() const
+std::string InfoFileManager::getName() const
 {
 	static std::string _name(MODULE_MAPINFOFILEMANAGER);
 	return _name;

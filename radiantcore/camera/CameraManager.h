@@ -19,7 +19,7 @@ private:
 
 public:
 	// RegisterableModule
-	const std::string& getName() const override;
+	std::string getName() const override;
 	StringSet getDependencies() const override;
 	void initialiseModule(const IApplicationContext& ctx) override;
 

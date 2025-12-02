@@ -948,7 +948,7 @@ void DeclarationManager::onFilesystemInitialised()
     reloadDeclarations();
 }
 
-const std::string& DeclarationManager::getName() const
+std::string DeclarationManager::getName() const
 {
     static std::string _name(MODULE_DECLMANAGER);
     return _name;

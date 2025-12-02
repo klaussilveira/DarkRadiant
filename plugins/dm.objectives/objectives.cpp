@@ -26,7 +26,7 @@ class ObjectivesEditorModule :
 {
 public:
 	// RegisterableModule implementation
-	virtual const std::string& getName() const {
+	std::string getName() const {
 		static std::string _name("ObjectivesEditor");
 		return _name;
 	}

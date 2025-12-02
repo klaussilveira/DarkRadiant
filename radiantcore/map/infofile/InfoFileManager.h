@@ -19,7 +19,7 @@ public:
 	void foreachModule(const std::function<void(IMapInfoFileModule&)>& functor) override;
 
 	// Module interface
-	const std::string& getName() const override;
+	std::string getName() const override;
 	void shutdownModule() override;
 };
 

@@ -28,7 +28,7 @@ EditingStopwatch::EditingStopwatch() :
 	_secondsEdited(0)
 {}
 
-const std::string& EditingStopwatch::getName() const
+std::string EditingStopwatch::getName() const
 {
 	static std::string _name(MODULE_EDITING_STOPWATCH);
 	return _name;

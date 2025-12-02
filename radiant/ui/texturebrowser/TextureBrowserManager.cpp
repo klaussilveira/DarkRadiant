@@ -102,7 +102,7 @@ void TextureBrowserManager::registerPreferencePage()
     page.appendCheckBox(_("Show \"Other Materials\""), RKEY_TEXTURES_SHOW_OTHER_MATERIALS);
 }
 
-const std::string& TextureBrowserManager::getName() const
+std::string TextureBrowserManager::getName() const
 {
     static std::string _name(MODULE_TEXTURE_BROWSER_MANAGER);
     return _name;

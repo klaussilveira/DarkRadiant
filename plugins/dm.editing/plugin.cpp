@@ -19,7 +19,7 @@ class EditingModule :
 {
 public:
 	// RegisterableModule implementation
-	const std::string& getName() const override
+	std::string getName() const override
     {
 		static std::string _name("DarkMod Editing");
 		return _name;

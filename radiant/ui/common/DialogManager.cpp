@@ -25,7 +25,7 @@ DialogManager::~DialogManager()
 	}
 }
 
-const std::string& DialogManager::getName() const
+std::string DialogManager::getName() const
 {
     static std::string _name(MODULE_DIALOGMANAGER);
     return _name;

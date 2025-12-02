@@ -89,7 +89,7 @@ IBrushSettings& BrushModuleImpl::getSettings()
 }
 
 // RegisterableModule implementation
-const std::string& BrushModuleImpl::getName() const {
+std::string BrushModuleImpl::getName() const {
 	static std::string _name(MODULE_BRUSHCREATOR);
 	return _name;
 }

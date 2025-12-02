@@ -18,7 +18,7 @@
 namespace textool
 {
 
-const std::string& TextureToolSelectionSystem::getName() const
+std::string TextureToolSelectionSystem::getName() const
 {
     static std::string _name(MODULE_TEXTOOL_SELECTIONSYSTEM);
     return _name;

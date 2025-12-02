@@ -53,7 +53,7 @@ MouseToolManager::MouseToolManager() :
 }
 
 // RegisterableModule implementation
-const std::string& MouseToolManager::getName() const
+std::string MouseToolManager::getName() const
 {
     static std::string _name(MODULE_MOUSETOOLMANAGER);
     return _name;

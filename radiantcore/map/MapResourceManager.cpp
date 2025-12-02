@@ -39,7 +39,7 @@ MapResourceManager::ExportEvent& MapResourceManager::signal_onResourceExported()
 	return _resourceExported;
 }
 
-const std::string& MapResourceManager::getName() const
+std::string MapResourceManager::getName() const
 {
 	static std::string _name(MODULE_MAPRESOURCEMANAGER);
 	return _name;

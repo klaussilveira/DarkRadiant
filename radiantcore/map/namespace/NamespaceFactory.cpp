@@ -9,7 +9,7 @@ INamespacePtr NamespaceFactory::createNamespace()
 }
 
 // RegisterableModule implementation
-const std::string& NamespaceFactory::getName() const
+std::string NamespaceFactory::getName() const
 {
 	static std::string _name(MODULE_NAMESPACE_FACTORY);
 	return _name;

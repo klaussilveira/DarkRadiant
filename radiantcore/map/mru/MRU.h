@@ -46,7 +46,7 @@ public:
 	// Saves the current list into the Registry.
 	void saveRecentFiles();
 
-	const std::string& getName() const override;
+	std::string getName() const override;
 	StringSet getDependencies() const override;
 	void initialiseModule(const IApplicationContext& ctx) override;
 	void shutdownModule() override;

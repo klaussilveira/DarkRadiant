@@ -101,7 +101,7 @@ std::set<MapFormatPtr> MapFormatManager::getMapFormatList(const std::string& ext
 }
 
 // RegisterableModule implementation
-const std::string& MapFormatManager::getName() const
+std::string MapFormatManager::getName() const
 {
 	static std::string _name(MODULE_MAPFORMATMANAGER);
 	return _name;

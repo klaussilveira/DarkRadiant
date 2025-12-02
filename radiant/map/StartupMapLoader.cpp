@@ -88,7 +88,7 @@ void StartupMapLoader::loadMapSafe(const std::string& mapToLoad)
 	});
 }
 
-const std::string& StartupMapLoader::getName() const
+std::string StartupMapLoader::getName() const
 {
 	static std::string _name("StartupMapLoader");
 	return _name;

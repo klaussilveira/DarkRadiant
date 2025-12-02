@@ -46,7 +46,7 @@ ArchiveTextFilePtr GitModule::openTextFile(const std::string& vcsUri)
     }
 }
 
-const std::string& GitModule::getName() const
+std::string GitModule::getName() const
 {
     static std::string _name("GitIntegration");
     return _name;

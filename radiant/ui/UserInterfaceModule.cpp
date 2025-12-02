@@ -99,7 +99,7 @@ namespace
     const char* const DESELECT_BY_FILTER_TEXT = N_( "Deselect by Filter" );
 }
 
-const std::string& UserInterfaceModule::getName() const
+std::string UserInterfaceModule::getName() const
 {
 	static std::string _name(MODULE_USERINTERFACE);
 	return _name;

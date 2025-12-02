@@ -3,7 +3,6 @@
 #include "iarchive.h"
 #include "ifilesystem.h"
 #include "itextstream.h"
-#include "parser/DefTokeniser.h"
 
 namespace md5
 {
@@ -39,7 +38,7 @@ IMD5AnimPtr MD5AnimationCache::getAnim(const std::string& vfsPath)
 	return anim;
 }
 
-const std::string& MD5AnimationCache::getName() const
+std::string MD5AnimationCache::getName() const
 {
 	static std::string _name(MODULE_ANIMATIONCACHE);
 	return _name;

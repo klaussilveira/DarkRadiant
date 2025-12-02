@@ -256,7 +256,7 @@ IEntitySettings& Doom3EntityModule::getSettings()
 }
 
 // RegisterableModule implementation
-const std::string& Doom3EntityModule::getName() const
+std::string Doom3EntityModule::getName() const
 {
 	static std::string _name(MODULE_ENTITY);
 	return _name;

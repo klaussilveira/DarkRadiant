@@ -33,7 +33,7 @@ public:
 	ImagePtr imageFromFile(const std::string& filename) const override;
 
     // RegisterableModule implementation
-    const std::string& getName() const override;
+    std::string getName() const override;
     StringSet getDependencies() const override;
     void initialiseModule(const IApplicationContext&) override;
 };

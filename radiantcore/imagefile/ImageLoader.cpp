@@ -121,7 +121,7 @@ ImagePtr ImageLoader::imageFromFile(const std::string& filename) const
     return image;
 }
 
-const std::string& ImageLoader::getName() const
+std::string ImageLoader::getName() const
 {
     static std::string _name(MODULE_IMAGELOADER);
     return _name;

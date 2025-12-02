@@ -136,7 +136,7 @@ std::list<AasFileInfo> AasFileManager::getAasFilesForMap(const std::string& mapP
     return list;
 }
 
-const std::string& AasFileManager::getName() const
+std::string AasFileManager::getName() const
 {
 	static std::string _name(MODULE_AASFILEMANAGER);
 	return _name;

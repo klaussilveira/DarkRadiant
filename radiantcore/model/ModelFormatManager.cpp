@@ -18,7 +18,7 @@
 namespace model
 {
 
-const std::string& ModelFormatManager::getName() const
+std::string ModelFormatManager::getName() const
 {
 	static std::string _name(MODULE_MODELFORMATMANAGER);
 	return _name;

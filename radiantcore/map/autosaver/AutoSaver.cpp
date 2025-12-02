@@ -296,7 +296,7 @@ void AutoMapSaver::onMapEvent(IMap::MapEvent ev)
 	};
 }
 
-const std::string& AutoMapSaver::getName() const
+std::string AutoMapSaver::getName() const
 {
 	static std::string _name(MODULE_AUTOSAVER);
 	return _name;

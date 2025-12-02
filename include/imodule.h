@@ -54,15 +54,10 @@ class IApplicationContext
 {
 public:
 
-    /**
-     * \brief
-     * Argument list type.
-     */
+    /// Argument list type.
     typedef std::vector<std::string> ArgumentList;
 
-    /**
-     * Destructor
-     */
+    /// Destructor
     virtual ~IApplicationContext() {}
 
     /// Return the path to the installed application
@@ -101,15 +96,11 @@ public:
     /// Return the list of command line arguments.
     virtual const ArgumentList& getCmdLineArgs() const = 0;
 
-    /**
-     * Retrieve a function pointer which can handle assertions and runtime errors
-     */
+    /// Retrieve a function pointer which can handle assertions and runtime errors
     virtual const ErrorHandlingFunction& getErrorHandlingFunction() const = 0;
 };
 
-/**
- * Set of strings for module dependencies.
- */
+/// Set of strings for module dependencies.
 typedef std::set<std::string> StringSet;
 
 /**
@@ -141,11 +132,13 @@ public:
     virtual ~RegisterableModule() {}
 
     /**
-     * Return the name of this module. This must be globally unique across all
-     * modules; the modulesystem will throw a logic_error if two modules attempt
-     * to register themselves with the same name.
+     * @brief Return the name of this module.
+     *
+     * The returned name must be globally unique across all modules; the modulesystem will
+     * throw a logic_error if two modules attempt to register themselves with the same
+     * name.
      */
-    virtual const std::string& getName() const = 0;
+    virtual std::string getName() const = 0;
 
     /**
      * @brief Return the set of dependencies for this module, if any.

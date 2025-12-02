@@ -801,7 +801,7 @@ void GameConnection::doUpdateMap()
 
 //-------------------------------------------------------------
 
-const std::string& GameConnection::getName() const
+std::string GameConnection::getName() const
 {
     static std::string _name("GameConnection");
     return _name;

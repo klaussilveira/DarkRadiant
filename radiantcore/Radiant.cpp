@@ -122,7 +122,7 @@ void Radiant::createLogFile()
 	}
 }
 
-const std::string& Radiant::getName() const
+std::string Radiant::getName() const
 {
 	static std::string _name(MODULE_RADIANT_CORE);
 	return _name;

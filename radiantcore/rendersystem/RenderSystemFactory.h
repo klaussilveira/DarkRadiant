@@ -13,7 +13,7 @@ public:
 	RenderSystemPtr createRenderSystem();
 
 	// RegisterableModule implementation
-	const std::string& getName() const;
+	std::string getName() const;
 };
 
 } // namespace

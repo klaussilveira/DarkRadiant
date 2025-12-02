@@ -12,7 +12,7 @@ RenderSystemPtr RenderSystemFactory::createRenderSystem()
     return std::make_shared<OpenGLRenderSystem>();
 }
 
-const std::string& RenderSystemFactory::getName() const
+std::string RenderSystemFactory::getName() const
 {
 	static std::string _name(MODULE_RENDERSYSTEMFACTORY);
 	return _name;

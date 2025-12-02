@@ -11,7 +11,7 @@ namespace map
 {
 
 // RegisterableModule implementation
-const std::string& Quake4MapFormat::getName() const
+std::string Quake4MapFormat::getName() const
 {
 	static std::string _name("Quake4MapLoader");
 	return _name;

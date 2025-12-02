@@ -963,7 +963,7 @@ void RadiantSelectionSystem::onSceneBoundsChanged()
     _requestWorkZoneRecalculation = true;
 }
 
-const std::string& RadiantSelectionSystem::getName() const
+std::string RadiantSelectionSystem::getName() const
 {
     static std::string _name(MODULE_SELECTIONSYSTEM);
     return _name;

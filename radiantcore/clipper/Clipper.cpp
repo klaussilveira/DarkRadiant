@@ -243,7 +243,7 @@ void Clipper::newClipPoint(const Vector3& point) {
 }
 
 // RegisterableModule implementation
-const std::string& Clipper::getName() const {
+std::string Clipper::getName() const {
 	static std::string _name(MODULE_CLIPPER);
 	return _name;
 }

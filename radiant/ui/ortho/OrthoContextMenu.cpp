@@ -577,7 +577,7 @@ void OrthoContextMenu::addSectionItems(int section, bool noSpacer)
     }
 }
 
-const std::string& OrthoContextMenu::getName() const
+std::string OrthoContextMenu::getName() const
 {
     static std::string _name(MODULE_ORTHOCONTEXTMENU);
     return _name;

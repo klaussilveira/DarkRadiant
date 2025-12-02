@@ -418,7 +418,7 @@ void RegionManager::initialiseCommands()
     GlobalCommandSystem().addCommand("RegionSetSelection", std::bind(&RegionManager::setRegionFromSelection, this, std::placeholders::_1));
 }
 
-const std::string& RegionManager::getName() const
+std::string RegionManager::getName() const
 {
 	static std::string _name(MODULE_REGION_MANAGER);
 	return _name;

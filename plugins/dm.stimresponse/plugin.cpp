@@ -16,7 +16,7 @@ class StimResponseModule :
 {
 public:
 	// RegisterableModule implementation
-	virtual const std::string& getName() const override
+	std::string getName() const override
 	{
 		static std::string _name("StimResponseEditor");
 		return _name;

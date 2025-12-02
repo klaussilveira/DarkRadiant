@@ -21,7 +21,7 @@ public:
 	IMD5AnimPtr getAnim(const std::string& vfsPath);
 
 	// RegisterableModule implementation
-	const std::string& getName() const;
+	std::string getName() const;
 	StringSet getDependencies() const;
 	void shutdownModule();
 };

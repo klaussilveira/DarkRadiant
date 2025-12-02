@@ -13,7 +13,7 @@ public:
 	void createContext();
 
 	// Inherited via RegisterableModule
-	const std::string& getName() const override
+	std::string getName() const override
 	{
 		static std::string _name("HeadlessOpenGLContext");
 		return _name;

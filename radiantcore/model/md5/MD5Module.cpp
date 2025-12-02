@@ -12,7 +12,7 @@ class MD5Module: public RegisterableModule
 {
 public:
 	// RegisterableModule implementation
-	const std::string& getName() const
+	std::string getName() const
 	{
 		static std::string _name("MD5Module");
 		return _name;

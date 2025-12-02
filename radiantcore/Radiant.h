@@ -24,7 +24,7 @@ public:
 
 	~Radiant();
 
-	const std::string& getName() const override;
+	std::string getName() const override;
 
 	applog::ILogWriter& getLogWriter() override;
 	module::ModuleRegistry& getModuleRegistry() override;

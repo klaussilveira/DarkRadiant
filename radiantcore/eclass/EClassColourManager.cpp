@@ -58,7 +58,7 @@ sigc::signal<void, const std::string&, bool>& EClassColourManager::sig_overrideC
     return _overrideChangedSignal;
 }
 
-const std::string& EClassColourManager::getName() const
+std::string EClassColourManager::getName() const
 {
     static std::string _name(MODULE_ECLASS_COLOUR_MANAGER);
     return _name;

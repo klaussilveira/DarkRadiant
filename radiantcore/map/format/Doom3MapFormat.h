@@ -16,7 +16,7 @@ class Doom3MapFormat :
 {
 public:
 	// RegisterableModule implementation
-	const std::string& getName() const;
+	std::string getName() const;
 	StringSet getDependencies() const;
 	void initialiseModule(const IApplicationContext& ctx);
 	void shutdownModule();

@@ -32,6 +32,6 @@ public:
     std::string getIconForExtension(const std::string& extension) override;
 
 	// RegisterableModule implementation
-	const std::string& getName() const override;
+	std::string getName() const override;
 	void initialiseModule(const IApplicationContext& ctx) override;
 };

@@ -30,7 +30,7 @@ public:
     std::list<AasFileInfo> getAasFilesForMap(const std::string& mapPath) override;
 
     // RegisterableModule implementation
-	const std::string& getName() const override;
+	std::string getName() const override;
 	StringSet getDependencies() const override;
 
 private:

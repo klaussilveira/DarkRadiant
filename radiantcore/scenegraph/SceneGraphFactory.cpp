@@ -10,7 +10,7 @@ GraphPtr SceneGraphFactory::createSceneGraph()
 	return std::make_shared<SceneGraph>();
 }
 
-const std::string& SceneGraphFactory::getName() const
+std::string SceneGraphFactory::getName() const
 {
 	static std::string _name(MODULE_SCENEGRAPHFACTORY);
 	return _name;

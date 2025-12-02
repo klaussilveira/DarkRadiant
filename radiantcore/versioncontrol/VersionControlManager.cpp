@@ -27,7 +27,7 @@ IVersionControlModule::Ptr VersionControlManager::getModuleForPrefix(const std::
     return existing != _registeredModules.end() ? existing->second : IVersionControlModule::Ptr();
 }
 
-const std::string& VersionControlManager::getName() const
+std::string VersionControlManager::getName() const
 {
     static std::string _name(vcs::MODULE_VERSION_CONTROL_MANAGER);
     return _name;

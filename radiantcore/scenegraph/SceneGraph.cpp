@@ -353,7 +353,7 @@ void SceneGraph::flushActionBuffer()
 }
 
 // RegisterableModule implementation
-const std::string& SceneGraphModule::getName() const
+std::string SceneGraphModule::getName() const
 {
 	static std::string _name(MODULE_SCENEGRAPH);
 	return _name;

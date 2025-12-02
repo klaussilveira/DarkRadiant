@@ -18,7 +18,7 @@ public:
     void foreachPage(const std::function<void(IPreferencePage&)>& functor) override;
 
     // RegisterableModule implementation
-    const std::string& getName() const override;
+    std::string getName() const override;
 
 };
 

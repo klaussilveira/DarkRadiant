@@ -18,7 +18,7 @@ TextureToolSceneGraph::TextureToolSceneGraph() :
     _activeMaterialNeedsRescan(true)
 {}
 
-const std::string& TextureToolSceneGraph::getName() const
+std::string TextureToolSceneGraph::getName() const
 {
     static std::string _name(MODULE_TEXTOOL_SCENEGRAPH);
     return _name;

@@ -129,7 +129,7 @@ void MRU::loadMRUMap(const cmd::ArgumentList& args)
 	});
 }
 
-const std::string& MRU::getName() const
+std::string MRU::getName() const
 {
 	static std::string _name(MODULE_MRU_MANAGER);
 	return _name;

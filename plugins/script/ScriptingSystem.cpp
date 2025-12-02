@@ -210,7 +210,7 @@ void ScriptingSystem::reloadScripts()
 }
 
 // RegisterableModule implementation
-const std::string& ScriptingSystem::getName() const
+std::string ScriptingSystem::getName() const
 {
 	static std::string _name(MODULE_SCRIPTING_SYSTEM);
 	return _name;

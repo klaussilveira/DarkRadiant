@@ -92,7 +92,7 @@ sigc::signal<void>& FavouritesManager::getSignalForType(const std::string& typeN
     return set->second.signal_setChanged();
 }
 
-const std::string& FavouritesManager::getName() const
+std::string FavouritesManager::getName() const
 {
     static std::string _name(MODULE_FAVOURITES_MANAGER);
     return _name;

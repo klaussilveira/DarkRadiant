@@ -17,7 +17,7 @@ std::size_t PortableMapFormat::Version = 1;
 const char* PortableMapFormat::Name = PORTABLE_MAP_FORMAT_NAME;
 
 // RegisterableModule implementation
-const std::string& PortableMapFormat::getName() const
+std::string PortableMapFormat::getName() const
 {
 	static std::string _name(typeid(PortableMapFormat).name());
 	return _name;

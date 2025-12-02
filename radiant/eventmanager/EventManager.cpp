@@ -46,7 +46,7 @@ inline bool signatureIsEmptyOrOptional(const cmd::Signature& signature)
 }
 
 // RegisterableModule implementation
-const std::string& EventManager::getName() const
+std::string EventManager::getName() const
 {
 	static std::string _name(MODULE_EVENTMANAGER);
 	return _name;

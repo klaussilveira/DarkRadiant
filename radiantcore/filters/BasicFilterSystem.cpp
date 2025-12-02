@@ -538,7 +538,7 @@ void BasicFilterSystem::updateShaders()
 }
 
 // RegisterableModule implementation
-const std::string& BasicFilterSystem::getName() const
+std::string BasicFilterSystem::getName() const
 {
     static std::string _name(MODULE_FILTERSYSTEM);
     return _name;

@@ -66,7 +66,7 @@ void EClassManager::reloadDefs()
 }
 
 // RegisterableModule implementation
-const std::string& EClassManager::getName() const
+std::string EClassManager::getName() const
 {
 	static std::string _name(MODULE_ECLASSMANAGER);
 	return _name;

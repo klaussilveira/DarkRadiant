@@ -4,12 +4,10 @@
 #include "gui/GuiManager.h"
 
 // General
-#include "debugging/debugging.h"
 #include "i18n.h"
 
 // Modules
 #include "icommandsystem.h"
-#include "scene/Entity.h"
 #include "ifilesystem.h"
 #include "ifonts.h"
 #include "igame.h"
@@ -28,7 +26,7 @@ class GuiModule :
 {
 public:
 	// RegisterableModule implementation
-	const std::string& getName() const override
+	std::string getName() const override
 	{
 		static std::string _name("GUI Editing");
 		return _name;

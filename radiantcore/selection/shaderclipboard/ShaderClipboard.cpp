@@ -199,7 +199,7 @@ void ShaderClipboard::onMapEvent(IMap::MapEvent ev)
 	};
 }
 
-const std::string& ShaderClipboard::getName() const
+std::string ShaderClipboard::getName() const
 {
 	static std::string _name(MODULE_SHADERCLIPBOARD);
 	return _name;

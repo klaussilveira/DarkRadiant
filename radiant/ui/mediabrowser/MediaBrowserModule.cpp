@@ -36,7 +36,7 @@ class MediaBrowserModule :
     public RegisterableModule
 {
 public:
-    const std::string& getName() const override
+    std::string getName() const override
     {
         static std::string _name("MediaBrowser");
         return _name;

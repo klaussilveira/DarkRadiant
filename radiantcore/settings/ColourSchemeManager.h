@@ -45,7 +45,7 @@ public:
 	void restoreColourSchemes() override;
 	void emitEclassOverrides() override;
 
-	const std::string& getName() const override;
+	std::string getName() const override;
 	StringSet getDependencies() const override;
 	void initialiseModule(const IApplicationContext& ctx) override;
 

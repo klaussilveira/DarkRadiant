@@ -3,7 +3,6 @@
 #include "itextstream.h"
 #include "iregistry.h"
 #include "iradiant.h"
-#include "debugging/debugging.h"
 #include "command/ExecutionFailure.h"
 #include "command/ExecutionNotPossible.h"
 #include "messages/CommandExecutionFailed.h"
@@ -27,7 +26,7 @@ namespace
 }
 
 // RegisterableModule implementation
-const std::string& CommandSystem::getName() const {
+std::string CommandSystem::getName() const {
 	static std::string _name(MODULE_COMMANDSYSTEM);
 	return _name;
 }

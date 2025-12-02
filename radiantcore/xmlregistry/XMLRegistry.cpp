@@ -5,10 +5,7 @@
 #include "itextstream.h"
 
 #include "os/file.h"
-#include "os/path.h"
-
 #include "version.h"
-#include "string/string.h"
 #include "string/encoding.h"
 #include "module/StaticModule.h"
 #include "settings/SettingsManager.h"
@@ -275,12 +272,6 @@ void XMLRegistry::loadUserFileFromSettingsPath(const settings::SettingsManager& 
 }
 
 // RegisterableModule implementation
-const std::string& XMLRegistry::getName() const
-{
-    static std::string _name(MODULE_XMLREGISTRY);
-    return _name;
-}
-
 void XMLRegistry::initialiseModule(const IApplicationContext& ctx)
 {
     // Load the XML files from the runtime data directory

@@ -18,7 +18,7 @@ public:
     IVersionControlModule::Ptr getModuleForPrefix(const std::string& prefix) override;
 
     // RegisterableModule implementation
-    const std::string& getName() const override;
+    std::string getName() const override;
 };
 
 }

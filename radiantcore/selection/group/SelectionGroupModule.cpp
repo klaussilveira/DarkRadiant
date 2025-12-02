@@ -1,5 +1,3 @@
-#include <functional>
-
 #include "iselectiongroup.h"
 #include "icommandsystem.h"
 #include "imap.h"
@@ -13,11 +11,10 @@
 namespace selection
 {
 
-class SelectionGroupModule :
-	public ISelectionGroupModule
+class SelectionGroupModule: public ISelectionGroupModule
 {
 public:
-	const std::string & getName() const override
+	std::string  getName() const override
 	{
 		static std::string _name(MODULE_SELECTIONGROUPMODULE);
 		return _name;

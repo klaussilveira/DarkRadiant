@@ -1,13 +1,10 @@
 #include "GridManager.h"
 
 #include <iostream>
-#include <map>
 #include "itextstream.h"
-#include "debugging/debugging.h"
 #include "imodule.h"
 #include "icommandsystem.h"
 #include "ipreferencesystem.h"
-#include "string/string.h"
 
 #include "registry/registry.h"
 #include "i18n.h"
@@ -31,7 +28,7 @@ GridManager::GridManager() :
 	_activeGridSize(GRID_8)
 {}
 
-const std::string& GridManager::getName() const
+std::string GridManager::getName() const
 {
 	static std::string _name(MODULE_GRID);
 	return _name;

@@ -78,7 +78,7 @@ const std::string& Quake3MapFormat::getGameType() const
     return _gameType;
 }
 
-const std::string& Quake3MapFormat::getName() const
+std::string Quake3MapFormat::getName() const
 {
     static std::string _name("Quake3MapLoader");
     return _name;
@@ -103,7 +103,7 @@ const std::string& Quake3AlternateMapFormat::getGameType() const
     return _gameType;
 }
 
-const std::string& Quake3AlternateMapFormat::getName() const
+std::string Quake3AlternateMapFormat::getName() const
 {
     static std::string _name("Quake3AlternateMapLoader");
     return _name;

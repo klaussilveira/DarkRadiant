@@ -27,7 +27,7 @@ PreferencePage& PreferenceSystem::getRootPage()
 }
 
 // RegisterableModule implementation
-const std::string& PreferenceSystem::getName() const
+std::string PreferenceSystem::getName() const
 {
     static std::string _name(MODULE_PREFERENCESYSTEM);
     return _name;

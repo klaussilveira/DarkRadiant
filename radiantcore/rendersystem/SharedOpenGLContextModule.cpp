@@ -47,7 +47,7 @@ sigc::signal<void>& SharedOpenGLContextModule::signal_sharedContextDestroyed()
 }
 
 // RegisterableModule implementation
-const std::string& SharedOpenGLContextModule::getName() const
+std::string SharedOpenGLContextModule::getName() const
 {
 	static std::string _name(MODULE_SHARED_GL_CONTEXT);
 	return _name;

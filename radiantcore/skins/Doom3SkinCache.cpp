@@ -6,6 +6,7 @@
 #include "module/StaticModule.h"
 #include "decl/DeclarationCreator.h"
 #include "decl/DeclLib.h"
+#include "skins/Doom3ModelSkin.h"
 
 namespace skins
 {
@@ -118,7 +119,7 @@ sigc::signal<void> Doom3SkinCache::signal_skinsReloaded()
 	return _sigSkinsReloaded;
 }
 
-const std::string& Doom3SkinCache::getName() const
+std::string Doom3SkinCache::getName() const
 {
 	static std::string _name(MODULE_MODELSKINCACHE);
 	return _name;

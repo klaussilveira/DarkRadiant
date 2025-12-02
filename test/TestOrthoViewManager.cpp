@@ -43,7 +43,7 @@ OrthoOrientation TestOrthoViewManager::getActiveViewType() const
 void TestOrthoViewManager::setActiveViewType(OrthoOrientation viewType)
 {}
 
-const std::string& TestOrthoViewManager::getName() const
+std::string TestOrthoViewManager::getName() const
 {
     static std::string _name(MODULE_ORTHOVIEWMANAGER);
     return _name;

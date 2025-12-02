@@ -15,7 +15,7 @@ FontManager::FontManager() :
 	_curLanguage("english")
 {}
 
-const std::string& FontManager::getName() const
+std::string FontManager::getName() const
 {
 	static std::string _name(MODULE_FONTMANAGER);
 	return _name;

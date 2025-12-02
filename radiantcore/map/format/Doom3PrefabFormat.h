@@ -14,9 +14,9 @@ class Doom3PrefabFormat :
 {
 public:
 	// Override some RegisterableModule implementation
-	virtual const std::string& getName() const;
-	virtual void initialiseModule(const IApplicationContext& ctx);
-	virtual void shutdownModule();
+	std::string getName() const;
+	void initialiseModule(const IApplicationContext& ctx);
+	void shutdownModule();
 
 	virtual const std::string& getMapFormatName() const;
 	virtual bool allowInfoFileCreation() const;

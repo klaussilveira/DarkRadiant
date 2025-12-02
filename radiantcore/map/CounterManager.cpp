@@ -58,7 +58,7 @@ void CounterManager::onCounterChanged()
 }
 
 // RegisterableModule implementation
-const std::string& CounterManager::getName() const
+std::string CounterManager::getName() const
 {
 	static std::string _name(MODULE_COUNTER);
 	return _name;

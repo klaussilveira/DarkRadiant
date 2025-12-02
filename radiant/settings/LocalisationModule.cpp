@@ -10,7 +10,7 @@
 namespace settings
 {
 
-const std::string& LocalisationModule::getName() const
+std::string LocalisationModule::getName() const
 {
 	static std::string _name("LocalisationModule");
 	return _name;

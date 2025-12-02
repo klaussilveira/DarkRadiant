@@ -22,7 +22,7 @@ class PicoModelModule :
 {
 public:
 	// RegisterableModule implementation
-	const std::string& getName() const
+	std::string getName() const
 	{
 		static std::string _name("PicoModelModule");
 		return _name;

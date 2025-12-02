@@ -43,7 +43,7 @@ public:
 	sigc::signal<void> signal_modelsReloaded() override;
 
 	// RegisterableModule implementation
-	const std::string& getName() const override;
+	std::string getName() const override;
 	StringSet getDependencies() const override;
 	void initialiseModule(const IApplicationContext& ctx) override;
 	void shutdownModule() override;

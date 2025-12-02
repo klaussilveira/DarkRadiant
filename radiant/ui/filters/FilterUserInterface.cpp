@@ -13,7 +13,7 @@
 namespace ui
 {
 
-const std::string& FilterUserInterface::getName() const
+std::string FilterUserInterface::getName() const
 {
 	static std::string _name("FilterUserInterface");
 	return _name;

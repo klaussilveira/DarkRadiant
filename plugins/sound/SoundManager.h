@@ -2,9 +2,7 @@
 
 #include "SoundShader.h"
 #include "SoundPlayer.h"
-
 #include "isound.h"
-#include "icommandsystem.h"
 
 namespace sound
 {
@@ -34,7 +32,7 @@ public:
     float getSoundFileDuration(const std::string& vfsPath) override;
 
 	// RegisterableModule implementation
-	const std::string& getName() const override;
+	std::string getName() const override;
 	StringSet getDependencies() const override;
 	void initialiseModule(const IApplicationContext& ctx) override;
 };

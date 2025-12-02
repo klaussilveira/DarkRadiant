@@ -70,7 +70,7 @@ public:
     FileInfo getFileInfo(const std::string& vfsRelativePath) override;
 
 	// RegisterableModule implementation
-	const std::string& getName() const override;
+	std::string getName() const override;
 	void shutdownModule() override;
 
 private:

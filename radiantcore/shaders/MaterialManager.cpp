@@ -293,7 +293,7 @@ void MaterialManager::reloadImages()
     });
 }
 
-const std::string& MaterialManager::getName() const
+std::string MaterialManager::getName() const
 {
     static std::string _name(MODULE_SHADERSYSTEM);
     return _name;

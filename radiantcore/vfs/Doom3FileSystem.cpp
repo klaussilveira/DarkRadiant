@@ -402,7 +402,7 @@ const SearchPaths& Doom3FileSystem::getVfsSearchPaths()
 }
 
 // RegisterableModule implementation
-const std::string& Doom3FileSystem::getName() const
+std::string Doom3FileSystem::getName() const
 {
     static std::string _name(MODULE_VIRTUALFILESYSTEM);
     return _name;
