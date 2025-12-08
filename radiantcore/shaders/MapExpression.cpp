@@ -5,13 +5,12 @@
 
 #include <iostream>
 
-#include "shaders/MaterialManager.h"
 #include "string/convert.h"
 #include "math/FloatTools.h" // contains float_to_integer() helper
 #include "math/Vector3.h"
 
 #include "RGBAImage.h"
-#include "textures/HeightmapCreator.h"
+#include "scene/textures/HeightmapCreator.h"
 #include "scene/textures/TextureManipulator.h"
 #include "string/predicate.h"
 #include "ShaderTemplate.h"
@@ -122,7 +121,7 @@ ImagePtr MapExpression::getResampled(const ImagePtr& input, std::size_t width, s
         ImagePtr resampled (new image::RGBAImage(width, height));
 
         // Resample the texture to match the dimensions of the first image
-        GetShaderSystem()->getTextureManipulator().resampleTexture(
+        GlobalMaterialManager().getTextureManipulator().resampleTexture(
             input->getPixels(),
             input->getWidth(), input->getHeight(),
             resampled->getPixels(),

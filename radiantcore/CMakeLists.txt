@@ -284,7 +284,6 @@ add_library(radiantcore MODULE
             shaders/ExpressionSlots.cpp
             shaders/MapExpression.cpp
             shaders/MaterialSourceGenerator.cpp
-            shaders/ShaderExpression.cpp
             shaders/ShaderLibrary.cpp
             shaders/ShaderTemplate.cpp
             shaders/TableDefinition.cpp

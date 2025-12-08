@@ -1,6 +1,6 @@
 #include "ExpressionSlots.h"
 
-#include "ShaderExpression.h"
+#include "scene/shaders/ShaderExpression.h"
 
 namespace shaders
 {

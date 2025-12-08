@@ -1,12 +1,9 @@
 #pragma once
 
 #include <vector>
-#include "ishaders.h"
 
 #include "math/Vector4.h"
-#include "MapExpression.h"
-#include "NamedBindable.h"
-#include "ShaderExpression.h"
+#include "scene/shaders/NamedBindable.h"
 #include "ExpressionSlots.h"
 #include "TextureMatrix.h"
 
@@ -17,14 +14,9 @@ typedef std::pair<std::string, std::string> StringPair;
 
 class ShaderTemplate;
 
-/**
- * \brief
- * Implementation of IShaderLayer for Doom 3 shaders.
- */
-class Doom3ShaderLayer : 
-    public IEditableShaderLayer
+/// Implementation of IShaderLayer for Doom 3 shaders.
+class Doom3ShaderLayer: public IEditableShaderLayer
 {
-private:
     // The owning material template
     ShaderTemplate& _material;
 
@@ -97,7 +89,7 @@ private:
 public:
     using Ptr = std::shared_ptr<Doom3ShaderLayer>;
 
-    Doom3ShaderLayer(ShaderTemplate& material, 
+    Doom3ShaderLayer(ShaderTemplate& material,
                      IShaderLayer::Type type = IShaderLayer::BLEND,
                      const NamedBindablePtr& btex = NamedBindablePtr());
 
@@ -123,7 +115,7 @@ public:
     const shaders::IShaderExpression::Ptr& getAlphaTestExpression() const override;
     void setAlphaTestExpressionFromString(const std::string& expression) override;
 
-    // True if the condition for this stage is fulfilled 
+    // True if the condition for this stage is fulfilled
     // (expressions must have been evaluated before this call)
     bool isVisible() const override;
 
@@ -213,7 +205,7 @@ public:
      * component out of the 4 available ones (R, G, B, A) or one of the two combos RGB and RGBA.
      */
     void setColourExpression(ColourComponentSelector comp, const IShaderExpression::Ptr& expr);
-    
+
     void appendTransformation(const Transformation& transform) override;
     const std::vector<Transformation>& getTransformations() override;
     Matrix4 getTextureTransform() override;
@@ -245,9 +237,9 @@ public:
 
     Vector4 getVertexParmValue(int parm) const override;
     const VertexParm& getVertexParm(int parm) const override;
-    
+
     int getNumVertexParms() const override;
-    
+
     void addVertexParm(const VertexParm& parm);
 
     // Fragment program name

@@ -5,7 +5,7 @@
 #include <memory>
 
 #include "ishaderexpression.h"
-#include "NamedBindable.h"
+#include "scene/shaders/NamedBindable.h"
 #include "parser/DefTokeniser.h"
 
 using parser::DefTokeniser;

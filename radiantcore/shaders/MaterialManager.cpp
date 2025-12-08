@@ -1,5 +1,6 @@
 #include "MaterialManager.h"
 #include "MaterialSourceGenerator.h"
+#include "TableDefinition.h"
 
 #include "i18n.h"
 #include "ideclmanager.h"
@@ -10,7 +11,7 @@
 #include "ifiletypes.h"
 #include "igame.h"
 
-#include "ShaderExpression.h"
+#include "scene/shaders/ShaderExpression.h"
 #include "scene/textures/TextureManipulator.h"
 #include "module/StaticModule.h"
 #include "decl/DeclarationCreator.h"

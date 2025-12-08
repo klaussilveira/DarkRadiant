@@ -26,6 +26,7 @@ add_library(scene
             SelectableNode.cpp
             SelectionIndex.cpp
             ShaderParms.cpp
+            shaders/ShaderExpression.cpp
             textures/TextureManipulator.cpp
             TargetableNode.cpp
             TargetKey.cpp

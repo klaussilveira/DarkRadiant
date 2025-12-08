@@ -17,7 +17,7 @@
 #include "string/trim.h"
 #include <iostream>
 
-#include "ShaderExpression.h"
+#include "scene/shaders/ShaderExpression.h"
 #include "util/ScopedBoolLock.h"
 #include "materials/ParseLib.h"
 

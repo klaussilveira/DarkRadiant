@@ -11,8 +11,6 @@
 namespace shaders
 {
 
-class TextureManipulator;
-
 /// Implementation of the IMaterialManager
 class MaterialManager: public IMaterialManager
 {
@@ -76,7 +74,7 @@ public:
     GLTextureManager& getTextureManager();
 
     /// Return the texture manipulator
-    TextureManipulator& getTextureManipulator();
+    TextureManipulator& getTextureManipulator() override;
 
     // Get default textures for D,B,S layers
     TexturePtr getDefaultInteractionTexture(IShaderLayer::Type t) override;
