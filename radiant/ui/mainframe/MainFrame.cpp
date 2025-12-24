@@ -1,6 +1,7 @@
 #include "MainFrame.h"
 
 #include "i18n.h"
+#include "iscript.h"
 #include "ui/iusercontrol.h"
 #include "imap.h"
 #include "ui/ieventmanager.h"
@@ -10,16 +11,18 @@
 #include "iregistry.h"
 #include "iradiant.h"
 
-#include "xyview/GlobalXYWnd.h"
 #include "camera/CameraWndManager.h"
 
 #include "registry/registry.h"
+#include "ui/iuserinterface.h"
 #include "wxutil/MultiMonitor.h"
 #include "wxutil/sourceview/SourceView.h"
 
 #include "ui/mainframe/ScreenUpdateBlocker.h"
 #include "ui/mainframe/AuiLayout.h"
 #include "ui/mainframe/TopLevelFrame.h"
+#include "ui/script/ScriptMenu.h"
+#include "ui/script/ScriptPanel.h"
 
 #include "module/StaticModule.h"
 #include "messages/ApplicationShutdownRequest.h"
@@ -247,7 +250,7 @@ void MainFrame::setDesktopCompositionEnabled(bool enabled)
 void MainFrame::construct()
 {
     // Create the base window and the default widgets
-    create();
+    createWidgets();
 
     // Emit the "constructed" signal to give modules a chance to register
     // their UI parts. Clear the signal afterwards.
@@ -290,6 +293,11 @@ void MainFrame::removeLayout()
 void MainFrame::preDestructionCleanup()
 {
     saveWindowPosition();
+
+    // Clear up Python widgets
+    GlobalUserInterface().unregisterControl(ScriptPanel::Name);
+    _scriptsReloadedConn.disconnect();
+    _scriptMenu.reset();
 
     // Free the layout
     if (_layout)
@@ -436,7 +444,7 @@ wxToolBar* MainFrame::getToolbar(IMainFrame::Toolbar type)
     return _topLevelWindow->getToolbar(type);
 }
 
-void MainFrame::create()
+void MainFrame::createWidgets()
 {
     // Create the topmost window first
     createTopLevelWindow();
@@ -447,9 +455,42 @@ void MainFrame::create()
     addControl(UserControl::Console, ControlSettings{ Location::PropertyPanel, true });
     addControl(UserControl::EntityInspector, ControlSettings{ Location::PropertyPanel, true });
     addControl(UserControl::MediaBrowser, ControlSettings{ Location::PropertyPanel, true });
+    addPythonControls();
 
     // Load the previous window settings from the registry
     restoreWindowPosition();
+}
+
+void MainFrame::addPythonControls()
+{
+    // Bind the reloadscripts command to the menu
+    GlobalMenuManager().insert(
+        "main/file/reloadDecls",     // menu location path
+        "ReloadScripts", // name
+        menu::ItemType::Item,   // type
+        _("Reload Scripts"),    // caption
+        "icon_script.png",  // icon
+        "ReloadScripts" // event name
+    );
+
+    _scriptMenu = std::make_shared<ScriptMenu>();
+
+    addControl(ScriptPanel::Name, IMainFrame::ControlSettings
+    {
+        IMainFrame::Location::PropertyPanel,
+        true
+    });
+    GlobalUserInterface().registerControl(std::make_shared<ScriptPanel>());
+
+    _scriptsReloadedConn = GlobalScriptingSystem().signal_onScriptsReloaded().connect(
+        sigc::mem_fun(this, &MainFrame::onScriptsReloaded)
+    );
+}
+
+void MainFrame::onScriptsReloaded()
+{
+    _scriptMenu.reset();
+    _scriptMenu = std::make_shared<ScriptMenu>();
 }
 
 void MainFrame::saveWindowPosition()
