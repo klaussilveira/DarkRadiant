@@ -19,6 +19,7 @@
 #include "gamelib.h"
 #include "CameraSettings.h"
 #include "CameraWndManager.h"
+#include "settings/RenderingQualitySettings.h"
 #include "render/RenderableCollectionWalker.h"
 #include "wxutil/MouseButton.h"
 #include "registry/adaptors.h"
@@ -661,10 +662,7 @@ void CamWnd::drawGrid()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    // Anti-aliasing
-    glEnable(GL_MULTISAMPLE);
-    glEnable(GL_LINE_SMOOTH);
-    glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+    GlobalRenderingQualitySettings().applyLineSmoothing();
 
     glEnable(GL_POLYGON_OFFSET_LINE);
     glPolygonOffset(-1.0f, -1.0f);
@@ -751,8 +749,7 @@ void CamWnd::drawGrid()
 
     // Clear grid state
     glDisable(GL_POLYGON_OFFSET_LINE);
-    glDisable(GL_LINE_SMOOTH);
-    glDisable(GL_MULTISAMPLE);
+    GlobalRenderingQualitySettings().disableSmoothing();
     glDisable(GL_BLEND);
     glDisable(GL_DEPTH_TEST);
 }

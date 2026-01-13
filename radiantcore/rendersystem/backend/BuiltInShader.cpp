@@ -2,7 +2,14 @@
 
 #include "string/convert.h"
 #include "icolourscheme.h"
+#include "registry/registry.h"
 #include "../OpenGLRenderSystem.h"
+
+namespace
+{
+    const std::string RKEY_VERTEX_POINT_SIZE = "user/ui/renderingQuality/vertexPointSize";
+    const std::string RKEY_VERTEX_POINT_SMOOTH = "user/ui/renderingQuality/vertexPointSmooth";
+}
 
 namespace render
 {
@@ -233,7 +240,10 @@ void BuiltInShader::construct()
 
     case BuiltInShaderType::BigPoint:
     {
-        constructPointShader(pass, 6, OpenGLState::SORT_POINT_FIRST);
+        int pointSize = registry::getValue<int>(RKEY_VERTEX_POINT_SIZE, 8);
+        if (pointSize < 4) pointSize = 4;
+        if (pointSize > 16) pointSize = 16;
+        constructPointShader(pass, static_cast<float>(pointSize), OpenGLState::SORT_POINT_FIRST);
         break;
     }
 
