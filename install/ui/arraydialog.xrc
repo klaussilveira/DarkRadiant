@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+  <object class="wxPanel" name="ArrayDialogMainPanel">
+    <style>wxTAB_TRAVERSAL</style>
+    <object class="wxBoxSizer" name="">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <flag>wxALL</flag>
+        <border>5</border>
+        <option>0</option>
+        <object class="wxStaticText" name="ArrayDialogTopLabel">
+          <label>Create Array of Selected Objects</label>
+          <wrap>-1</wrap>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <flag>wxEXPAND|wxLEFT|wxRIGHT</flag>
+        <border>12</border>
+        <option>0</option>
+        <object class="wxFlexGridSizer" name="">
+          <vgap>6</vgap>
+          <hgap>12</hgap>
+          <growablerows></growablerows>
+          <growablecols>1</growablecols>
+          <rows>3</rows>
+          <cols>2</cols>
+          <object class="sizeritem">
+            <flag>wxALIGN_CENTER_VERTICAL</flag>
+            <border>0</border>
+            <option>0</option>
+            <object class="wxStaticText" name="">
+              <label>Number of Copies:</label>
+              <wrap>-1</wrap>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <flag>wxEXPAND</flag>
+            <border>0</border>
+            <option>1</option>
+            <object class="wxSpinCtrl" name="ArrayDialogCount">
+              <style>wxSP_ARROW_KEYS</style>
+              <value>3</value>
+              <min>1</min>
+              <max>100</max>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <flag>wxALIGN_CENTER_VERTICAL</flag>
+            <border>0</border>
+            <option>0</option>
+            <object class="wxStaticText" name="">
+              <label>Arrangement:</label>
+              <wrap>-1</wrap>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <flag>wxEXPAND</flag>
+            <border>0</border>
+            <option>1</option>
+            <object class="wxChoice" name="ArrayDialogArrangement">
+              <selection>0</selection>
+              <content>
+                <item>Line</item>
+                <item>Circle</item>
+                <item>Spline</item>
+              </content>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <flag>wxALIGN_CENTER_VERTICAL</flag>
+            <border>0</border>
+            <option>0</option>
+            <object class="wxStaticText" name="ArrayDialogOffsetMethodLabel">
+              <label>Offset Method:</label>
+              <wrap>-1</wrap>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <flag>wxEXPAND</flag>
+            <border>0</border>
+            <option>1</option>
+            <object class="wxChoice" name="ArrayDialogOffsetMethod">
+              <selection>0</selection>
+              <content>
+                <item>Fixed</item>
+                <item>Relative</item>
+                <item>Endpoint</item>
+              </content>
+            </object>
+          </object>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <flag>wxALL|wxEXPAND</flag>
+        <border>12</border>
+        <option>0</option>
+        <object class="wxStaticBoxSizer" name="ArrayDialogLineOffsetSizer">
+          <orient>wxVERTICAL</orient>
+          <label>Offset</label>
+          <object class="sizeritem">
+            <flag>wxBOTTOM|wxEXPAND|wxLEFT|wxRIGHT|wxTOP</flag>
+            <border>12</border>
+            <option>0</option>
+            <object class="wxFlexGridSizer" name="">
+              <vgap>6</vgap>
+              <hgap>12</hgap>
+              <growablerows></growablerows>
+              <growablecols>1</growablecols>
+              <rows>3</rows>
+              <cols>2</cols>
+              <object class="sizeritem">
+                <flag>wxALIGN_CENTER_VERTICAL</flag>
+                <border>0</border>
+                <option>0</option>
+                <object class="wxStaticText" name="">
+                  <label>X:</label>
+                  <wrap>-1</wrap>
+                </object>
+              </object>
+              <object class="sizeritem">
+                <flag>wxEXPAND</flag>
+                <border>0</border>
+                <option>1</option>
+                <object class="wxTextCtrl" name="ArrayDialogOffsetX">
+                  <value>64</value>
+                  <maxlength>0</maxlength>
+                </object>
+              </object>
+              <object class="sizeritem">
+                <flag>wxALIGN_CENTER_VERTICAL</flag>
+                <border>0</border>
+                <option>0</option>
+                <object class="wxStaticText" name="">
+                  <label>Y:</label>
+                  <wrap>-1</wrap>
+                </object>
+              </object>
+              <object class="sizeritem">
+                <flag>wxEXPAND</flag>
+                <border>0</border>
+                <option>1</option>
+                <object class="wxTextCtrl" name="ArrayDialogOffsetY">
+                  <value>0</value>
+                  <maxlength>0</maxlength>
+                </object>
+              </object>
+              <object class="sizeritem">
+                <flag>wxALIGN_CENTER_VERTICAL</flag>
+                <border>0</border>
+                <option>0</option>
+                <object class="wxStaticText" name="">
+                  <label>Z:</label>
+                  <wrap>-1</wrap>
+                </object>
+              </object>
+              <object class="sizeritem">
+                <flag>wxEXPAND</flag>
+                <border>0</border>
+                <option>1</option>
+                <object class="wxTextCtrl" name="ArrayDialogOffsetZ">
+                  <value>0</value>
+                  <maxlength>0</maxlength>
+                </object>
+              </object>
+            </object>
+          </object>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxEXPAND</flag>
+        <border>12</border>
+        <option>0</option>
+        <object class="wxStaticBoxSizer" name="ArrayDialogCircleSizer">
+          <orient>wxVERTICAL</orient>
+          <label>Circle</label>
+          <object class="sizeritem">
+            <flag>wxBOTTOM|wxEXPAND|wxLEFT|wxRIGHT|wxTOP</flag>
+            <border>12</border>
+            <option>0</option>
+            <object class="wxFlexGridSizer" name="">
+              <vgap>6</vgap>
+              <hgap>12</hgap>
+              <growablerows></growablerows>
+              <growablecols>1</growablecols>
+              <rows>4</rows>
+              <cols>2</cols>
+              <object class="sizeritem">
+                <flag>wxALIGN_CENTER_VERTICAL</flag>
+                <border>0</border>
+                <option>0</option>
+                <object class="wxStaticText" name="">
+                  <label>Radius:</label>
+                  <wrap>-1</wrap>
+                </object>
+              </object>
+              <object class="sizeritem">
+                <flag>wxEXPAND</flag>
+                <border>0</border>
+                <option>1</option>
+                <object class="wxTextCtrl" name="ArrayDialogRadius">
+                  <value>128</value>
+                  <maxlength>0</maxlength>
+                </object>
+              </object>
+              <object class="sizeritem">
+                <flag>wxALIGN_CENTER_VERTICAL</flag>
+                <border>0</border>
+                <option>0</option>
+                <object class="wxStaticText" name="">
+                  <label>Start Angle:</label>
+                  <wrap>-1</wrap>
+                </object>
+              </object>
+              <object class="sizeritem">
+                <flag>wxEXPAND</flag>
+                <border>0</border>
+                <option>1</option>
+                <object class="wxTextCtrl" name="ArrayDialogStartAngle">
+                  <value>0</value>
+                  <maxlength>0</maxlength>
+                </object>
+              </object>
+              <object class="sizeritem">
+                <flag>wxALIGN_CENTER_VERTICAL</flag>
+                <border>0</border>
+                <option>0</option>
+                <object class="wxStaticText" name="">
+                  <label>End Angle:</label>
+                  <wrap>-1</wrap>
+                </object>
+              </object>
+              <object class="sizeritem">
+                <flag>wxEXPAND</flag>
+                <border>0</border>
+                <option>1</option>
+                <object class="wxTextCtrl" name="ArrayDialogEndAngle">
+                  <value>360</value>
+                  <maxlength>0</maxlength>
+                </object>
+              </object>
+              <object class="sizeritem">
+                <flag>wxTOP</flag>
+                <border>6</border>
+                <option>0</option>
+                <object class="wxCheckBox" name="ArrayDialogCircleRotate">
+                  <label>Rotate copies to face center</label>
+                  <checked>1</checked>
+                </object>
+              </object>
+            </object>
+          </object>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxEXPAND</flag>
+        <border>12</border>
+        <option>0</option>
+        <object class="wxStaticBoxSizer" name="ArrayDialogSplineSizer">
+          <orient>wxVERTICAL</orient>
+          <label>Spline</label>
+          <object class="sizeritem">
+            <flag>wxBOTTOM|wxEXPAND|wxLEFT|wxRIGHT|wxTOP</flag>
+            <border>12</border>
+            <option>1</option>
+            <object class="wxFlexGridSizer" name="fgSizer5">
+              <vgap>0</vgap>
+              <hgap>0</hgap>
+              <growablerows></growablerows>
+              <growablecols></growablecols>
+              <rows>0</rows>
+              <cols>1</cols>
+              <object class="sizeritem">
+                <flag>wxTOP</flag>
+                <border>6</border>
+                <option>0</option>
+                <object class="wxCheckBox" name="ArrayDialogSplineRotate">
+                  <label>Align copies to spline direction</label>
+                  <checked>1</checked>
+                </object>
+              </object>
+              <object class="sizeritem">
+                <flag>wxEXPAND</flag>
+                <border>0</border>
+                <option>0</option>
+                <object class="wxStaticText" name="ArrayDialogSplineInfo">
+                  <label>Select a curve entity along with objects to array.</label>
+                  <wrap>300</wrap>
+                </object>
+              </object>
+            </object>
+          </object>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxEXPAND</flag>
+        <border>12</border>
+        <option>0</option>
+        <object class="wxStaticBoxSizer" name="ArrayDialogRotationSizer">
+          <orient>wxVERTICAL</orient>
+          <label>Rotation (degrees per copy)</label>
+          <object class="sizeritem">
+            <flag>wxBOTTOM|wxEXPAND|wxLEFT|wxRIGHT|wxTOP</flag>
+            <border>12</border>
+            <option>0</option>
+            <object class="wxFlexGridSizer" name="">
+              <vgap>6</vgap>
+              <hgap>12</hgap>
+              <growablerows></growablerows>
+              <growablecols>1</growablecols>
+              <rows>3</rows>
+              <cols>2</cols>
+              <object class="sizeritem">
+                <flag>wxALIGN_CENTER_VERTICAL</flag>
+                <border>0</border>
+                <option>0</option>
+                <object class="wxStaticText" name="">
+                  <label>X:</label>
+                  <wrap>-1</wrap>
+                </object>
+              </object>
+              <object class="sizeritem">
+                <flag>wxEXPAND</flag>
+                <border>0</border>
+                <option>1</option>
+                <object class="wxTextCtrl" name="ArrayDialogRotateX">
+                  <value>0</value>
+                  <maxlength>0</maxlength>
+                </object>
+              </object>
+              <object class="sizeritem">
+                <flag>wxALIGN_CENTER_VERTICAL</flag>
+                <border>0</border>
+                <option>0</option>
+                <object class="wxStaticText" name="">
+                  <label>Y:</label>
+                  <wrap>-1</wrap>
+                </object>
+              </object>
+              <object class="sizeritem">
+                <flag>wxEXPAND</flag>
+                <border>0</border>
+                <option>1</option>
+                <object class="wxTextCtrl" name="ArrayDialogRotateY">
+                  <value>0</value>
+                  <maxlength>0</maxlength>
+                </object>
+              </object>
+              <object class="sizeritem">
+                <flag>wxALIGN_CENTER_VERTICAL</flag>
+                <border>0</border>
+                <option>0</option>
+                <object class="wxStaticText" name="">
+                  <label>Z:</label>
+                  <wrap>-1</wrap>
+                </object>
+              </object>
+              <object class="sizeritem">
+                <flag>wxEXPAND</flag>
+                <border>0</border>
+                <option>1</option>
+                <object class="wxTextCtrl" name="ArrayDialogRotateZ">
+                  <value>0</value>
+                  <maxlength>0</maxlength>
+                </object>
+              </object>
+            </object>
+          </object>
+        </object>
+      </object>
+    </object>
+  </object>
+</resource>

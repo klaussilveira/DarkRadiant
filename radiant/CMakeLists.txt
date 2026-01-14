@@ -27,6 +27,7 @@ add_executable(darkradiant
                ui/aas/AasVisualisationPanel.cpp
                ui/aas/RenderableAasFile.cpp
                ui/about/AboutDialog.cpp
+               ui/array/ArrayDialog.cpp
                ui/brush/FindBrush.cpp
                ui/brush/QuerySidesDialog.cpp
                ui/commandlist/CommandList.cpp

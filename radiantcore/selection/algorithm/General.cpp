@@ -930,6 +930,12 @@ void floorSelection(const cmd::ArgumentList& args)
 void registerCommands()
 {
     GlobalCommandSystem().addCommand("CloneSelection", cloneSelected);
+    GlobalCommandSystem().addCommand("ArrayCloneSelectionLine", arrayCloneSelectedLineCmd,
+        { cmd::ARGTYPE_INT, cmd::ARGTYPE_INT, cmd::ARGTYPE_VECTOR3, cmd::ARGTYPE_VECTOR3 });
+    GlobalCommandSystem().addCommand("ArrayCloneSelectionCircle", arrayCloneSelectedCircleCmd,
+        { cmd::ARGTYPE_INT, cmd::ARGTYPE_DOUBLE, cmd::ARGTYPE_DOUBLE, cmd::ARGTYPE_DOUBLE, cmd::ARGTYPE_INT });
+    GlobalCommandSystem().addCommand("ArrayCloneSelectionSpline", arrayCloneSelectedSplineCmd,
+        { cmd::ARGTYPE_INT, cmd::ARGTYPE_INT });
     GlobalCommandSystem().addCommand("DeleteSelection", deleteSelectionCmd);
     GlobalCommandSystem().addCommand("ParentSelection", parentSelection);
     GlobalCommandSystem().addCommand("ParentSelectionToWorldspawn", parentSelectionToWorldspawn);

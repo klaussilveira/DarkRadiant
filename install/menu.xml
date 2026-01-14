@@ -169,7 +169,7 @@
 
 		<menuSeparator />
 		<menuItem name="transformDialog" caption="Rotate and scale..." command="ToggleTransformPanel" />
-
+		<menuItem name="array" caption="Create &amp;Array..." command="ArrayDialog" />
 	</subMenu>
 
 	<subMenu name="grid" caption="&amp;Grid">
