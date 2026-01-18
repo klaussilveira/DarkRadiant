@@ -31,7 +31,7 @@ private:
 	static ClassNameStorePtr& InstancePtr();
 
 	// EntityClassVisitor implementation
-	virtual void visit(const IEntityClassPtr& eclass);
+	virtual void visit(const scene::EntityClass::Ptr& eclass);
 
 	// Traverses all entities and fills the store
 	void populateListStore();

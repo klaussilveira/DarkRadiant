@@ -88,13 +88,13 @@ void StartupMapLoader::loadMapSafe(const std::string& mapToLoad)
 	});
 }
 
-const std::string& StartupMapLoader::getName() const
+std::string StartupMapLoader::getName() const
 {
 	static std::string _name("StartupMapLoader");
 	return _name;
 }
 
-const StringSet& StartupMapLoader::getDependencies() const
+StringSet StartupMapLoader::getDependencies() const
 {
 	static StringSet _dependencies;
 

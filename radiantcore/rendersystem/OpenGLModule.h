@@ -35,8 +35,8 @@ public:
 	int getFontHeight() override;
 
 	// RegisterableModule implementation
-    const std::string& getName() const override;
-    const StringSet& getDependencies() const override;
+    std::string getName() const override;
+    StringSet getDependencies() const override;
     void initialiseModule(const IApplicationContext& ctx) override;
     void shutdownModule() override;
 
@@ -45,7 +45,7 @@ private:
 	void sharedContextDestroyed();
 
 #ifdef ENABLE_KHR_DEBUG_EXTENSION
-    static void onGLDebugMessage(GLenum source, GLenum type, GLuint id, GLenum severity, 
+    static void onGLDebugMessage(GLenum source, GLenum type, GLuint id, GLenum severity,
         GLsizei length, const GLchar* message, const void* userParam);
 #endif
 };

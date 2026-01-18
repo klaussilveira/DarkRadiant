@@ -12,7 +12,6 @@
 #include "AIHeadPropertyEditor.h"
 #include "AIVocalSetPropertyEditor.h"
 #include "FixupMapDialog.h"
-#include "AIEditingPanel.h"
 #include "MissionInfoEditDialog.h"
 
 class EditingModule :
@@ -20,13 +19,13 @@ class EditingModule :
 {
 public:
 	// RegisterableModule implementation
-	const std::string& getName() const override
+	std::string getName() const override
     {
 		static std::string _name("DarkMod Editing");
 		return _name;
 	}
 
-	const StringSet& getDependencies() const override
+	StringSet getDependencies() const override
     {
         static StringSet _dependencies
         {
@@ -72,7 +71,7 @@ public:
 			"MissionInfoEditDialog"
 		);
 
-		GlobalMainFrame().signal_MainFrameConstructed().connect([this] 
+		GlobalMainFrame().signal_MainFrameConstructed().connect([this]
         {
             GlobalMainFrame().addControl(ui::AIEditingControl::Name, IMainFrame::ControlSettings
             {

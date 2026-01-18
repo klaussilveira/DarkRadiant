@@ -298,7 +298,7 @@ Entity* AIEditingPanel::getEntityFromSelection()
 	{
 		GlobalSelectionSystem().foreachSelected([&] (const scene::INodePtr& node)
 		{
-			Entity* candidate = Node_getEntity(node);
+			Entity* candidate = node->tryGetEntity();
 
 			if (candidate != nullptr && candidate->isOfType("atdm:ai_base"))
 			{

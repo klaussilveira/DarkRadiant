@@ -18,13 +18,13 @@
 namespace textool
 {
 
-const std::string& TextureToolSelectionSystem::getName() const
+std::string TextureToolSelectionSystem::getName() const
 {
     static std::string _name(MODULE_TEXTOOL_SELECTIONSYSTEM);
     return _name;
 }
 
-const StringSet& TextureToolSelectionSystem::getDependencies() const
+StringSet TextureToolSelectionSystem::getDependencies() const
 {
     static StringSet _dependencies{ MODULE_TEXTOOL_SCENEGRAPH,
         MODULE_COMMANDSYSTEM, MODULE_RADIANT_CORE };

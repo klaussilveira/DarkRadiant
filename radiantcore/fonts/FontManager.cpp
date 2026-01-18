@@ -2,10 +2,8 @@
 
 #include "ifilesystem.h"
 #include "ishaders.h"
-#include "itextstream.h"
 #include "iregistry.h"
 #include "igame.h"
-#include "os/path.h"
 #include "module/StaticModule.h"
 
 #include "FontLoader.h"
@@ -17,13 +15,13 @@ FontManager::FontManager() :
 	_curLanguage("english")
 {}
 
-const std::string& FontManager::getName() const
+std::string FontManager::getName() const
 {
 	static std::string _name(MODULE_FONTMANAGER);
 	return _name;
 }
 
-const StringSet& FontManager::getDependencies() const
+StringSet FontManager::getDependencies() const
 {
     static StringSet _dependencies
     {

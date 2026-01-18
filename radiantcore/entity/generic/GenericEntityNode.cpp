@@ -7,96 +7,96 @@
 namespace entity
 {
 
-GenericEntityNode::GenericEntityNode(const IEntityClassPtr& eclass) :
-	EntityNode(eclass),
-	m_originKey(std::bind(&GenericEntityNode::originChanged, this)),
-	m_origin(ORIGINKEY_IDENTITY),
-	m_angleKey(std::bind(&GenericEntityNode::angleChanged, this)),
-	m_angle(AngleKey::IDENTITY),
-	m_rotationKey(std::bind(&GenericEntityNode::rotationChanged, this)),
+GenericEntityNode::GenericEntityNode(const scene::EntityClass::Ptr& eclass) :
+    EntityNode(eclass),
+    m_originKey(std::bind(&GenericEntityNode::originChanged, this)),
+    m_origin(ORIGINKEY_IDENTITY),
+    m_angleKey(std::bind(&GenericEntityNode::angleChanged, this)),
+    m_angle(AngleKey::IDENTITY),
+    m_rotationKey(std::bind(&GenericEntityNode::rotationChanged, this)),
     _renderableArrow(*this),
-    _renderableBox(*this, localAABB(), m_origin),
-	_allow3Drotations(_spawnArgs.getKeyValue("editor_rotatable") == "1"),
-	_3DdirectionUsesUp(eclass->isOfType("func_emitter") || eclass->isOfType("func_splat"))
+    _renderableBox(*this, &m_aabb_local, m_origin),
+    _allow3Drotations(_spawnArgs.getKeyValue("editor_rotatable") == "1"),
+    _3DdirectionUsesUp(eclass->isOfType("func_emitter") || eclass->isOfType("func_splat"))
 {}
 
 GenericEntityNode::GenericEntityNode(const GenericEntityNode& other) :
-	EntityNode(other),
-	Snappable(other),
-	m_originKey(std::bind(&GenericEntityNode::originChanged, this)),
-	m_origin(ORIGINKEY_IDENTITY),
-	m_angleKey(std::bind(&GenericEntityNode::angleChanged, this)),
-	m_angle(AngleKey::IDENTITY),
-	m_rotationKey(std::bind(&GenericEntityNode::rotationChanged, this)),
+    EntityNode(other),
+    Snappable(other),
+    m_originKey(std::bind(&GenericEntityNode::originChanged, this)),
+    m_origin(ORIGINKEY_IDENTITY),
+    m_angleKey(std::bind(&GenericEntityNode::angleChanged, this)),
+    m_angle(AngleKey::IDENTITY),
+    m_rotationKey(std::bind(&GenericEntityNode::rotationChanged, this)),
     _renderableArrow(*this),
-    _renderableBox(*this, localAABB(), m_origin),
-	_allow3Drotations(_spawnArgs.getKeyValue("editor_rotatable") == "1"),
-	_3DdirectionUsesUp(other._eclass->isOfType("func_emitter") || other._eclass->isOfType("func_splat"))
+    _renderableBox(*this, &m_aabb_local, m_origin),
+    _allow3Drotations(_spawnArgs.getKeyValue("editor_rotatable") == "1"),
+    _3DdirectionUsesUp(other._eclass->isOfType("func_emitter") || other._eclass->isOfType("func_splat"))
 {}
 
-std::shared_ptr<GenericEntityNode> GenericEntityNode::Create(const IEntityClassPtr& eclass)
+std::shared_ptr<GenericEntityNode> GenericEntityNode::Create(const scene::EntityClass::Ptr& eclass)
 {
-	auto instance = std::make_shared<GenericEntityNode>(eclass);
-	instance->construct();
+    auto instance = std::make_shared<GenericEntityNode>(eclass);
+    instance->construct();
 
-	return instance;
+    return instance;
 }
 
 void GenericEntityNode::construct()
 {
-	EntityNode::construct();
+    EntityNode::construct();
 
-	m_aabb_local = _spawnArgs.getEntityClass()->getBounds();
-	m_ray.origin = m_aabb_local.getOrigin();
-	m_ray.direction = Vector3(1, 0, 0);
-	m_rotation.setIdentity();
+    m_aabb_local = _spawnArgs.getEntityClass()->getBounds();
+    m_ray.origin = m_aabb_local.getOrigin();
+    m_ray.direction = Vector3(1, 0, 0);
+    m_rotation.setIdentity();
 
-	if (!_allow3Drotations)
-	{
-		// Ordinary rotation (2D around z axis), use angle key observer
+    if (!_allow3Drotations)
+    {
+        // Ordinary rotation (2D around z axis), use angle key observer
         static_assert(std::is_base_of_v<sigc::trackable, AngleKey>);
-		observeKey("angle", sigc::mem_fun(m_angleKey, &AngleKey::angleChanged));
-	}
-	else
-	{
-		// Full 3D rotations allowed, observe both keys using the rotation key observer
+        observeKey("angle", sigc::mem_fun(m_angleKey, &AngleKey::angleChanged));
+    }
+    else
+    {
+        // Full 3D rotations allowed, observe both keys using the rotation key observer
         static_assert(std::is_base_of_v<sigc::trackable, RotationKey>);
-		observeKey("angle", sigc::mem_fun(m_rotationKey, &RotationKey::angleChanged));
+        observeKey("angle", sigc::mem_fun(m_rotationKey, &RotationKey::angleChanged));
         observeKey("rotation", sigc::mem_fun(m_rotationKey, &RotationKey::rotationChanged));
     }
 
     static_assert(std::is_base_of_v<sigc::trackable, OriginKey>);
-	observeKey("origin", sigc::mem_fun(m_originKey, &OriginKey::onKeyValueChanged));
+    observeKey("origin", sigc::mem_fun(m_originKey, &OriginKey::onKeyValueChanged));
 }
 
 void GenericEntityNode::snapto(float snap)
 {
-	m_originKey.snap(snap);
-	m_originKey.write(_spawnArgs);
+    m_originKey.snap(snap);
+    m_originKey.write(_spawnArgs);
 }
 
-const AABB& GenericEntityNode::localAABB() const
+AABB GenericEntityNode::localAABB() const
 {
-	return m_aabb_local;
+    return m_aabb_local;
 }
 
 void GenericEntityNode::testSelect(Selector& selector, SelectionTest& test)
 {
-	EntityNode::testSelect(selector, test);
+    EntityNode::testSelect(selector, test);
 
-	test.BeginMesh(localToWorld());
+    test.BeginMesh(localToWorld());
 
-	SelectionIntersection best;
-	aabb_testselect(m_aabb_local, test, best);
-	if(best.isValid()) {
-		selector.addIntersection(best);
-	}
+    SelectionIntersection best;
+    aabb_testselect(m_aabb_local, test, best);
+    if(best.isValid()) {
+        selector.addIntersection(best);
+    }
 }
 
 scene::INodePtr GenericEntityNode::clone() const
 {
-	auto node = std::shared_ptr<GenericEntityNode>(new GenericEntityNode(*this));
-	node->construct();
+    auto node = std::shared_ptr<GenericEntityNode>(new GenericEntityNode(*this));
+    node->construct();
     node->constructClone(*this);
 
     // When we clone objects which allow 3D rotations, if it uses angle instead of rotation
@@ -111,7 +111,7 @@ scene::INodePtr GenericEntityNode::clone() const
         }
     }
 
-	return node;
+    return node;
 }
 
 void GenericEntityNode::onPreRender(const VolumeTest& volume)
@@ -142,100 +142,100 @@ void GenericEntityNode::setRenderSystem(const RenderSystemPtr& renderSystem)
 
 const Vector3& GenericEntityNode::getDirection() const
 {
-	return m_ray.direction;
+    return m_ray.direction;
 }
 
 void GenericEntityNode::rotate(const Quaternion& rotation)
 {
-	if (_allow3Drotations)
-	{
+    if (_allow3Drotations)
+    {
         m_rotation.rotate(rotation);
-	}
-	else
-	{
-		m_angle = AngleKey::getRotatedValue(m_angle, rotation);
-	}
+    }
+    else
+    {
+        m_angle = AngleKey::getRotatedValue(m_angle, rotation);
+    }
 }
 
 void GenericEntityNode::_revertTransform()
 {
-	m_origin = m_originKey.get();
+    m_origin = m_originKey.get();
 
-	if (_allow3Drotations)
-	{
-		m_rotation = m_rotationKey.m_rotation;
-	}
-	else
-	{
-		m_angle = m_angleKey.getValue();
-	}
+    if (_allow3Drotations)
+    {
+        m_rotation = m_rotationKey.m_rotation;
+    }
+    else
+    {
+        m_angle = m_angleKey.getValue();
+    }
 }
 
 void GenericEntityNode::_freezeTransform()
 {
-	m_originKey.set(m_origin);
-	m_originKey.write(_spawnArgs);
+    m_originKey.set(m_origin);
+    m_originKey.write(_spawnArgs);
 
-	if (_allow3Drotations)
-	{
-		m_rotationKey.m_rotation = m_rotation;
-		m_rotationKey.m_rotation.writeToEntity(&_spawnArgs);
-	}
-	else
-	{
-		m_angleKey.setValue(m_angle);
-		m_angleKey.write(&_spawnArgs);
-	}
+    if (_allow3Drotations)
+    {
+        m_rotationKey.m_rotation = m_rotation;
+        m_rotationKey.m_rotation.writeToEntity(&_spawnArgs);
+    }
+    else
+    {
+        m_angleKey.setValue(m_angle);
+        m_angleKey.write(&_spawnArgs);
+    }
 }
 
 void GenericEntityNode::updateTransform()
 {
-	setLocalToParent(Matrix4::getTranslation(m_origin));
+    setLocalToParent(Matrix4::getTranslation(m_origin));
 
-	if (_allow3Drotations)
-	{
-		// Almost all entities should use forward (x-axis)
-		Vector3 axis = g_vector3_axis_x;
-		if (_3DdirectionUsesUp)
-		{
-			axis = g_vector3_axis_z;
-		}
-		m_ray.direction = m_rotation.getMatrix4().transformDirection(Vector3(axis));
-	}
-	else
-	{
+    if (_allow3Drotations)
+    {
+        // Almost all entities should use forward (x-axis)
+        Vector3 axis = g_vector3_axis_x;
+        if (_3DdirectionUsesUp)
+        {
+            axis = g_vector3_axis_z;
+        }
+        m_ray.direction = m_rotation.getMatrix4().transformDirection(Vector3(axis));
+    }
+    else
+    {
         m_ray.direction = Matrix4::getRotationAboutZ(math::Degrees(m_angle))
                                   .transformDirection(Vector3(1, 0, 0));
     }
 
     updateRenderables();
-	transformChanged();
+    transformChanged();
 }
 
 void GenericEntityNode::_onTransformationChanged()
 {
-	if (getType() == TRANSFORM_PRIMITIVE)
-	{
+    if (getType() == TRANSFORM_PRIMITIVE)
+    {
         _revertTransform();
 
-		m_origin += getTranslation();
-		rotate(getRotation());
+        m_origin += getTranslation();
+        rotate(getRotation());
 
-		updateTransform();
-	}
+        updateTransform();
+    }
 }
 
 void GenericEntityNode::_applyTransformation()
 {
-	if (getType() == TRANSFORM_PRIMITIVE)
-	{
-		_revertTransform();
+    if (getType() == TRANSFORM_PRIMITIVE)
+    {
+        _revertTransform();
 
-		m_origin += getTranslation();
-		rotate(getRotation());
+        m_origin += getTranslation();
+        rotate(getRotation());
 
         _freezeTransform();
-	}
+    }
 }
 
 const Vector3& GenericEntityNode::getUntransformedOrigin()
@@ -321,26 +321,26 @@ void GenericEntityNode::onVisibilityChanged(bool isVisibleNow)
 
 void GenericEntityNode::originChanged()
 {
-	m_origin = m_originKey.get();
-	updateTransform();
+    m_origin = m_originKey.get();
+    updateTransform();
 }
 
 void GenericEntityNode::angleChanged()
 {
-	// Ignore the angle key when 3D rotations are enabled
-	if (_allow3Drotations) return;
+    // Ignore the angle key when 3D rotations are enabled
+    if (_allow3Drotations) return;
 
-	m_angle = m_angleKey.getValue();
-	updateTransform();
+    m_angle = m_angleKey.getValue();
+    updateTransform();
 }
 
 void GenericEntityNode::rotationChanged()
 {
-	// Ignore the rotation key, when in 2D "angle" mode
-	if (!_allow3Drotations) return;
+    // Ignore the rotation key, when in 2D "angle" mode
+    if (!_allow3Drotations) return;
 
-	m_rotation = m_rotationKey.m_rotation;
-	updateTransform();
+    m_rotation = m_rotationKey.m_rotation;
+    updateTransform();
 }
 
 void GenericEntityNode::updateRenderables()

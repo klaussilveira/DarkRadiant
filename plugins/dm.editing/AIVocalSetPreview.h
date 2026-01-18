@@ -26,7 +26,7 @@ private:
 	wxStaticText* _statusLabel;
 
 	// The currently "previewed" vocal set
-	IEntityClassPtr _vocalSetDef;
+	scene::EntityClass::Ptr _vocalSetDef;
 
 	typedef std::vector<std::string> SoundShaderList;
 	SoundShaderList _setShaders;
@@ -37,7 +37,7 @@ public:
 	/**
 	 * greebo: Sets the vocal set to preview. Set NULL to disable this panel.
 	 */
-	void setVocalSetEclass(const IEntityClassPtr& vocalSetDef);
+	void setVocalSetEclass(const scene::EntityClass::Ptr& vocalSetDef);
 
 private:
 	/**

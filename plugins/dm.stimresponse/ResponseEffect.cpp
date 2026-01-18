@@ -8,7 +8,7 @@
 ResponseEffect::ResponseEffect() :
 	_state(true),
 	_origState(_state),
-	_eclass(IEntityClassPtr()),
+	_eclass(scene::EntityClass::Ptr()),
 	_argumentListBuilt(false),
 	_inherited(false)
 {}
@@ -142,7 +142,7 @@ std::string ResponseEffect::getCaption() const {
 		   : "";
 }
 
-IEntityClassPtr ResponseEffect::getEClass() const {
+scene::EntityClass::Ptr ResponseEffect::getEClass() const {
 	return _eclass;
 }
 

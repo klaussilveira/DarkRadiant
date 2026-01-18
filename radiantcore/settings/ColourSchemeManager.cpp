@@ -198,13 +198,13 @@ Vector3 ColourSchemeManager::getColour(const std::string& colourName)
 	return _colourSchemes[_activeScheme].getColour(colourName).getColour();
 }
 
-const std::string& ColourSchemeManager::getName() const
+std::string ColourSchemeManager::getName() const
 {
 	static std::string _name(MODULE_COLOURSCHEME_MANAGER);
 	return _name;
 }
 
-const StringSet& ColourSchemeManager::getDependencies() const
+StringSet ColourSchemeManager::getDependencies() const
 {
 	static StringSet _dependencies;
 

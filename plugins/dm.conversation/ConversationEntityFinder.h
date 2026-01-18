@@ -69,7 +69,7 @@ public:
 	bool pre(const scene::INodePtr& node)
 	{
 		// Get the entity and check the classname
-		Entity* entity = Node_getEntity(node);
+		Entity* entity = node->tryGetEntity();
 
 		// Check for conversation entity or worldspawn
 		if (entity != NULL && entity->getKeyValue("classname") == _className)

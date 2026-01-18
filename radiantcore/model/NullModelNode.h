@@ -41,7 +41,7 @@ public:
 	void setRenderSystem(const RenderSystemPtr& renderSystem) override;
 
 	// Bounded implementation
-	const AABB& localAABB() const override;
+	AABB localAABB() const override;
 
 protected:
     void createRenderableSurfaces() override;

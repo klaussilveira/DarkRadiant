@@ -1,6 +1,6 @@
 #include "Algorithm.h"
 
-#include "ieclass.h"
+#include "scene/EntityClass.h"
 #include "icommandsystem.h"
 
 #include "wxutil/sourceview/DeclarationSourceView.h"

@@ -1,9 +1,7 @@
 #pragma once
 
 #include "ifonts.h"
-#include "iimage.h"
 
-#include "string/string.h"
 #include <map>
 
 #include "FontInfo.h"
@@ -27,8 +25,8 @@ public:
 	FontManager();
 
 	// RegisterableModule implementation
-    const std::string& getName() const override;
-    const StringSet& getDependencies() const override;
+    std::string getName() const override;
+    StringSet getDependencies() const override;
     void initialiseModule(const IApplicationContext& ctx) override;
     void shutdownModule() override;
 

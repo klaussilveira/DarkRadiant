@@ -325,7 +325,7 @@ public:
 
     bool addPrimitiveToEntity(const scene::INodePtr& primitive, const scene::INodePtr& entity)
     {
-        if (Node_getEntity(entity)->isContainer())
+        if (entity->tryGetEntity()->isContainer())
         {
             entity->addChildNode(primitive);
             return true;

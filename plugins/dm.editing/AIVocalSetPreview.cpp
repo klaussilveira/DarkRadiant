@@ -53,7 +53,7 @@ void AIVocalSetPreview::createControlPanel()
 	GetSizer()->Add(btnHBox);
 }
 
-void AIVocalSetPreview::setVocalSetEclass(const IEntityClassPtr& vocalSetDef)
+void AIVocalSetPreview::setVocalSetEclass(const scene::EntityClass::Ptr& vocalSetDef)
 {
 	_vocalSetDef = vocalSetDef;
 

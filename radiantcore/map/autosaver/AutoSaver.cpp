@@ -1,7 +1,6 @@
 #include "AutoSaver.h"
 
 #include "i18n.h"
-#include <numeric>
 #include <iostream>
 #include "imapfilechangetracker.h"
 #include "itextstream.h"
@@ -17,16 +16,13 @@
 #include "os/file.h"
 #include "os/path.h"
 #include "os/dir.h"
-#include "os/fs.h"
 #include "gamelib.h"
 
 #include <limits.h>
-#include "string/string.h"
 #include "string/convert.h"
 #include "module/StaticModule.h"
 #include "messages/NotificationMessage.h"
 #include "messages/AutomaticMapSaveRequest.h"
-#include "map/Map.h"
 
 #include <fmt/format.h>
 
@@ -300,13 +296,13 @@ void AutoMapSaver::onMapEvent(IMap::MapEvent ev)
 	};
 }
 
-const std::string& AutoMapSaver::getName() const
+std::string AutoMapSaver::getName() const
 {
 	static std::string _name(MODULE_AUTOSAVER);
 	return _name;
 }
 
-const StringSet& AutoMapSaver::getDependencies() const
+StringSet AutoMapSaver::getDependencies() const
 {
 	static StringSet _dependencies;
 

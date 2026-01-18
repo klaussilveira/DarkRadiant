@@ -125,21 +125,18 @@ void ModuleLoader::loadModules(const std::string& libraryPath)
 
 void ModuleLoader::loadModulesFromPath(const std::string& path)
 {
-	rMessage() << "ModuleLoader: loading modules from " << path << std::endl;
+    rMessage() << "ModuleLoader: loading modules from " << path << std::endl;
 
-	// In case the folder is non-existent, catch the exception
-	try
-	{
-		os::forEachItemInDirectory(os::standardPathWithSlash(path), [&](const fs::path& file)
-		{
-			processModuleFile(file);
-		});
-	}
-	catch (os::DirectoryNotFoundException&)
-	{
-		rError() << "ModuleLoader::loadModules(): modules directory '"
-			<< path << "' not found." << std::endl;
-	}
+    // Handle missing directories
+    bool ok = os::forEachItemInDirectory(
+        os::standardPathWithSlash(path),
+        [&](const fs::path& file) { processModuleFile(file); },
+        std::nothrow
+    );
+    if (!ok) {
+        rError() << "ModuleLoader::loadModules(): modules directory '" << path << "' not found."
+                 << std::endl;
+    }
 }
 
 void ModuleLoader::unloadModules()

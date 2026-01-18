@@ -94,7 +94,7 @@ TEST_F(Quake4WorldspawnColourTest, SchemeBrushColourIsUsed)
 
     // The eclass wire shader should match the colour defined in the scheme
     const auto& schemeColour = GlobalColourSchemeManager().getActiveScheme().getColour("default_brush").getColour();
-    EXPECT_EQ(Node_getEntity(worldspawn)->getEntityClass()->getColour(), Vector4(schemeColour, 1));
+    EXPECT_EQ(worldspawn->tryGetEntity()->getEntityClass()->getColour(), Vector4(schemeColour, 1));
 }
 
 TEST_F(RadiantTest, SchemeBrushColourIsUsed)
@@ -107,7 +107,7 @@ TEST_F(RadiantTest, SchemeBrushColourIsUsed)
 
     // The eclass wire shader should match the colour defined in the scheme
     const auto& schemeColour = GlobalColourSchemeManager().getActiveScheme().getColour("default_brush").getColour();
-    EXPECT_EQ(Node_getEntity(worldspawn)->getEntityClass()->getColour(), Vector4(schemeColour, 1));
+    EXPECT_EQ(worldspawn->tryGetEntity()->getEntityClass()->getColour(), Vector4(schemeColour, 1));
 }
 
 TEST_F(RadiantTest, SchemeBrushColourChange)
@@ -117,19 +117,19 @@ TEST_F(RadiantTest, SchemeBrushColourChange)
 
     // The eclass wire shader should match the colour defined in the scheme
     auto schemeColour = GlobalColourSchemeManager().getActiveScheme().getColour("default_brush").getColour();
-    EXPECT_EQ(Node_getEntity(worldspawn)->getEntityClass()->getColour(), Vector4(schemeColour, 1));
+    EXPECT_EQ(worldspawn->tryGetEntity()->getEntityClass()->getColour(), Vector4(schemeColour, 1));
 
     // Modify the brush colour
     Vector3 changedColour(0.25, 0.9, 0.99);
     GlobalColourSchemeManager().getActiveScheme().getColour("default_brush").getColour() = changedColour;
 
     // This in itself doesn't affect the entity yet
-    EXPECT_EQ(Node_getEntity(worldspawn)->getEntityClass()->getColour(), Vector4(schemeColour, 1));
+    EXPECT_EQ(worldspawn->tryGetEntity()->getEntityClass()->getColour(), Vector4(schemeColour, 1));
 
     // But calling saveColourSchemes should update the wire shader
     GlobalColourSchemeManager().saveColourSchemes();
 
-    EXPECT_EQ(Node_getEntity(worldspawn)->getEntityClass()->getColour(), Vector4(changedColour, 1));
+    EXPECT_EQ(worldspawn->tryGetEntity()->getEntityClass()->getColour(), Vector4(changedColour, 1));
 }
 
 TEST_F(RadiantTest, SchemeBrushColourRevert)
@@ -139,25 +139,25 @@ TEST_F(RadiantTest, SchemeBrushColourRevert)
 
     // The eclass wire shader should match the colour defined in the scheme
     auto schemeColour = GlobalColourSchemeManager().getActiveScheme().getColour("default_brush").getColour();
-    EXPECT_EQ(Node_getEntity(worldspawn)->getEntityClass()->getColour(), Vector4(schemeColour, 1));
+    EXPECT_EQ(worldspawn->tryGetEntity()->getEntityClass()->getColour(), Vector4(schemeColour, 1));
 
     // Modify the brush colour
     Vector3 changedColour(0.25, 0.9, 0.99);
     GlobalColourSchemeManager().getActiveScheme().getColour("default_brush").getColour() = changedColour;
 
     // This in itself doesn't affect the entity yet
-    EXPECT_EQ(Node_getEntity(worldspawn)->getEntityClass()->getColour(), Vector4(schemeColour, 1));
+    EXPECT_EQ(worldspawn->tryGetEntity()->getEntityClass()->getColour(), Vector4(schemeColour, 1));
 
     // This should update the eclasses, but not save anything to the registry
     GlobalColourSchemeManager().emitEclassOverrides();
 
-    EXPECT_EQ(Node_getEntity(worldspawn)->getEntityClass()->getColour(), Vector4(changedColour, 1));
+    EXPECT_EQ(worldspawn->tryGetEntity()->getEntityClass()->getColour(), Vector4(changedColour, 1));
 
     // Revert the colour schemes to the values in the registry
     GlobalColourSchemeManager().restoreColourSchemes();
 
     // We should be back at the theme colour we had before
-    EXPECT_EQ(Node_getEntity(worldspawn)->getEntityClass()->getColour(), Vector4(schemeColour, 1));
+    EXPECT_EQ(worldspawn->tryGetEntity()->getEntityClass()->getColour(), Vector4(schemeColour, 1));
 }
 
 }

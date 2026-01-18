@@ -12,11 +12,11 @@
 namespace game
 {
 
-/** 
-* greebo: The Manager class for keeping track of all the available 
+/**
+* greebo: The Manager class for keeping track of all the available
 * game types and the current game and path setup.
 */
-class Manager : 
+class Manager :
 	public IGameManager
 {
 public:
@@ -70,8 +70,8 @@ public:
 	const std::string& getPrefabPath() override;
 
 	// RegisterableModule implementation
-	const std::string& getName() const override;
-	const StringSet& getDependencies() const override;
+	std::string getName() const override;
+	StringSet getDependencies() const override;
 	void initialiseModule(const IApplicationContext& ctx) override;
 
     const GameConfiguration& getConfig() const override;

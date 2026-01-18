@@ -12,23 +12,19 @@ class wxRadioButton;
 namespace ui
 {
 
-/**
- * \brief
- * Chooser dialog for selection and preview of particle systems.
- */
+/// Chooser dialog for selection and preview of particle systems.
 class ParticleChooserDialog :
-	public wxutil::DeclarationSelectorDialog,
+    public wxutil::DeclarationSelectorDialog,
     public sigc::trackable
 {
-private:
     ParticleSelector* _selector;
 
     wxRadioButton* _funcEmitter;
     wxRadioButton* _funcSmoke;
 
 private:
-	// Constructor creates elements
-	ParticleChooserDialog(bool showClassnameSelector);
+    // Constructor creates elements
+    ParticleChooserDialog(bool showClassnameSelector);
 
     std::string getSelectedClassname();
 
@@ -40,24 +36,24 @@ public:
         std::string selectedClassname;
     };
 
-	/**
-	 * Display the dialog and return the name of the selected
-	 * particle system, or the empty string if none was selected.
-	 *
-	 * @param currentParticle
-	 * The particle name which should be highlighted in the list when the dialog
-	 * is first displayed. If this value is left at the default value of "", no
-	 * particle will be selected.
-	 *
-	 * @returns
-	 * The name of the particle selected by the user, or an empty string if the
-	 * choice was cancelled or invalid.
-	 */
-	static std::string ChooseParticle(const std::string& currentParticle = "");
+    /**
+     * Display the dialog and return the name of the selected particle system, or the
+     * empty string if none was selected.
+     *
+     * @param currentParticle
+     * The particle name which should be highlighted in the list when the dialog
+     * is first displayed. If this value is left at the default value of "", no
+     * particle will be selected.
+     *
+     * @returns
+     * The name of the particle selected by the user, or an empty string if the
+     * choice was cancelled or invalid.
+     */
+    static std::string ChooseParticle(const std::string& currentParticle = "");
 
     /**
-     * Display the dialog and return the name of the selected
-     * particle system, or the empty string if none was selected.
+     * Display the dialog and return the name of the selected particle system, or the
+     * empty string if none was selected.
      *
      * @param currentParticle
      * The particle name which should be highlighted in the list when the dialog

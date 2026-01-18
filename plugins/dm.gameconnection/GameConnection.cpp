@@ -611,7 +611,7 @@ void GameConnection::respawnSelectedEntities()
         std::set<std::string> selectedEntityNames;
         GlobalSelectionSystem().foreachSelected([&](const scene::INodePtr &node) {
             //Node_isEntity
-            if (Entity* entity = Node_getEntity(node)) {
+            if (Entity* entity = node->tryGetEntity()) {
                 const std::string &name = entity->getKeyValue("name");
                 if (!name.empty()) {
                     selectedEntityNames.insert(name);
@@ -801,13 +801,13 @@ void GameConnection::doUpdateMap()
 
 //-------------------------------------------------------------
 
-const std::string& GameConnection::getName() const
+std::string GameConnection::getName() const
 {
     static std::string _name("GameConnection");
     return _name;
 }
 
-const StringSet& GameConnection::getDependencies() const
+StringSet GameConnection::getDependencies() const
 {
     static StringSet _dependencies {
         MODULE_CAMERA_MANAGER, MODULE_COMMANDSYSTEM, MODULE_MAP,

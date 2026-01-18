@@ -47,7 +47,7 @@ void createCurve(const std::string& key)
     }
 
     // Find the default curve entity
-    IEntityClassPtr entityClass = GlobalEntityClassManager().findOrInsert(
+    scene::EntityClass::Ptr entityClass = GlobalEntityClassManager().findOrInsert(
         curveEClass,
         true
     );

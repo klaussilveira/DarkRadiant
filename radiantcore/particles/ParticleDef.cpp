@@ -6,14 +6,19 @@ namespace particles
 {
 
 sigc::signal<void>& ParticleDef::signal_changed()
-{ 
-	return _changedSignal;
+{
+    return _changedSignal;
+}
+
+vfs::Visibility ParticleDef::getVisibility()
+{
+    return getDeclSource().fileInfo.visibility;
 }
 
 float ParticleDef::getDepthHack()
 {
     ensureParsed();
-	return _depthHack;
+    return _depthHack;
 }
 
 void ParticleDef::setDepthHack(float value)
@@ -26,13 +31,13 @@ void ParticleDef::setDepthHack(float value)
 std::size_t ParticleDef::getNumStages()
 {
     ensureParsed();
-	return _stages.size();
+    return _stages.size();
 }
 
 const std::shared_ptr<IStageDef>& ParticleDef::getStage(std::size_t stageNum)
 {
     ensureParsed();
-	return _stages[stageNum].first;
+    return _stages[stageNum].first;
 }
 
 std::size_t ParticleDef::addParticleStage()
@@ -107,8 +112,8 @@ void ParticleDef::copyFrom(const Ptr& other)
         }
     }
 
-	// We've changed all the stages, so emit the changed signal now (#4411)
-	onParticleChanged();
+    // We've changed all the stages, so emit the changed signal now (#4411)
+    onParticleChanged();
 }
 
 bool ParticleDef::isEqualTo(const Ptr& other)
@@ -157,7 +162,7 @@ void ParticleDef::parseFromTokens(parser::DefTokeniser& tokeniser)
     }
 }
 
-void ParticleDef::onSyntaxBlockAssigned(const decl::DeclarationBlockSyntax& block)
+void ParticleDef::onSyntaxBlockAssigned(const decl::DeclarationBlockSource& block)
 {
     EditableDeclaration<IParticleDef>::onSyntaxBlockAssigned(block);
 

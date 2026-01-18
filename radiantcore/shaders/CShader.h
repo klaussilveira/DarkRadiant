@@ -6,12 +6,8 @@
 
 namespace shaders {
 
-/**
- * \brief
- * Implementation class for Material.
- */
-class CShader final : 
-    public Material
+/// Implementation class for Material.
+class CShader final: public Material
 {
 private:
     bool _isInternal;
@@ -19,7 +15,7 @@ private:
     // The unmodified template
     ShaderTemplate::Ptr _originalTemplate;
 
-    // The template this material is working with - if this instance 
+    // The template this material is working with - if this instance
     // has not been altered, this is the same as _originalTemplate
     ShaderTemplate::Ptr _template;
 

@@ -454,13 +454,13 @@ void CameraWndManager::loadCameraStrafeDefinitions()
 }
 
 // RegisterableModule implementation
-const std::string& CameraWndManager::getName() const
+std::string CameraWndManager::getName() const
 {
 	static std::string _name("CameraWndManager");
 	return _name;
 }
 
-const StringSet& CameraWndManager::getDependencies() const
+StringSet CameraWndManager::getDependencies() const
 {
     static StringSet _dependencies
     {

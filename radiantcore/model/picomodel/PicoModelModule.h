@@ -8,7 +8,6 @@
 #include "ifilesystem.h"
 
 #include "os/path.h"
-#include <stdio.h>
 #include "lib/picomodel.h"
 
 #include "string/case_conv.h"
@@ -23,13 +22,13 @@ class PicoModelModule :
 {
 public:
 	// RegisterableModule implementation
-	const std::string& getName() const
+	std::string getName() const
 	{
 		static std::string _name("PicoModelModule");
 		return _name;
 	}
 
-	const StringSet& getDependencies() const
+	StringSet getDependencies() const
 	{
 		static StringSet _dependencies;
 

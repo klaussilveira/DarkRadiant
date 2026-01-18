@@ -8,16 +8,16 @@
 namespace filters
 {
 
-class XMLFilter;
+class SceneFilter;
 
 /**
  * An object responsible for managing the commands 
- * bound to a single XMLFilter object.
+ * bound to a single SceneFilter object.
  */
 class XmlFilterEventAdapter
 {
 private:
-    XMLFilter& _filter;
+    SceneFilter& _filter;
 
     std::string _toggleCmdName;
     std::string _selectByFilterCmd;
@@ -26,7 +26,7 @@ private:
 public:
     typedef std::shared_ptr<XmlFilterEventAdapter> Ptr;
 
-    XmlFilterEventAdapter(XMLFilter& filter);
+    XmlFilterEventAdapter(SceneFilter& filter);
 
     ~XmlFilterEventAdapter();
 

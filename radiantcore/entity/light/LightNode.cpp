@@ -1,7 +1,6 @@
 #include "LightNode.h"
 
 #include "igrid.h"
-#include "ishaders.h"
 #include "icolourscheme.h"
 #include "scene/EntitySettings.h"
 #include "entitylib.h"
@@ -16,7 +15,7 @@ std::string LightShader::m_defaultShader = "";
 
 // --------- LightNode implementation ------------------------------------
 
-LightNode::LightNode(const IEntityClassPtr& eclass)
+LightNode::LightNode(const scene::EntityClass::Ptr& eclass)
 : EntityNode(eclass),
     m_originKey(std::bind(&LightNode::originChanged, this)),
     _originTransformed(ORIGINKEY_IDENTITY),
@@ -56,7 +55,7 @@ LightNode::LightNode(const LightNode& other)
     m_doom3Radius.m_changed = std::bind(&LightNode::onLightRadiusChanged, this);
 }
 
-LightNodePtr LightNode::Create(const IEntityClassPtr& eclass)
+LightNodePtr LightNode::Create(const scene::EntityClass::Ptr& eclass)
 {
 	LightNodePtr instance(new LightNode(eclass));
 	instance->construct();
@@ -882,7 +881,7 @@ void LightNode::rotate(const Quaternion& rotation)
 
 // greebo: This returns the AABB of the WHOLE light (this includes the volume and all its selectable vertices)
 // Used to test the light for selection on mouse click.
-const AABB& LightNode::localAABB() const
+AABB LightNode::localAABB() const
 {
     if (isProjected()) {
         // start with an empty AABB and include all the projection vertices

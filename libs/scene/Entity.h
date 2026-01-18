@@ -52,7 +52,7 @@ public:
     };
 
 private:
-    IEntityClassPtr _eclass;
+    scene::EntityClass::Ptr _eclass;
 
 	typedef std::shared_ptr<EntityKeyValue> KeyValuePtr;
 
@@ -86,7 +86,7 @@ public:
     using KeyValueVisitFunc = std::function<void(const std::string&, const std::string&)>;
 
 	// Constructor, pass the according entity class
-	Entity(const IEntityClassPtr& eclass);
+	Entity(const scene::EntityClass::Ptr& eclass);
 
 	// Copy constructor
 	Entity(const Entity& other);
@@ -103,7 +103,7 @@ public:
     void disconnectUndoSystem(IUndoSystem& undoSystem);
 
     /// Return the entity class object for this entity.
-	IEntityClassPtr getEntityClass() const;
+	scene::EntityClass::Ptr getEntityClass() const;
 
     /**
      * \brief Enumerate all keys and values on this entity, optionally including

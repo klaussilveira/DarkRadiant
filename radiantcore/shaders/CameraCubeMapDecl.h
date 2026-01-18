@@ -1,7 +1,6 @@
 #pragma once
 
-#include "MapExpression.h"
-#include "NamedBindable.h"
+#include "scene/shaders/NamedBindable.h"
 
 namespace shaders
 {
@@ -18,9 +17,7 @@ namespace shaders
  * NamedBindable interface so that it can bind the cube map texture in GL and
  * return it to the texture manager.
  */
-class CameraCubeMapDecl :
-    public IMapExpression,
-    public NamedBindable
+class CameraCubeMapDecl: public IMapExpression, public NamedBindable
 {
     // The texture prefix
     std::string _prefix;
@@ -45,10 +42,7 @@ public:
 
     std::string getExpressionString() override;
 
-    /**
-     * \brief
-     * Construct and return a CameraCubeMapDecl from the given texture prefix.
-     */
+    /// Construct and return a CameraCubeMapDecl from the given texture prefix.
     static NamedBindablePtr createForPrefix(const std::string& prefix);
 };
 

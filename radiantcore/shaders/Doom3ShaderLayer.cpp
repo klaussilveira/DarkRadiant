@@ -3,6 +3,7 @@
 #include "SoundMapExpression.h"
 #include "VideoMapExpression.h"
 #include "CameraCubeMapDecl.h"
+#include "scene/shaders/ShaderExpression.h"
 
 namespace shaders
 {
@@ -10,41 +11,41 @@ namespace shaders
 // Map string blend functions to their GLenum equivalents
 GLenum glBlendFromString(const std::string& value)
 {
-	if (value == "gl_zero") {
-		return GL_ZERO;
-	}
-	if (value == "gl_one") {
-		return GL_ONE;
-	}
-	if (value == "gl_src_color") {
-		return GL_SRC_COLOR;
-	}
-	if (value == "gl_one_minus_src_color") {
-		return GL_ONE_MINUS_SRC_COLOR;
-	}
-	if (value == "gl_src_alpha") {
-		return GL_SRC_ALPHA;
-	}
-	if (value == "gl_one_minus_src_alpha") {
-		return GL_ONE_MINUS_SRC_ALPHA;
-	}
-	if (value == "gl_dst_color") {
-		return GL_DST_COLOR;
-	}
-	if (value == "gl_one_minus_dst_color") {
-		return GL_ONE_MINUS_DST_COLOR;
-	}
-	if (value == "gl_dst_alpha") {
-		return GL_DST_ALPHA;
-	}
-	if (value == "gl_one_minus_dst_alpha") {
-		return GL_ONE_MINUS_DST_ALPHA;
-	}
-	if (value == "gl_src_alpha_saturate") {
-		return GL_SRC_ALPHA_SATURATE;
-	}
+    if (value == "gl_zero") {
+        return GL_ZERO;
+    }
+    if (value == "gl_one") {
+        return GL_ONE;
+    }
+    if (value == "gl_src_color") {
+        return GL_SRC_COLOR;
+    }
+    if (value == "gl_one_minus_src_color") {
+        return GL_ONE_MINUS_SRC_COLOR;
+    }
+    if (value == "gl_src_alpha") {
+        return GL_SRC_ALPHA;
+    }
+    if (value == "gl_one_minus_src_alpha") {
+        return GL_ONE_MINUS_SRC_ALPHA;
+    }
+    if (value == "gl_dst_color") {
+        return GL_DST_COLOR;
+    }
+    if (value == "gl_one_minus_dst_color") {
+        return GL_ONE_MINUS_DST_COLOR;
+    }
+    if (value == "gl_dst_alpha") {
+        return GL_DST_ALPHA;
+    }
+    if (value == "gl_one_minus_dst_alpha") {
+        return GL_ONE_MINUS_DST_ALPHA;
+    }
+    if (value == "gl_src_alpha_saturate") {
+        return GL_SRC_ALPHA_SATURATE;
+    }
 
-	return GL_ZERO;
+    return GL_ZERO;
 }
 
 // Convert a string pair describing a blend function into a BlendFunc object
@@ -63,14 +64,14 @@ BlendFunc blendFuncFromStrings(const StringPair& blendFunc)
     {
         return BlendFunc(GL_DST_COLOR, GL_ZERO);
     }
-	else if (blendFunc.first == "blend")
-	{
-		return BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	}
-	else if (blendFunc.first == "none")
-	{
-		return BlendFunc(GL_ZERO, GL_ONE);
-	}
+    else if (blendFunc.first == "blend")
+    {
+        return BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+    else if (blendFunc.first == "none")
+    {
+        return BlendFunc(GL_ZERO, GL_ONE);
+    }
     else
     {
         // Not predefined, just use the specified blend function directly
@@ -88,9 +89,9 @@ StringPair getDefaultBlendFuncStringsForType(IShaderLayer::Type type)
     case IShaderLayer::DIFFUSE: return { "diffusemap" , "" };
     case IShaderLayer::BUMP: return { "bumpmap" , "" };
     case IShaderLayer::SPECULAR: return { "specularmap" , "" };
+    default: return { "gl_one", "gl_zero" }; // needs to be lowercase
     }
 
-    return { "gl_one", "gl_zero" }; // needs to be lowercase
 }
 
 inline IShaderExpression::Ptr getDefaultExpressionForTransformType(IShaderLayer::TransformType type)
@@ -109,30 +110,30 @@ inline IShaderExpression::Ptr getDefaultExpressionForTransformType(IShaderLayer:
 const IShaderExpression::Ptr Doom3ShaderLayer::NULL_EXPRESSION;
 
 Doom3ShaderLayer::Doom3ShaderLayer(ShaderTemplate& material, IShaderLayer::Type type, const NamedBindablePtr& btex)
-:	_material(material),
-	_registers(NUM_RESERVED_REGISTERS),
+:   _material(material),
+    _registers(NUM_RESERVED_REGISTERS),
     _expressionSlots(_registers),
-	_bindableTex(btex),
-	_type(type),
+    _bindableTex(btex),
+    _type(type),
     _mapType(MapType::Map),
-	_blendFuncStrings(getDefaultBlendFuncStringsForType(type)),
-	_vertexColourMode(VERTEX_COLOUR_NONE),
-	_cubeMapMode(CUBE_MAP_NONE),
-	_stageFlags(0),
-	_clampType(CLAMP_REPEAT),
-	_texGenType(TEXGEN_NORMAL),
+    _blendFuncStrings(getDefaultBlendFuncStringsForType(type)),
+    _vertexColourMode(VERTEX_COLOUR_NONE),
+    _cubeMapMode(CUBE_MAP_NONE),
+    _stageFlags(0),
+    _clampType(CLAMP_REPEAT),
+    _texGenType(TEXGEN_NORMAL),
     _textureMatrix(_expressionSlots, _registers),
-	_privatePolygonOffset(0),
+    _privatePolygonOffset(0),
     _parseFlags(0),
     _enabled(true)
 {
-	_registers[REG_ZERO] = 0;
-	_registers[REG_ONE] = 1;
+    _registers[REG_ZERO] = 0;
+    _registers[REG_ONE] = 1;
 
     _expressionSlots[Expression::AlphaTest].registerIndex = REG_ZERO;
     _expressionSlots[Expression::Condition].registerIndex = REG_ONE;
 
-	// Init the colour to 1,1,1,1
+    // Init the colour to 1,1,1,1
     _expressionSlots[Expression::ColourRed].registerIndex = REG_ONE;
     _expressionSlots[Expression::ColourGreen].registerIndex = REG_ONE;
     _expressionSlots[Expression::ColourBlue].registerIndex = REG_ONE;
@@ -215,7 +216,7 @@ BlendFunc Doom3ShaderLayer::getBlendFunc() const
 
 Colour4 Doom3ShaderLayer::getColour() const
 {
-	// Resolve the register values
+    // Resolve the register values
     Colour4 colour(getRegisterValue(_expressionSlots[Expression::ColourRed].registerIndex),
                    getRegisterValue(_expressionSlots[Expression::ColourGreen].registerIndex),
                    getRegisterValue(_expressionSlots[Expression::ColourBlue].registerIndex),
@@ -265,29 +266,29 @@ const IShaderExpression::Ptr& Doom3ShaderLayer::getColourExpression(ColourCompon
 
 void Doom3ShaderLayer::setColourExpression(ColourComponentSelector comp, const IShaderExpression::Ptr& expr)
 {
-	// Now assign the index to our colour components
-	switch (comp)
-	{
-	case COMP_RED:
+    // Now assign the index to our colour components
+    switch (comp)
+    {
+    case COMP_RED:
         _expressionSlots.assign(Expression::ColourRed, expr, REG_ONE);
-		break;
-	case COMP_GREEN:
+        break;
+    case COMP_GREEN:
         _expressionSlots.assign(Expression::ColourGreen, expr, REG_ONE);
-		break;
-	case COMP_BLUE:
+        break;
+    case COMP_BLUE:
         _expressionSlots.assign(Expression::ColourBlue, expr, REG_ONE);
-		break;
-	case COMP_ALPHA:
+        break;
+    case COMP_ALPHA:
         _expressionSlots.assign(Expression::ColourAlpha, expr, REG_ONE);
-		break;
-	case COMP_RGB:
+        break;
+    case COMP_RGB:
         _expressionSlots.assign(Expression::ColourRed, expr, REG_ONE);
         _expressionSlots[Expression::ColourGreen].registerIndex = _expressionSlots[Expression::ColourRed].registerIndex;
         _expressionSlots[Expression::ColourGreen].expression = _expressionSlots[Expression::ColourRed].expression;
         _expressionSlots[Expression::ColourBlue].registerIndex = _expressionSlots[Expression::ColourRed].registerIndex;
         _expressionSlots[Expression::ColourBlue].expression = _expressionSlots[Expression::ColourRed].expression;
-		break;
-	case COMP_RGBA:
+        break;
+    case COMP_RGBA:
         _expressionSlots.assign(Expression::ColourRed, expr, REG_ONE);
         _expressionSlots[Expression::ColourGreen].registerIndex = _expressionSlots[Expression::ColourRed].registerIndex;
         _expressionSlots[Expression::ColourGreen].expression = _expressionSlots[Expression::ColourRed].expression;
@@ -295,31 +296,31 @@ void Doom3ShaderLayer::setColourExpression(ColourComponentSelector comp, const I
         _expressionSlots[Expression::ColourBlue].expression = _expressionSlots[Expression::ColourRed].expression;
         _expressionSlots[Expression::ColourAlpha].registerIndex = _expressionSlots[Expression::ColourRed].registerIndex;
         _expressionSlots[Expression::ColourAlpha].expression = _expressionSlots[Expression::ColourRed].expression;
-		break;
-	};
+        break;
+    };
 
     _material.onLayerChanged();
 }
 
 void Doom3ShaderLayer::setColour(const Vector4& col)
 {
-	// Assign all 3 components of the colour, allocating new registers on the fly where needed
-	for (std::size_t i = 0; i < 4; ++i)
-	{
+    // Assign all 3 components of the colour, allocating new registers on the fly where needed
+    for (std::size_t i = 0; i < 4; ++i)
+    {
         auto slot = static_cast<Expression::Slot>(Expression::ColourRed + i);
 
-		// Does this colour component refer to a reserved constant index?
-		if (_expressionSlots[slot].registerIndex < NUM_RESERVED_REGISTERS)
-		{
-			// Yes, break this up by allocating a new register for this value
+        // Does this colour component refer to a reserved constant index?
+        if (_expressionSlots[slot].registerIndex < NUM_RESERVED_REGISTERS)
+        {
+            // Yes, break this up by allocating a new register for this value
             _expressionSlots[slot].registerIndex = getNewRegister(static_cast<float>(col[i]));
-		}
-		else
-		{
-			// Already using a custom register
+        }
+        else
+        {
+            // Already using a custom register
             setRegister(_expressionSlots[slot].registerIndex, static_cast<float>(col[i]));
-		}
-	}
+        }
+    }
 
     _material.onLayerChanged();
 }
@@ -654,12 +655,12 @@ std::size_t Doom3ShaderLayer::getNumFragmentMaps() const
 
 TexturePtr Doom3ShaderLayer::getFragmentMapTexture(int index) const
 {
-	if (index < 0 || index >= static_cast<int>(_fragmentMaps.size()))
-	{
-		return TexturePtr();
-	}
+    if (index < 0 || index >= static_cast<int>(_fragmentMaps.size()))
+    {
+        return TexturePtr();
+    }
 
-	return GetTextureManager().getBinding(std::dynamic_pointer_cast<NamedBindable>(_fragmentMaps[index].map));
+    return GetTextureManager().getBinding(std::dynamic_pointer_cast<NamedBindable>(_fragmentMaps[index].map));
 }
 
 const Doom3ShaderLayer::FragmentMap& Doom3ShaderLayer::getFragmentMap(int index) const

@@ -167,7 +167,7 @@ inline void setWorldspawnKeyValue(const std::string& key, const std::string& val
     auto entity = GlobalMapModule().findOrInsertWorldspawn();
 
     UndoableCommand cmd("modifyKeyValue");
-    Node_getEntity(entity)->setKeyValue(key, value);
+    entity->tryGetEntity()->setKeyValue(key, value);
 }
 
 inline scene::INodePtr findChildModelNode(const scene::INodePtr& parent)

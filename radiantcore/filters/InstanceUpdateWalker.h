@@ -65,8 +65,8 @@ public:
 		_filterSystem(filterSystem),
 		_hideWalker(true),
 		_showWalker(false),
-		_patchesAreVisible(_filterSystem.isVisible(FilterRule::TYPE_OBJECT, "patch")),
-		_brushesAreVisible(_filterSystem.isVisible(FilterRule::TYPE_OBJECT, "brush"))
+		_patchesAreVisible(_filterSystem.isVisible(FilterType::OBJECT, "patch")),
+		_brushesAreVisible(_filterSystem.isVisible(FilterType::OBJECT, "brush"))
 	{}
 
 	bool pre(const scene::INodePtr& node) override
@@ -108,16 +108,13 @@ public:
 	}
 
 private:
-	bool evaluateEntity(const scene::INodePtr& node)
-	{
-		assert(Node_isEntity(node));
+    bool evaluateEntity(const scene::INodePtr& node) const
+    {
+        Entity* entity = node->tryGetEntity();
+        assert(entity);
 
-		Entity* entity = Node_getEntity(node);
-
-		// Check the eclass first
-		return _filterSystem.isEntityVisible(FilterRule::TYPE_ENTITYCLASS, *entity) &&
-			_filterSystem.isEntityVisible(FilterRule::TYPE_ENTITYKEYVALUE, *entity);
-	}
+        return _filterSystem.isEntityVisible(*entity);
+    }
 
 	bool evaluatePatch(const scene::INodePtr& node)
 	{

@@ -22,9 +22,7 @@ public:
     sigc::signal<void>& signal_sharedContextDestroyed() override;
 
 	// RegisterableModule implementation
-	const std::string& getName() const override;
-	const StringSet& getDependencies() const override;
-	void initialiseModule(const IApplicationContext& ctx) override;
+	std::string getName() const override;
 	void shutdownModule() override;
 };
 

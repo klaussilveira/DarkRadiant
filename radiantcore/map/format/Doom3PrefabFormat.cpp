@@ -1,14 +1,12 @@
 #include "Doom3PrefabFormat.h"
 
-#include "i18n.h"
-
 #include "module/StaticModule.h"
 
 namespace map
 {
 
 // RegisterableModule implementation
-const std::string& Doom3PrefabFormat::getName() const
+std::string Doom3PrefabFormat::getName() const
 {
 	static std::string _name("Doom3PrefabLoader");
 	return _name;

@@ -26,7 +26,7 @@ public:
 		_prefix = game::current::getValue<std::string>(GKEY_RESPONSE_EFFECT_PREFIX);
 	}
 
-	void visit(const IEntityClassPtr& eclass)
+	void visit(const scene::EntityClass::Ptr& eclass)
 	{
 		if (string::starts_with(eclass->getDeclName(), _prefix))
 		{
@@ -65,13 +65,13 @@ void ResponseEffectTypes::Clear()
 	InstancePtr().reset();
 }
 
-IEntityClassPtr ResponseEffectTypes::getEClassForName(const std::string& name)
+scene::EntityClass::Ptr ResponseEffectTypes::getEClassForName(const std::string& name)
 {
 	// Try to lookup the given name in the map
 	ResponseEffectTypeMap::iterator found = _effectTypes.find(name);
 
 	// Return an empty pointer if no effect type is matching
-	return (found != _effectTypes.end()) ? found->second : IEntityClassPtr();
+	return (found != _effectTypes.end()) ? found->second : scene::EntityClass::Ptr();
 }
 
 ResponseEffectTypeMap& ResponseEffectTypes::getMap()
@@ -79,7 +79,7 @@ ResponseEffectTypeMap& ResponseEffectTypes::getMap()
 	return _effectTypes;
 }
 
-std::string ResponseEffectTypes::getFirstEffectName() 
+std::string ResponseEffectTypes::getFirstEffectName()
 {
 	ResponseEffectTypeMap::iterator found = _effectTypes.begin();
 

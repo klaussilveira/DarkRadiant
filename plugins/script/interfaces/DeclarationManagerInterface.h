@@ -39,17 +39,17 @@ public:
         return _decl ? _decl->getDeclType() : decl::Type::None;
     }
 
-    const decl::DeclarationBlockSyntax& getBlockSyntax()
+    const decl::DeclarationBlockSource& getDeclSource()
     {
-        static decl::DeclarationBlockSyntax _emptySyntax;
-        return _decl ? _decl->getBlockSyntax() : _emptySyntax;
+        static decl::DeclarationBlockSource _emptySyntax;
+        return _decl ? _decl->getDeclSource() : _emptySyntax;
     }
 
-    void setBlockSyntax(const decl::DeclarationBlockSyntax& block)
+    void setDeclSource(const decl::DeclarationBlockSource& block)
     {
         if (_decl)
         {
-            _decl->setBlockSyntax(block);
+            _decl->setDeclSource(block);
         }
     }
 

@@ -1,6 +1,6 @@
 #include "TextureMatrix.h"
 
-#include "ShaderExpression.h"
+#include "scene/shaders/ShaderExpression.h"
 #include "MaterialManager.h"
 
 namespace shaders

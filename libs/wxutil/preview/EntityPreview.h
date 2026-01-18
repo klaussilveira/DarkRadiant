@@ -2,23 +2,18 @@
 
 #include "RenderPreview.h"
 
-#include "scene/Entity.h"
 #include "inode.h"
 #include "imap.h"
 
 namespace wxutil
 {
 
-/**
- * Preview widget displaying a single entity
- */
-class EntityPreview :
-    public RenderPreview
+/// Preview widget displaying a single entity
+class EntityPreview: public RenderPreview
 {
-private:
     // TRUE when the scene, model and skin have been set up
     // is set back to FALSE if the model or skin config is changed
-    bool _sceneIsReady;
+    bool _sceneIsReady = false;
 
     scene::IMapRootNodePtr _rootNode;
 
@@ -31,7 +26,7 @@ private:
     scene::INodePtr _light;
 
 protected:
-    float _defaultCamDistanceFactor;
+    float _defaultCamDistanceFactor = 2.8f;
 
 private:
     bool onPreRender() override;

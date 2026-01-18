@@ -7,7 +7,6 @@
 
 #include <vector>
 #include <sigc++/connection.h>
-#include "os/fs.h"
 
 namespace map
 {
@@ -16,7 +15,7 @@ namespace map
  * greebo: The AutoMapSaver class lets itself being called in distinct intervals
  * and saves the map files either to snapshots or to a single yyyy.autosave.map file.
  */
-class AutoMapSaver final : 
+class AutoMapSaver final :
 	public IAutomaticMapSaver
 {
 private:
@@ -32,8 +31,8 @@ public:
 	AutoMapSaver();
 
 	// RegisterableModule implementation
-	const std::string& getName() const override;
-	const StringSet& getDependencies() const override;
+	std::string getName() const override;
+	StringSet getDependencies() const override;
 	void initialiseModule(const IApplicationContext& ctx) override;
 	void shutdownModule() override;
 

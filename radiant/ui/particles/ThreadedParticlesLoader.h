@@ -31,9 +31,13 @@ protected:
         ScopedDebugTimer timer("ThreadedParticlesLoader::run()");
 
         // Create and use a ParticlesVisitor to populate the list
-        GlobalParticlesManager().forEachParticleDef([&](const particles::IParticleDef& def)
+        GlobalParticlesManager().forEachParticleDef([&](particles::IParticleDef& def)
         {
             ThrowIfCancellationRequested();
+
+            // Skip hidden decls
+            if (def.getVisibility() != vfs::Visibility::NORMAL)
+                return;
 
             // Add the ".prt" extension to the name fo display in the list
             auto prtName = def.getDeclName() + ".prt";

@@ -365,7 +365,7 @@ public:
 		ensureParsed();
 		return blendLight;
 	}
-    
+
     bool isCubicLight()
 	{
 		ensureParsed();
@@ -461,7 +461,7 @@ public:
 
     const std::string& getBlockContents()
 	{
-        return getBlockSyntax().contents;
+        return getDeclSource().contents;
 	}
 
     /**
@@ -482,12 +482,12 @@ public:
     void setLightFalloffExpressionFromString(const std::string& expressionString)
     {
         ensureParsed();
-        _lightFalloff = !expressionString.empty() ? 
+        _lightFalloff = !expressionString.empty() ?
             MapExpression::createForString(expressionString) : MapExpressionPtr();
 
         onTemplateChanged();
     }
-    
+
     IShaderLayer::MapType getLightFalloffCubeMapType()
     {
         ensureParsed();
@@ -541,7 +541,7 @@ public:
 
     // renderbump argument string
     std::string getRenderBumpArguments();
-    
+
     // renderbumpflat argument string
     std::string getRenderBumpFlatArguments();
 
@@ -591,7 +591,7 @@ protected:
      */
     void parseFromTokens(parser::DefTokeniser& tokeniser) override;
 
-    void onSyntaxBlockAssigned(const decl::DeclarationBlockSyntax& block) override;
+    void onSyntaxBlockAssigned(const decl::DeclarationBlockSource& block) override;
 
     std::string generateSyntax() override;
 
@@ -600,7 +600,7 @@ private:
 	void addLayer(const Doom3ShaderLayer::Ptr& layer);
 
     // Parse helpers. These scan for possible matches, this is not a
-    // recursive-descent parser. Each of these helpers return true 
+    // recursive-descent parser. Each of these helpers return true
 	// if the token was recognised and parsed
 	bool parseShaderFlags(parser::DefTokeniser&, const std::string&);
 	bool parseLightKeywords(parser::DefTokeniser&, const std::string&);

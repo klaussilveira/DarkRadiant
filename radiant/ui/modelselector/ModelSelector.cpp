@@ -1,10 +1,8 @@
 #include "ModelSelector.h"
 
-#include "math/Vector3.h"
 #include "ifilesystem.h"
 #include "itextstream.h"
-#include "iregistry.h"
-#include "ieclass.h"
+#include "scene/EntityClass.h"
 #include "ui/imainframe.h"
 #include "imodelcache.h"
 #include "imodel.h"
@@ -15,9 +13,6 @@
 #include <cstdlib>
 #include <cmath>
 #include <iostream>
-#include <vector>
-#include <map>
-#include <sstream>
 #include "string/convert.h"
 
 #include <wx/button.h>
@@ -52,12 +47,7 @@ namespace
 
 ModelSelector::ModelSelector() :
 	DialogBase(_(MODELSELECTOR_TITLE)),
-	_dialogPanel(loadNamedPanel(this, "ModelSelectorPanel")),
-    _treeView(nullptr),
-	_infoTable(nullptr),
-    _materialsList(nullptr),
-    _relatedEntityView(nullptr),
-	_showOptions(true)
+	_dialogPanel(loadNamedPanel(this, "ModelSelectorPanel"))
 {
     // Set the default size of the window
     _position.connect(this);
@@ -281,7 +271,7 @@ void ModelSelector::onTreeViewPopulationFinished(wxutil::ResourceTreeView::Popul
 
 // Show the dialog and enter recursive main loop
 ModelSelector::Result ModelSelector::showAndBlock(const std::string& curModel,
-    bool showOptions, bool showSkins)
+                                                  bool showOptions, bool showSkins)
 {
     // Hide the Show Skins button if skins should not be shown for this invocation
     if (showSkins) {
@@ -314,7 +304,8 @@ ModelSelector::Result ModelSelector::showAndBlock(const std::string& curModel,
     // it might have been constructed at a time when this was still null
     wxASSERT(GetParent() == GlobalMainFrame().getWxTopLevelWindow());
 
-    // show and enter recursive main loop.
+    // Show and enter recursive main loop.
+    filters::ScopedFilterState filterState(GlobalFilterSystem());
     int returnCode = ShowModal();
 
     // Remove the model from the preview's scenegraph before returning
@@ -377,7 +368,7 @@ void ModelSelector::onModelLoaded(const model::ModelNodePtr& modelNode)
     // Model name doesn't have a folder, this could be a modelDef
     if (auto modelDef = GlobalEntityClassManager().findModel(modelName); modelDef)
     {
-        _infoTable->Append(_("Defined in"), modelDef->getBlockSyntax().fileInfo.fullPath());
+        _infoTable->Append(_("Defined in"), modelDef->getDeclSource().fileInfo.fullPath());
     }
 
     _materialsList->updateFromModel(model);
@@ -385,7 +376,7 @@ void ModelSelector::onModelLoaded(const model::ModelNodePtr& modelNode)
     wxDataViewItem matchingItem;
 
     // Find related entity classes
-    GlobalEntityClassManager().forEachEntityClass([&] (const IEntityClassPtr& eclass)
+    GlobalEntityClassManager().forEachEntityClass([&] (const scene::EntityClass::Ptr& eclass)
     {
         auto modelKeyValue = eclass->getAttributeValue("model", true);
 

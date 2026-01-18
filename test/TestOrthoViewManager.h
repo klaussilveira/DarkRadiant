@@ -19,9 +19,7 @@ public:
     OrthoOrientation getActiveViewType() const override;
     void setActiveViewType(OrthoOrientation viewType) override;
 
-    const std::string& getName() const override;
-    const StringSet& getDependencies() const override;
-    void initialiseModule(const IApplicationContext& ctx) override;
+    std::string getName() const override;
 };
 
 }

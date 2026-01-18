@@ -247,13 +247,13 @@ MenuElementPtr MenuManager::findTopLevelMenu(const MenuElementPtr& element)
 	return MenuElementPtr();
 }
 
-const std::string& MenuManager::getName() const
+std::string MenuManager::getName() const
 {
     static std::string _name(MODULE_MENUMANAGER);
     return _name;
 }
 
-const StringSet& MenuManager::getDependencies() const
+StringSet MenuManager::getDependencies() const
 {
     static StringSet _dependencies
     {

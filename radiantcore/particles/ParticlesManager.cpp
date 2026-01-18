@@ -88,13 +88,13 @@ void ParticlesManager::removeParticleDef(const std::string& name)
     GlobalDeclarationManager().removeDeclaration(decl::Type::Particle, name);
 }
 
-const std::string& ParticlesManager::getName() const
+std::string ParticlesManager::getName() const
 {
 	static std::string _name(MODULE_PARTICLESMANAGER);
 	return _name;
 }
 
-const StringSet& ParticlesManager::getDependencies() const
+StringSet ParticlesManager::getDependencies() const
 {
     static StringSet _dependencies
     {

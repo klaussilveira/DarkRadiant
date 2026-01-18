@@ -57,7 +57,7 @@ void EClassManagerInterface::registerInterface(py::module& scope, py::dict& glob
 	// Add the declaration for an EntityClass
 	py::class_<ScriptEntityClass> eclass(scope, "EntityClass");
 
-	eclass.def(py::init<const IEntityClassPtr&>());
+	eclass.def(py::init<const scene::EntityClass::Ptr&>());
 	eclass.def("isNull", &ScriptEntityClass::isNull);
 	eclass.def("isOfType", &ScriptEntityClass::isOfType);
 	eclass.def("getAttributeValue", &ScriptEntityClass::getAttributeValue);

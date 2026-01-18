@@ -8,7 +8,7 @@
 namespace entity
 {
 
-StaticGeometryNode::StaticGeometryNode(const IEntityClassPtr& eclass) :
+StaticGeometryNode::StaticGeometryNode(const scene::EntityClass::Ptr& eclass) :
 	EntityNode(eclass),
 	m_originKey(std::bind(&StaticGeometryNode::originChanged, this)),
 	m_origin(ORIGINKEY_IDENTITY),
@@ -55,7 +55,7 @@ StaticGeometryNode::StaticGeometryNode(const StaticGeometryNode& other) :
 	// clone() method
 }
 
-StaticGeometryNode::Ptr StaticGeometryNode::Create(const IEntityClassPtr& eclass)
+StaticGeometryNode::Ptr StaticGeometryNode::Create(const scene::EntityClass::Ptr& eclass)
 {
 	StaticGeometryNode::Ptr instance(new StaticGeometryNode(eclass));
 	instance->construct();
@@ -520,7 +520,7 @@ const Vector3& StaticGeometryNode::getWorldPosition() const
     return m_origin;
 }
 
-const AABB& StaticGeometryNode::localAABB() const {
+AABB StaticGeometryNode::localAABB() const {
 	m_curveBounds = m_curveNURBS.getBounds();
 	m_curveBounds.includeAABB(m_curveCatmullRom.getBounds());
 

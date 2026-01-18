@@ -75,18 +75,18 @@ void DeclarationManagerInterface::registerInterface(py::module& scope, py::dict&
         .value("Fx", decl::Type::Fx)
         .export_values();
 
-    py::class_<decl::DeclarationBlockSyntax>(scope, "DeclarationBlockSyntax")
-        .def_readwrite("typeName", &decl::DeclarationBlockSyntax::typeName)
-        .def_readwrite("name", &decl::DeclarationBlockSyntax::name)
-        .def_readwrite("contents", &decl::DeclarationBlockSyntax::contents)
-        .def_readwrite("modName", &decl::DeclarationBlockSyntax::modName);
+    py::class_<decl::DeclarationBlockSource>(scope, "DeclarationBlockSyntax")
+        .def_readwrite("typeName", &decl::DeclarationBlockSource::typeName)
+        .def_readwrite("name", &decl::DeclarationBlockSource::name)
+        .def_readwrite("contents", &decl::DeclarationBlockSource::contents)
+        .def_readwrite("modName", &decl::DeclarationBlockSource::modName);
 
     declaration.def(py::init<const decl::IDeclaration::Ptr&>());
     declaration.def("isNull", &ScriptDeclaration::isNull);
     declaration.def("getDeclName", &ScriptDeclaration::getDeclName);
     declaration.def("getDeclType", &ScriptDeclaration::getDeclType);
-    declaration.def("getBlockSyntax", &ScriptDeclaration::getBlockSyntax);
-    declaration.def("setBlockSyntax", &ScriptDeclaration::setBlockSyntax);
+    declaration.def("getDeclSource", &ScriptDeclaration::getDeclSource);
+    declaration.def("setDeclSource", &ScriptDeclaration::setDeclSource);
     declaration.def("getDeclFilePath", &ScriptDeclaration::getDeclFilePath);
     declaration.def("setDeclFilePath", &ScriptDeclaration::setDeclFilePath);
 

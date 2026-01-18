@@ -44,7 +44,7 @@ private:
 	ArgumentList _args;
 
 	// The reference to the entityDef this response effect is basing on
-	IEntityClassPtr _eclass;
+	scene::EntityClass::Ptr _eclass;
 
 	// Stays false until the eclass has been parsed for effect argument types
 	bool _argumentListBuilt;
@@ -73,7 +73,7 @@ public:
 	bool nameIsOverridden();
 
 	/** greebo: Updates the name of this object. This triggers
-	 * 			an update of the contained IEntityClassPtr as well.
+	 * 			an update of the contained scene::EntityClass::Ptr as well.
 	 *
 	 * @inherited: This indicates the origin of this "set" operation.
 	 * 			   It can be used to determine whether this is an
@@ -120,7 +120,7 @@ public:
 
 	/** greebo: Returns the entity class pointer (as the name states)
 	 */
-	IEntityClassPtr getEClass() const;
+	scene::EntityClass::Ptr getEClass() const;
 
 	/** greebo: Clears and rebuilds the argument list from
 	 * 			the information found in the entity class.

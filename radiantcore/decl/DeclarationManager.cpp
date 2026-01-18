@@ -126,7 +126,7 @@ IDeclaration::Ptr DeclarationManager::findOrCreateDeclaration(Type type, const s
         }
 
         // Construct the default block
-        DeclarationBlockSyntax syntax;
+        DeclarationBlockSource syntax;
 
         syntax.typeName = getTypenameByType(type);
         syntax.name = name;
@@ -230,13 +230,13 @@ void DeclarationManager::reloadDeclarations()
                     rMessage() << "[DeclManager] " << getTypeName(decl->getDeclType()) << " " <<
                         name << " no longer present after reloadDecls" << std::endl;
 
-                    auto syntax = decl->getBlockSyntax();
+                    auto syntax = decl->getDeclSource();
 
                     // Clear name and file info
                     syntax.contents.clear();
                     syntax.fileInfo = vfs::FileInfo();
 
-                    decl->setBlockSyntax(syntax);
+                    decl->setDeclSource(syntax);
                 }
             }
         }
@@ -392,12 +392,12 @@ void DeclarationManager::removeDeclaration(Type type, const std::string& name)
             removeDeclarationFromFile(decl->second);
 
             // Clear out this declaration's syntax block
-            auto syntax = decl->second->getBlockSyntax();
+            auto syntax = decl->second->getDeclSource();
             syntax.name.clear();
             syntax.typeName.clear();
             syntax.contents.clear();
             syntax.fileInfo = vfs::FileInfo();
-            decl->second->setBlockSyntax(syntax);
+            decl->second->setDeclSource(syntax);
 
             decls.erase(decl);
 
@@ -437,7 +437,7 @@ bool removeDeclarationFromSyntaxTree(const parser::DefSyntaxTree::Ptr& syntaxTre
                 {
                     // Stop at the first whitespace token that contains more than one line break
                     auto whitespace = std::static_pointer_cast<parser::DefWhitespaceSyntax>(predecessor);
-                    
+
                     // stop searching at the first empty line
                     if (whitespace->getNumberOfLineBreaks() > 1) break;
 
@@ -477,7 +477,7 @@ bool removeDeclarationFromSyntaxTree(const parser::DefSyntaxTree::Ptr& syntaxTre
 
 void DeclarationManager::removeDeclarationFromFile(const IDeclaration::Ptr& decl)
 {
-    const auto& syntax = decl->getBlockSyntax();
+    const auto& syntax = decl->getDeclSource();
 
     // Nothing to do if the decl hasn't been saved
     if (syntax.fileInfo.name.empty()) return;
@@ -506,7 +506,7 @@ void DeclarationManager::removeDeclarationFromFile(const IDeclaration::Ptr& decl
 
     // Parse the existing file into a syntax tree for manipulation
     parser::DefBlockSyntaxParser<std::istream> parser(existingFile);
-    
+
     auto syntaxTree = parser.parse();
     existingFile.close();
 
@@ -545,7 +545,7 @@ bool DeclarationManager::renameDeclaration(Type type, const std::string& oldName
     doWithDeclarationLock(type, [&](NamedDeclarations& decls)
     {
         auto decl = decls.find(newName);
-        
+
         if (decl != decls.end())
         {
             rWarning() << "Cannot rename declaration to " << newName << " since this name is already in use" << std::endl;
@@ -620,7 +620,7 @@ void ensureTargetFileExists(const std::string& targetFile, const std::string& re
 
 void DeclarationManager::saveDeclaration(const IDeclaration::Ptr& decl)
 {
-    const auto& syntax = decl->getBlockSyntax();
+    const auto& syntax = decl->getDeclSource();
 
     // Check filename for emptiness
     if (syntax.fileInfo.name.empty())
@@ -803,7 +803,7 @@ void DeclarationManager::processParseResult(Type parserType, ParseResult& parsed
 
 void DeclarationManager::processParsedBlocks(ParseResult& parsedBlocks)
 {
-    std::vector<DeclarationBlockSyntax> unrecognisedBlocks;
+    std::vector<DeclarationBlockSource> unrecognisedBlocks;
 
     {
         std::lock_guard declLock(_declarationAndCreatorLock);
@@ -831,7 +831,7 @@ void DeclarationManager::processParsedBlocks(ParseResult& parsedBlocks)
         std::make_move_iterator(unrecognisedBlocks.end()));
 }
 
-bool DeclarationManager::tryDetermineBlockType(const DeclarationBlockSyntax& block, Type& type)
+bool DeclarationManager::tryDetermineBlockType(const DeclarationBlockSource& block, Type& type)
 {
     type = Type::Undetermined;
 
@@ -852,7 +852,7 @@ bool DeclarationManager::tryDetermineBlockType(const DeclarationBlockSyntax& blo
     return true;
 }
 
-const IDeclaration::Ptr& DeclarationManager::createOrUpdateDeclaration(Type type, const DeclarationBlockSyntax& block)
+const IDeclaration::Ptr& DeclarationManager::createOrUpdateDeclaration(Type type, const DeclarationBlockSource& block)
 {
     // Get the mapping for this decl type
     auto it = _declarationsByType.find(type);
@@ -883,7 +883,7 @@ const IDeclaration::Ptr& DeclarationManager::createOrUpdateDeclaration(Type type
     }
 
     // Assign the block to the declaration instance
-    existing->second->setBlockSyntax(block);
+    existing->second->setDeclSource(block);
 
     // Update the parse stamp for this instance
     existing->second->setParseStamp(_parseStamp);
@@ -898,7 +898,7 @@ void DeclarationManager::handleUnrecognisedBlocks()
     if (_unrecognisedBlocks.empty()) return;
 
     // Move all unrecognised blocks to a temporary structure and release the lock
-    std::list<DeclarationBlockSyntax> unrecognisedBlocks(std::move(_unrecognisedBlocks));
+    std::list<DeclarationBlockSource> unrecognisedBlocks(std::move(_unrecognisedBlocks));
     unrecognisedBlockLock.reset();
 
     {
@@ -948,13 +948,13 @@ void DeclarationManager::onFilesystemInitialised()
     reloadDeclarations();
 }
 
-const std::string& DeclarationManager::getName() const
+std::string DeclarationManager::getName() const
 {
     static std::string _name(MODULE_DECLMANAGER);
     return _name;
 }
 
-const StringSet& DeclarationManager::getDependencies() const
+StringSet DeclarationManager::getDependencies() const
 {
     static StringSet _dependencies
     {

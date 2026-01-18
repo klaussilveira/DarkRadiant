@@ -70,7 +70,7 @@ void SceneManipulationPivot::updateFromSelection()
     {
         // Test if a single entity is selected
         scene::INodePtr node = GlobalSelectionSystem().ultimateSelected();
-        Entity* entity = Node_getEntity(node);
+        Entity* entity = node->tryGetEntity();
 
         if (entity != nullptr)
         {

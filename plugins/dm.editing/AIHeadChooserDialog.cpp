@@ -29,7 +29,7 @@ public:
     {}
 
 protected:
-    bool ClassShouldBeListed(const IEntityClassPtr& eclass) override
+    bool ClassShouldBeListed(const scene::EntityClass::Ptr& eclass) override
     {
         return eclass->getAttributeValue("editor_head") == "1";
     }
@@ -42,7 +42,7 @@ AIHeadChooserDialog::AIHeadChooserDialog() :
 {
 	SetSizer(new wxBoxSizer(wxVERTICAL));
 
-	auto splitter = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, 
+	auto splitter = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition,
 		wxDefaultSize, wxSP_3D | wxSP_LIVE_UPDATE);
     splitter->SetMinimumPaneSize(10); // disallow unsplitting
 
@@ -74,7 +74,7 @@ AIHeadChooserDialog::AIHeadChooserDialog() :
 	_preview.reset(new wxutil::ModelPreview(previewPanel));
 	_preview->setDefaultCamDistanceFactor(5.0f);
 
-	_description = new wxTextCtrl(previewPanel, wxID_ANY, "", 
+	_description = new wxTextCtrl(previewPanel, wxID_ANY, "",
 		wxDefaultPosition, wxDefaultSize, wxTE_LEFT | wxTE_MULTILINE | wxTE_READONLY | wxTE_WORDWRAP);
 	_description->SetMinClientSize(wxSize(-1, 60));
 
@@ -123,7 +123,7 @@ void AIHeadChooserDialog::handleSelectionChanged()
 
     if (!_selectedHead.empty())
     {
-        // Lookup the IEntityClass instance
+        // Lookup the scene::EntityClass instance
         if (auto ecls = GlobalEntityClassManager().findClass(_selectedHead); ecls)
         {
             _preview->setModel(ecls->getAttributeValue("model"));

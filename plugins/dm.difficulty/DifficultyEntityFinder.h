@@ -33,7 +33,7 @@ public:
 	// Walker implementation
 	bool pre(const scene::INodePtr& node) {
 		// Check if we have an entity
-		Entity* entity = Node_getEntity(node);
+		Entity* entity = node->tryGetEntity();
 
 		if (entity != NULL) {
 			// Check for a classname match

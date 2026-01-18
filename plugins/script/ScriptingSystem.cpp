@@ -30,15 +30,13 @@
 #include "interfaces/FxManagerInterface.h"
 
 #include "PythonModule.h"
-
 #include "SceneNodeBuffer.h"
 
-#include "os/fs.h"
 #include "os/path.h"
 #include <functional>
 #include "string/case_conv.h"
 
-namespace script 
+namespace script
 {
 
 namespace
@@ -50,10 +48,6 @@ namespace
     constexpr const char* const COMMAND_PATH = "commands/"; // relative to SCRIPT_PATH
 }
 
-ScriptingSystem::ScriptingSystem() :
-	_initialised(false)
-{}
-
 void ScriptingSystem::addInterface(const std::string& name, const IScriptInterfacePtr& iface)
 {
     _pythonModule->addInterface(NamedInterface(name, iface));
@@ -61,7 +55,7 @@ void ScriptingSystem::addInterface(const std::string& name, const IScriptInterfa
 
 void ScriptingSystem::executeScriptFile(const std::string& filename)
 {
-	executeScriptFile(filename, false);
+    executeScriptFile(filename, false);
 }
 
 void ScriptingSystem::executeScriptFile(const std::string& filename, bool setExecuteCommandAttr)
@@ -76,17 +70,17 @@ ExecutionResultPtr ScriptingSystem::executeString(const std::string& scriptStrin
 
 void ScriptingSystem::foreachScriptCommand(const std::function<void(const IScriptCommand&)>& functor)
 {
-	for (const auto& pair : _commands)
-	{
-		if (pair.first == EXAMPLE_SCRIPT_NAME) continue; // skip the example script
+    for (const auto& pair : _commands)
+    {
+        if (pair.first == EXAMPLE_SCRIPT_NAME) continue; // skip the example script
 
-		functor(*pair.second);
-	}
+        functor(*pair.second);
+    }
 }
 
 sigc::signal<void>& ScriptingSystem::signal_onScriptsReloaded()
 {
-	return _sigScriptsReloaded;
+    return _sigScriptsReloaded;
 }
 
 void ScriptingSystem::initialise()
@@ -94,32 +88,32 @@ void ScriptingSystem::initialise()
     // Fire up the interpreter
     _pythonModule->initialise();
 
-	_initialised = true;
+    _initialised = true;
 
-	// Start the init script
-	executeScriptFile(INIT_SCRIPT_FILENAME);
+    // Start the init script
+    executeScriptFile(INIT_SCRIPT_FILENAME);
 
-	// Search script folder for commands
-	reloadScripts();
+    // Search script folder for commands
+    reloadScripts();
 }
 
 void ScriptingSystem::runScriptFile(const cmd::ArgumentList& args)
 {
-	if (args.empty()) return;
+    if (args.empty()) return;
 
-	executeScriptFile(args[0].getString());
+    executeScriptFile(args[0].getString());
 }
 
-void ScriptingSystem::runScriptCommand(const cmd::ArgumentList& args) 
+void ScriptingSystem::runScriptCommand(const cmd::ArgumentList& args)
 {
-	if (args.empty()) return;
+    if (args.empty()) return;
 
-	executeCommand(args[0].getString());
+    executeCommand(args[0].getString());
 }
 
-void ScriptingSystem::reloadScriptsCmd(const cmd::ArgumentList& args) 
+void ScriptingSystem::reloadScriptsCmd(const cmd::ArgumentList& args)
 {
-	reloadScripts();
+    reloadScripts();
 }
 
 void ScriptingSystem::executeCommand(const std::string& name)
@@ -175,133 +169,111 @@ void ScriptingSystem::loadCommandScript(const std::string& scriptFilename)
 
 void ScriptingSystem::reloadScripts()
 {
-	// Release all previously allocated commands
-	_commands.clear();
+    // Release all previously allocated commands
+    _commands.clear();
 
-	// Initialise the search's starting point
-	fs::path start = fs::path(_scriptPath) / COMMAND_PATH;
+    // Initialise the search's starting point
+    fs::path start = fs::path(_scriptPath) / COMMAND_PATH;
 
-	if (!fs::exists(start))
-	{
-		rWarning() << "Couldn't find scripts folder: " << start.string() << std::endl;
-		return;
-	}
+    if (!fs::exists(start))
+    {
+        rWarning() << "Couldn't find scripts folder: " << start.string() << std::endl;
+        return;
+    }
 
-	for (fs::recursive_directory_iterator it(start);
-		 it != fs::recursive_directory_iterator(); ++it)
-	{
-		// Get the candidate
-		const fs::path& candidate = *it;
+    for (fs::recursive_directory_iterator it(start);
+         it != fs::recursive_directory_iterator(); ++it)
+    {
+        // Get the candidate
+        const fs::path& candidate = *it;
 
-		if (fs::is_directory(candidate)) continue;
+        if (fs::is_directory(candidate)) continue;
 
-		std::string extension = os::getExtension(candidate.string());
-		string::to_lower(extension);
+        std::string extension = os::getExtension(candidate.string());
+        string::to_lower(extension);
 
-		if (extension != PYTHON_FILE_EXTENSION) continue;
+        if (extension != PYTHON_FILE_EXTENSION) continue;
 
-		// Script file found, construct a new command
-		loadCommandScript(os::getRelativePath(candidate.generic_string(), _scriptPath));
-	}
+        // Script file found, construct a new command
+        loadCommandScript(os::getRelativePath(candidate.generic_string(), _scriptPath));
+    }
 
-	rMessage() << "ScriptModule: Found " << _commands.size() << " commands." << std::endl;
+    rMessage() << "ScriptModule: Found " << _commands.size() << " commands." << std::endl;
 
-	_sigScriptsReloaded.emit();
-}
-
-// RegisterableModule implementation
-const std::string& ScriptingSystem::getName() const
-{
-	static std::string _name(MODULE_SCRIPTING_SYSTEM);
-	return _name;
-}
-
-const StringSet& ScriptingSystem::getDependencies() const
-{
-	static StringSet _dependencies;
-
-	if (_dependencies.empty())
-	{
-		_dependencies.insert(MODULE_COMMANDSYSTEM);
-	}
-
-	return _dependencies;
+    _sigScriptsReloaded.emit();
 }
 
 void ScriptingSystem::initialiseModule(const IApplicationContext& ctx)
 {
-	// Subscribe to get notified as soon as Radiant is fully initialised
-	module::GlobalModuleRegistry().signal_allModulesInitialised()
-		.connect(sigc::mem_fun(*this, &ScriptingSystem::initialise));
+    // Construct the script path
+    _scriptPath = ctx.getRuntimeDataPath() + SCRIPT_PATH;
 
-	// Construct the script path
-	_scriptPath = ctx.getRuntimeDataPath() + SCRIPT_PATH;
-
-	// Set up the python interpreter
+    // Set up the python interpreter
     _pythonModule.reset(new PythonModule);
 
-	// Add the built-in interfaces (the order is important, as we don't have dependency-resolution yet)
-	addInterface("Math", std::make_shared<MathInterface>());
-	addInterface("GameManager", std::make_shared<GameInterface>());
-	addInterface("CommandSystem", std::make_shared<CommandSystemInterface>());
-	addInterface("SceneGraph", std::make_shared<SceneGraphInterface>());
-	addInterface("GlobalRegistry", std::make_shared<RegistryInterface>());
-	addInterface("GlobalEntityClassManager", std::make_shared<EClassManagerInterface>());
-	addInterface("GlobalSelectionSystem", std::make_shared<SelectionInterface>());
-	addInterface("Brush", std::make_shared<BrushInterface>());
-	addInterface("Patch", std::make_shared<PatchInterface>());
-	addInterface("Entity", std::make_shared<EntityInterface>());
-	addInterface("Radiant", std::make_shared<RadiantInterface>());
-	addInterface("Map", std::make_shared<MapInterface>());
-	addInterface("FileSystem", std::make_shared<FileSystemInterface>());
-	addInterface("Grid", std::make_shared<GridInterface>());
-	addInterface("ShaderSystem", std::make_shared<ShaderSystemInterface>());
-	addInterface("Model", std::make_shared<ModelInterface>());
-	addInterface("ModelSkinCacheInterface", std::make_shared<ModelSkinCacheInterface>());
-	addInterface("SoundManager", std::make_shared<SoundManagerInterface>());
-	addInterface("DialogInterface", std::make_shared<DialogManagerInterface>());
-	addInterface("SelectionSetInterface", std::make_shared<SelectionSetInterface>());
-	addInterface("SelectionGroupInterface", std::make_shared<SelectionGroupInterface>());
-	addInterface("CameraInterface", std::make_shared<CameraInterface>());
-	addInterface("LayerInterface", std::make_shared<LayerInterface>());
-	addInterface("DeclarationManager", std::make_shared<DeclarationManagerInterface>());
-	addInterface("FxManager", std::make_shared<FxManagerInterface>());
+    // Add the built-in interfaces (the order is important, as we don't have dependency-resolution yet)
+    addInterface("Math", std::make_shared<MathInterface>());
+    addInterface("GameManager", std::make_shared<GameInterface>());
+    addInterface("CommandSystem", std::make_shared<CommandSystemInterface>());
+    addInterface("SceneGraph", std::make_shared<SceneGraphInterface>());
+    addInterface("GlobalRegistry", std::make_shared<RegistryInterface>());
+    addInterface("GlobalEntityClassManager", std::make_shared<EClassManagerInterface>());
+    addInterface("GlobalSelectionSystem", std::make_shared<SelectionInterface>());
+    addInterface("Brush", std::make_shared<BrushInterface>());
+    addInterface("Patch", std::make_shared<PatchInterface>());
+    addInterface("Entity", std::make_shared<EntityInterface>());
+    addInterface("Radiant", std::make_shared<RadiantInterface>());
+    addInterface("Map", std::make_shared<MapInterface>());
+    addInterface("FileSystem", std::make_shared<FileSystemInterface>());
+    addInterface("Grid", std::make_shared<GridInterface>());
+    addInterface("ShaderSystem", std::make_shared<ShaderSystemInterface>());
+    addInterface("Model", std::make_shared<ModelInterface>());
+    addInterface("ModelSkinCacheInterface", std::make_shared<ModelSkinCacheInterface>());
+    addInterface("SoundManager", std::make_shared<SoundManagerInterface>());
+    addInterface("DialogInterface", std::make_shared<DialogManagerInterface>());
+    addInterface("SelectionSetInterface", std::make_shared<SelectionSetInterface>());
+    addInterface("SelectionGroupInterface", std::make_shared<SelectionGroupInterface>());
+    addInterface("CameraInterface", std::make_shared<CameraInterface>());
+    addInterface("LayerInterface", std::make_shared<LayerInterface>());
+    addInterface("DeclarationManager", std::make_shared<DeclarationManagerInterface>());
+    addInterface("FxManager", std::make_shared<FxManagerInterface>());
 
-	GlobalCommandSystem().addCommand(
-		"RunScript",
-		std::bind(&ScriptingSystem::runScriptFile, this, std::placeholders::_1),
-		{ cmd::ARGTYPE_STRING }
-	);
+    GlobalCommandSystem().addCommand(
+        "RunScript",
+        std::bind(&ScriptingSystem::runScriptFile, this, std::placeholders::_1),
+        { cmd::ARGTYPE_STRING }
+    );
 
-	GlobalCommandSystem().addCommand(
-		"ReloadScripts",
-		std::bind(&ScriptingSystem::reloadScriptsCmd, this, std::placeholders::_1)
-	);
+    GlobalCommandSystem().addCommand(
+        "ReloadScripts",
+        std::bind(&ScriptingSystem::reloadScriptsCmd, this, std::placeholders::_1)
+    );
 
-	GlobalCommandSystem().addCommand(
-		"RunScriptCommand",
-		std::bind(&ScriptingSystem::runScriptCommand, this, std::placeholders::_1),
-		{ cmd::ARGTYPE_STRING }
-	);
+    GlobalCommandSystem().addCommand(
+        "RunScriptCommand",
+        std::bind(&ScriptingSystem::runScriptCommand, this, std::placeholders::_1),
+        { cmd::ARGTYPE_STRING }
+    );
 
-	SceneNodeBuffer::Instance().clear();
+    SceneNodeBuffer::Instance().clear();
+
+    // ScriptingSystem is a lazy module, so initialiseModule() is called late enough that
+    // we can initialise Python immediately.
+    initialise();
 }
 
 void ScriptingSystem::shutdownModule()
 {
-	rMessage() << getName() << "::shutdownModule called." << std::endl;
+    rMessage() << getName() << "::shutdownModule called." << std::endl;
 
-	_sigScriptsReloaded.clear();
+    _sigScriptsReloaded.clear();
+    _initialised = false;
 
-	_initialised = false;
+    // Clear the buffer so that nodes finally get destructed
+    SceneNodeBuffer::Instance().clear();
 
-	// Clear the buffer so that nodes finally get destructed
-	SceneNodeBuffer::Instance().clear();
-
-	_commands.clear();
-
-	_scriptPath.clear();
-
+    _commands.clear();
+    _scriptPath.clear();
     _pythonModule.reset();
 }
 

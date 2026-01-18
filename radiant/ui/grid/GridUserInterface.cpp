@@ -21,13 +21,13 @@ namespace
     }
 }
 
-const std::string& GridUserInterface::getName() const
+std::string GridUserInterface::getName() const
 {
 	static std::string _name("GridUserInterface");
 	return _name;
 }
 
-const StringSet& GridUserInterface::getDependencies() const
+StringSet GridUserInterface::getDependencies() const
 {
 	static StringSet _dependencies;
 

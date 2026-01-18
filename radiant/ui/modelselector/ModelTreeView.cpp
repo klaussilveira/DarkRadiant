@@ -2,6 +2,7 @@
 
 #include "ideclmanager.h"
 #include "ModelPopulator.h"
+#include "wxutil/menu/MenuItem.h"
 #include "wxutil/menu/IconTextMenuItem.h"
 #include "wxutil/sourceview/DeclarationSourceView.h"
 

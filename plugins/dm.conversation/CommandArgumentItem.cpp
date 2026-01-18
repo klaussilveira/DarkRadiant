@@ -101,7 +101,7 @@ void BooleanArgument::setValueFromString(const std::string& value)
 }
 
 // Actor Argument
-ActorArgument::ActorArgument(CommandEditor& owner, 
+ActorArgument::ActorArgument(CommandEditor& owner,
 		wxWindow* parent,
 		const conversation::ArgumentInfo& argInfo,
 		const conversation::Conversation::ActorMap& actors) :
@@ -136,7 +136,7 @@ wxWindow* ActorArgument::getEditWidget()
 	return _comboBox;
 }
 
-SoundShaderArgument::SoundShaderArgument(CommandEditor& owner, 
+SoundShaderArgument::SoundShaderArgument(CommandEditor& owner,
 		wxWindow* parent, const conversation::ArgumentInfo& argInfo) :
 	StringArgument(owner, parent, argInfo)
 {
@@ -193,7 +193,7 @@ void SoundShaderArgument::pickSoundShader()
 	chooser->destroyDialog();
 }
 
-AnimationArgument::AnimationArgument(CommandEditor& owner, 
+AnimationArgument::AnimationArgument(CommandEditor& owner,
 		wxWindow* parent, const conversation::ArgumentInfo& argInfo) :
 	StringArgument(owner, parent, argInfo)
 {
@@ -253,7 +253,7 @@ void AnimationArgument::pickAnimation()
 		if (finder.getFoundNode())
 		{
 			// Found the corresponding entity, get the model name
-			Entity* entity = Node_getEntity(finder.getFoundNode());
+			Entity* entity = finder.getFoundNode()->tryGetEntity();
 			assert(entity != nullptr);
 
 			preselectModel = entity->getKeyValue("model");

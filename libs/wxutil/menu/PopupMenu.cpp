@@ -1,5 +1,6 @@
 #include "PopupMenu.h"
 #include "SeparatorItem.h"
+#include "MenuItem.h"
 
 namespace wxutil
 {

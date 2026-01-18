@@ -1,7 +1,5 @@
 #include "ParticleNode.h"
-
 #include "ivolumetest.h"
-#include "itextstream.h"
 
 namespace particles
 {
@@ -26,7 +24,7 @@ IRenderableParticlePtr ParticleNode::getParticle() const
 	return _renderableParticle;
 }
 
-const AABB& ParticleNode::localAABB() const
+AABB ParticleNode::localAABB() const
 {
 	return _renderableParticle->getBounds();
 }

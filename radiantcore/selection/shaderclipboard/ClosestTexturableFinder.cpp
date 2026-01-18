@@ -46,7 +46,7 @@ bool ClosestTexturableFinder::pre(const scene::INodePtr& node)
 				 ++i)
 			{
 				// Check for filtered faces, don't select them
-				if (!GlobalFilterSystem().isVisible(FilterRule::TYPE_TEXTURE, (*i)->getShader()))
+				if (!GlobalFilterSystem().isVisible(FilterType::TEXTURE, (*i)->getShader()))
 				{
 					continue;
 				}
@@ -84,7 +84,7 @@ bool ClosestTexturableFinder::pre(const scene::INodePtr& node)
 					Patch* patch = Node_getPatch(node);
 					if (patch != NULL) {
 						// Check for filtered patches
-						if (GlobalFilterSystem().isVisible(FilterRule::TYPE_TEXTURE, patch->getShader()))
+						if (GlobalFilterSystem().isVisible(FilterType::TEXTURE, patch->getShader()))
 						{
 							_texturable.brush = NULL;
 							_texturable.face = NULL;

@@ -325,7 +325,7 @@
     <ClCompile Include="..\..\radiantcore\filters\BasicFilterSystem.cpp">
       <Filter>src\filters</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\radiantcore\filters\XMLFilter.cpp">
+    <ClCompile Include="..\..\radiantcore\filters\SceneFilter.cpp">
       <Filter>src\filters</Filter>
     </ClCompile>
     <ClCompile Include="..\..\radiantcore\filters\XmlFilterEventAdapter.cpp">
@@ -1314,7 +1314,7 @@
     <ClInclude Include="..\..\radiantcore\filters\SetObjectSelectionByFilterWalker.h">
       <Filter>src\filters</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\radiantcore\filters\XMLFilter.h">
+    <ClInclude Include="..\..\radiantcore\filters\SceneFilter.h">
       <Filter>src\filters</Filter>
     </ClInclude>
     <ClInclude Include="..\..\radiantcore\filters\XmlFilterEventAdapter.h">

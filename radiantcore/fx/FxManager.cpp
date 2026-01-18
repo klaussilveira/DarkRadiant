@@ -13,13 +13,13 @@ IFxDeclaration::Ptr FxManager::findFx(const std::string& name)
         GlobalDeclarationManager().findDeclaration(decl::Type::Fx, name));
 }
 
-const std::string& FxManager::getName() const
+std::string FxManager::getName() const
 {
 	static std::string _name("FxManager");
 	return _name;
 }
 
-const StringSet& FxManager::getDependencies() const
+StringSet FxManager::getDependencies() const
 {
     static StringSet _dependencies
     {

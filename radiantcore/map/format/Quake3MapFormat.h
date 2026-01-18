@@ -10,14 +10,13 @@ class Quake3MapFormatBase :
 {
 public:
 	// RegisterableModule implementation
-	virtual const StringSet& getDependencies() const override;
-	virtual void initialiseModule(const IApplicationContext& ctx) override;
-	virtual void shutdownModule() override;
+	StringSet getDependencies() const override;
+	void initialiseModule(const IApplicationContext& ctx) override;
+	void shutdownModule() override;
 
     // Map reader is shared by Q3 and Q3 alternate
 	virtual IMapReaderPtr getMapReader(IMapImportFilter& filter) const override;
 
-	virtual bool allowInfoFileCreation() const override;
 	virtual bool canLoad(std::istream& stream) const override;
 
 protected:
@@ -30,7 +29,7 @@ class Quake3MapFormat :
 {
 public:
 	// RegisterableModule implementation
-	virtual const std::string& getName() const override;
+	std::string getName() const override;
 
 	virtual const std::string& getMapFormatName() const override;
 	virtual const std::string& getGameType() const override;
@@ -49,7 +48,7 @@ class Quake3AlternateMapFormat :
 {
 public:
     // RegisterableModule implementation
-    virtual const std::string& getName() const override;
+    std::string getName() const override;
 
     virtual const std::string& getMapFormatName() const override;
     virtual const std::string& getGameType() const override;

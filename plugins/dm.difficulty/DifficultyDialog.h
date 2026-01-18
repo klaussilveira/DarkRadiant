@@ -24,8 +24,7 @@ typedef std::shared_ptr<DifficultyDialog> DifficultyDialogPtr;
  * Maintains a certain number of DifficultyEditors which get packed into the
  * notebook tabs.
  */
-class DifficultyDialog :
-	public wxutil::DialogBase
+class DifficultyDialog: public wxutil::DialogBase
 {
 	wxChoicebook* _notebook;
 

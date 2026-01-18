@@ -64,7 +64,7 @@ public:
     void setDefaultSkin(const std::string& defaultSkin) override;
 
 	// Bounded implementation
-	const AABB& localAABB() const override;
+	AABB localAABB() const override;
 
 	// SelectionTestable implementation
 	void testSelect(Selector& selector, SelectionTest& test) override;

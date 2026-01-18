@@ -434,8 +434,8 @@ TEST_F(DeclManagerTest, FindOrCreateDeclaration)
 
     EXPECT_EQ(defaultDecl->getDeclType(), decl::Type::TestDecl);
     EXPECT_EQ(defaultDecl->getDeclName(), "decl/nonexistent");
-    EXPECT_EQ(defaultDecl->getBlockSyntax().contents, std::string());
-    EXPECT_EQ(defaultDecl->getBlockSyntax().fileInfo.visibility, vfs::Visibility::HIDDEN);
+    EXPECT_EQ(defaultDecl->getDeclSource().contents, std::string());
+    EXPECT_EQ(defaultDecl->getDeclSource().fileInfo.visibility, vfs::Visibility::HIDDEN);
 
     EXPECT_EQ(GlobalDeclarationManager().findOrCreateDeclaration(decl::Type::TestDecl, "decl/nonexistent"), defaultDecl)
         << "We expect the created declaration to be persistent";
@@ -479,7 +479,7 @@ inline void expectDeclContains(decl::Type type, const std::string& declName, con
 {
     auto decl = GlobalDeclarationManager().findDeclaration(type, declName);
     EXPECT_TRUE(decl) << declName << " should be present";
-    EXPECT_NE(decl->getBlockSyntax().contents.find(expectedContents), std::string::npos)
+    EXPECT_NE(decl->getDeclSource().contents.find(expectedContents), std::string::npos)
         << declName << " should contain the expected contents " << expectedContents;
 }
 
@@ -488,7 +488,7 @@ inline void expectDeclDoesNotContain(decl::Type type, const std::string& declNam
 {
     auto decl = GlobalDeclarationManager().findDeclaration(type, declName);
     EXPECT_TRUE(decl) << declName << " should be present";
-    EXPECT_EQ(decl->getBlockSyntax().contents.find(contents), std::string::npos)
+    EXPECT_EQ(decl->getDeclSource().contents.find(contents), std::string::npos)
         << declName << " should NOT contain " << contents;
 }
 
@@ -698,8 +698,8 @@ testdecl    decl/temporary/12 { diffusemap textures/temporary/12 }
     auto decl = GlobalDeclarationManager().findDeclaration(decl::Type::TestDecl, "decl/temporary/11");
 
     EXPECT_TRUE(decl) << "Declaration should still be registered after reloadDecls";
-    EXPECT_TRUE(decl->getBlockSyntax().contents.empty()) << "Declaration should be empty after reloadDecls";
-    EXPECT_EQ(decl->getBlockSyntax().fileInfo.visibility, vfs::Visibility::HIDDEN) << "Declaration should be hidden after reloadDecls";
+    EXPECT_TRUE(decl->getDeclSource().contents.empty()) << "Declaration should be empty after reloadDecls";
+    EXPECT_EQ(decl->getDeclSource().fileInfo.visibility, vfs::Visibility::HIDDEN) << "Declaration should be hidden after reloadDecls";
 }
 
 TEST_F(DeclManagerTest, DeclarationPrecedence)
@@ -732,13 +732,13 @@ TEST_F(DeclManagerTest, RemoveDeclaration)
     expectDeclIsNotPresent(decl::Type::TestDecl, "decl/removal/1");
 
     // The held reference should be cleared
-    EXPECT_TRUE(decl->getBlockSyntax().name.empty());
-    EXPECT_TRUE(decl->getBlockSyntax().typeName.empty());
-    EXPECT_TRUE(decl->getBlockSyntax().contents.empty());
-    EXPECT_TRUE(decl->getBlockSyntax().fileInfo.name.empty());
-    EXPECT_TRUE(decl->getBlockSyntax().fileInfo.topDir.empty());
-    EXPECT_TRUE(decl->getBlockSyntax().fileInfo.fullPath().empty());
-    EXPECT_EQ(decl->getBlockSyntax().fileInfo.visibility, vfs::Visibility::HIDDEN);
+    EXPECT_TRUE(decl->getDeclSource().name.empty());
+    EXPECT_TRUE(decl->getDeclSource().typeName.empty());
+    EXPECT_TRUE(decl->getDeclSource().contents.empty());
+    EXPECT_TRUE(decl->getDeclSource().fileInfo.name.empty());
+    EXPECT_TRUE(decl->getDeclSource().fileInfo.topDir.empty());
+    EXPECT_TRUE(decl->getDeclSource().fileInfo.fullPath().empty());
+    EXPECT_EQ(decl->getDeclSource().fileInfo.visibility, vfs::Visibility::HIDDEN);
 }
 
 // Removing a decl defined in a PK4 file will throw
@@ -749,7 +749,7 @@ TEST_F(DeclManagerTest, RemoveDeclarationInPk4File)
 
     auto decl = GlobalDeclarationManager().findDeclaration(decl::Type::TestDecl, "decl/export/0");
     EXPECT_TRUE(decl) << "decl/export/0 must be present";
-    EXPECT_FALSE(decl->getBlockSyntax().fileInfo.getIsPhysicalFile()) << "decl/export/0 should be in a PK4 file";
+    EXPECT_FALSE(decl->getDeclSource().fileInfo.getIsPhysicalFile()) << "decl/export/0 should be in a PK4 file";
 
     // Attempting to remove the decl will throw
     EXPECT_THROW(GlobalDeclarationManager().removeDeclaration(decl->getDeclType(), decl->getDeclName()),
@@ -765,7 +765,7 @@ TEST_F(DeclManagerTest, RemoveDeclarationFromPhysicalFile)
     auto decl = GlobalDeclarationManager().findDeclaration(decl::Type::TestDecl, "decl/removal/1");
     expectDeclIsPresent(decl::Type::TestDecl, "decl/removal/1");
 
-    auto originalSyntax = decl->getBlockSyntax();
+    auto originalSyntax = decl->getDeclSource();
     EXPECT_TRUE(originalSyntax.fileInfo.getIsPhysicalFile()) << "decl/removal/1 must be in a physical file";
 
     auto fileContents = algorithm::loadTextFromVfsFile(decl->getDeclFilePath());
@@ -1104,7 +1104,7 @@ TEST_F(DeclManagerTest, RenameDeclaration)
     expectDeclIsNotPresent(decl::Type::TestDecl, "decl/renamed/1");
 
     auto oldDecl = GlobalDeclarationManager().findDeclaration(decl::Type::TestDecl, "decl/precedence_test/1");
-    auto oldSyntax = oldDecl->getBlockSyntax();
+    auto oldSyntax = oldDecl->getDeclSource();
 
     auto result = GlobalDeclarationManager().renameDeclaration(
         decl::Type::TestDecl, "decl/precedence_test/1", "decl/renamed/1");
@@ -1116,7 +1116,7 @@ TEST_F(DeclManagerTest, RenameDeclaration)
     expectDeclIsPresent(decl::Type::TestDecl, newName);
 
     auto newDecl = GlobalDeclarationManager().findDeclaration(decl::Type::TestDecl, newName);
-    const auto& newSyntax = newDecl->getBlockSyntax();
+    const auto& newSyntax = newDecl->getDeclSource();
 
     EXPECT_EQ(oldDecl->getDeclName(), newName) << "Existing Declaration reference has not been renamed";
     EXPECT_EQ(newDecl->getDeclName(), newName) << "Newly looked up declaration has not been renamed";
@@ -1267,7 +1267,7 @@ TEST_F(DeclManagerTest, SyntaxGeneration)
     EXPECT_EQ(decl->getKeyValue("diffusemap"), "textures/numbers/0");
 
     // Expect the unchanged block to be present
-    EXPECT_NE(decl->getBlockSyntax().contents.find("textures/numbers/0"), std::string::npos);
+    EXPECT_NE(decl->getDeclSource().contents.find("textures/numbers/0"), std::string::npos);
     decl->generateSyntaxInvocationCount = 0;
 
     // Change the declaration
@@ -1275,9 +1275,9 @@ TEST_F(DeclManagerTest, SyntaxGeneration)
 
     // The old material name should be gone now, the new one should be there
     EXPECT_EQ(decl->generateSyntaxInvocationCount, 0) << "No call to generateSyntax should have been recorded yet";
-    EXPECT_EQ(decl->getBlockSyntax().contents.find("textures/numbers/0"), std::string::npos);
+    EXPECT_EQ(decl->getDeclSource().contents.find("textures/numbers/0"), std::string::npos);
     EXPECT_EQ(decl->generateSyntaxInvocationCount, 1) << "A call to generateSyntax should have been recorded";
-    EXPECT_NE(decl->getBlockSyntax().contents.find("some/other/texture"), std::string::npos);
+    EXPECT_NE(decl->getDeclSource().contents.find("some/other/texture"), std::string::npos);
     EXPECT_EQ(decl->generateSyntaxInvocationCount, 1) << "Only one call to generateSyntax should have been recorded";
 }
 
@@ -1333,7 +1333,7 @@ TEST_F(DeclManagerTest, SaveNewDeclToNewFile)
     decl->setKeyValue("tork", "some_value");
 
     // Set the decl to save its contents to a new file that doesn't exist yet
-    auto syntax = decl->getBlockSyntax();
+    auto syntax = decl->getDeclSource();
     auto fileInfo = vfs::FileInfo(TEST_DECL_FOLDER, "some_new_file.decl", vfs::Visibility::NORMAL);
     decl->setFileInfo(fileInfo);
 
@@ -1347,7 +1347,7 @@ TEST_F(DeclManagerTest, SaveNewDeclToNewFile)
 
     EXPECT_TRUE(fs::exists(outputPath)) << "Output file should exist now";
 
-    expectDeclIsPresentInFile(decl, decl->getBlockSyntax().fileInfo.fullPath(), true);
+    expectDeclIsPresentInFile(decl, decl->getDeclSource().fileInfo.fullPath(), true);
 }
 
 // Save the decl to a file that already exists (but doesn't contain the def)
@@ -1362,7 +1362,7 @@ TEST_F(DeclManagerTest, SaveNewDeclToExistingFile)
     decl->setKeyValue("tork", "myvalue with spaces");
 
     // Set up the decl to save its contents to an existing file
-    auto syntax = decl->getBlockSyntax();
+    auto syntax = decl->getDeclSource();
     auto fileInfo = vfs::FileInfo(TEST_DECL_FOLDER, "numbers.decl", vfs::Visibility::NORMAL);
     decl->setFileInfo(fileInfo);
 
@@ -1370,11 +1370,11 @@ TEST_F(DeclManagerTest, SaveNewDeclToExistingFile)
     EXPECT_TRUE(fs::exists(outputPath)) << "Output file must already exist";
 
     // Def file should not have that decl yet
-    expectDeclIsPresentInFile(decl, decl->getBlockSyntax().fileInfo.fullPath(), false);
+    expectDeclIsPresentInFile(decl, decl->getDeclSource().fileInfo.fullPath(), false);
 
     GlobalDeclarationManager().saveDeclaration(decl);
 
-    expectDeclIsPresentInFile(decl, decl->getBlockSyntax().fileInfo.fullPath(), true);
+    expectDeclIsPresentInFile(decl, decl->getDeclSource().fileInfo.fullPath(), true);
 
     // the fixture will revert the changes to numbers.decl
 }
@@ -1393,11 +1393,11 @@ TEST_F(DeclManagerTest, SaveExistingDeclToExistingFile)
     decl->setKeyValue("tork", "new_value");
 
     // This modified decl should not be present
-    expectDeclIsPresentInFile(decl, decl->getBlockSyntax().fileInfo.fullPath(), false);
+    expectDeclIsPresentInFile(decl, decl->getDeclSource().fileInfo.fullPath(), false);
 
     // Save, it should be there now
     GlobalDeclarationManager().saveDeclaration(decl);
-    expectDeclIsPresentInFile(decl, decl->getBlockSyntax().fileInfo.fullPath(), true);
+    expectDeclIsPresentInFile(decl, decl->getDeclSource().fileInfo.fullPath(), true);
 
     // The test fixture will restore the original file contents in TearDown
 }
@@ -1416,30 +1416,30 @@ TEST_F(DeclManagerTest, SaveExistingDeclToNewFileOverridingPk4)
     decl->setKeyValue("tork", "new_value");
 
     // The overriding file should not be present
-    auto outputPath = _context.getTestProjectPath() + decl->getBlockSyntax().fileInfo.fullPath();
+    auto outputPath = _context.getTestProjectPath() + decl->getDeclSource().fileInfo.fullPath();
 
     // Let the file be deleted when we're done here
     TemporaryFile outputFile(outputPath);
     EXPECT_FALSE(fs::exists(outputPath));
 
-    expectDeclIsPresentInFile(decl, decl->getBlockSyntax().fileInfo.fullPath(), false);
+    expectDeclIsPresentInFile(decl, decl->getDeclSource().fileInfo.fullPath(), false);
 
     // Save, it should be there now
     GlobalDeclarationManager().saveDeclaration(decl);
-    expectDeclIsPresentInFile(decl, decl->getBlockSyntax().fileInfo.fullPath(), true);
+    expectDeclIsPresentInFile(decl, decl->getDeclSource().fileInfo.fullPath(), true);
 
     // Check if the other decl declaration is still intact in the file (use the same path to check)
     auto export2Decl = std::static_pointer_cast<ITestDeclaration>(
         GlobalDeclarationManager().findDeclaration(decl::Type::TestDecl, "decl/export/2"));
     EXPECT_EQ(export2Decl->getDeclFilePath(), decl->getDeclFilePath()) << "The decls should be in the same .decl file";
-    expectDeclIsPresentInFile(export2Decl, decl->getBlockSyntax().fileInfo.fullPath(), true);
+    expectDeclIsPresentInFile(export2Decl, decl->getDeclSource().fileInfo.fullPath(), true);
 
     auto export0Decl = std::static_pointer_cast<ITestDeclaration>(
         GlobalDeclarationManager().findDeclaration(decl::Type::TestDecl, "decl/export/0"));
     EXPECT_EQ(export0Decl->getDeclFilePath(), decl->getDeclFilePath()) << "The decls should be in the same .decl file";
-    expectDeclIsPresentInFile(export0Decl, decl->getBlockSyntax().fileInfo.fullPath(), true);
+    expectDeclIsPresentInFile(export0Decl, decl->getDeclSource().fileInfo.fullPath(), true);
 
-    auto contents = algorithm::loadTextFromVfsFile(decl->getBlockSyntax().fileInfo.fullPath());
+    auto contents = algorithm::loadTextFromVfsFile(decl->getDeclSource().fileInfo.fullPath());
 
     // Comments need to be left untouched
     EXPECT_NE(contents.find("Some comment before the declaration decl/export/0"), std::string::npos) << "Comments should be left intact";
@@ -1477,7 +1477,7 @@ TEST_F(DeclManagerTest, SaveExistingDeclLackingTypename)
     // Save, then it should be present in the file
     GlobalDeclarationManager().saveDeclaration(decl);
 
-    expectDeclIsPresentInFile(decl, decl->getBlockSyntax().fileInfo.fullPath(), true);
+    expectDeclIsPresentInFile(decl, decl->getDeclSource().fileInfo.fullPath(), true);
 
     // The test fixture will restore the original file contents in TearDown
 }
@@ -1497,7 +1497,7 @@ TEST_F(DeclManagerTest, SaveExistingDeclWithMatchingTypename)
     // Save, then it should be present in the file
     GlobalDeclarationManager().saveDeclaration(decl);
 
-    expectDeclIsPresentInFile(decl, decl->getBlockSyntax().fileInfo.fullPath(), true);
+    expectDeclIsPresentInFile(decl, decl->getDeclSource().fileInfo.fullPath(), true);
 
     // The test fixture will restore the original file contents in TearDown
 }
@@ -1517,7 +1517,7 @@ TEST_F(DeclManagerTest, SaveExistingDeclWithMixedCaseTypename)
     // Save, then it should be present in the file
     GlobalDeclarationManager().saveDeclaration(decl);
 
-    expectDeclIsPresentInFile(decl, decl->getBlockSyntax().fileInfo.fullPath(), true);
+    expectDeclIsPresentInFile(decl, decl->getDeclSource().fileInfo.fullPath(), true);
 
     // The test fixture will restore the original file contents in TearDown
 }
@@ -1537,7 +1537,7 @@ TEST_F(DeclManagerTest, SaveExistingDeclWithCommentInTheSameLine)
     // Save, then it should be present in the file
     GlobalDeclarationManager().saveDeclaration(decl);
 
-    expectDeclIsPresentInFile(decl, decl->getBlockSyntax().fileInfo.fullPath(), true);
+    expectDeclIsPresentInFile(decl, decl->getDeclSource().fileInfo.fullPath(), true);
 
     // The test fixture will restore the original file contents in TearDown
 }
@@ -1558,7 +1558,7 @@ TEST_F(DeclManagerTest, SaveExistingDeclWithEverythingInASingleLine)
     // Save, then it should be present in the file
     GlobalDeclarationManager().saveDeclaration(decl);
 
-    expectDeclIsPresentInFile(decl, decl->getBlockSyntax().fileInfo.fullPath(), true);
+    expectDeclIsPresentInFile(decl, decl->getDeclSource().fileInfo.fullPath(), true);
 
     // The test fixture will restore the original file contents in TearDown
 }
@@ -1572,7 +1572,7 @@ TEST_F(DeclManagerTest, SaveExistingDeclAfterRename)
         GlobalDeclarationManager().findDeclaration(decl::Type::TestDecl, "decl/numbers/3"));
 
     // Remember the contents of this decl
-    auto oldContent = decl->getBlockSyntax().contents;
+    auto oldContent = decl->getDeclSource().contents;
 
     auto fullPath = GlobalFileSystem().findFile(decl->getDeclFilePath()) + decl->getDeclFilePath();
     EXPECT_TRUE(algorithm::fileContainsText(fullPath, oldContent));
@@ -1584,7 +1584,7 @@ TEST_F(DeclManagerTest, SaveExistingDeclAfterRename)
     GlobalDeclarationManager().renameDeclaration(decl->getDeclType(), decl->getDeclName(), newName);
 
     // Get the new block content
-    auto newContent = decl->getBlockSyntax().contents;
+    auto newContent = decl->getDeclSource().contents;
 
     // Both the new name and the new content should not be present anywhere in the file
     EXPECT_FALSE(algorithm::fileContainsText(fullPath, newName)) << "New name should not be present yet";
@@ -1628,9 +1628,9 @@ TEST_F(DeclManagerTest, SetDeclFileInfo)
 
     decl->setFileInfo(vfs::FileInfo("materials/", "testfile.mtr", vfs::Visibility::HIDDEN));
 
-    EXPECT_EQ(decl->getBlockSyntax().fileInfo.name, "testfile.mtr");
-    EXPECT_EQ(decl->getBlockSyntax().fileInfo.topDir, "materials/");
-    EXPECT_EQ(decl->getBlockSyntax().fileInfo.visibility, vfs::Visibility::HIDDEN);
+    EXPECT_EQ(decl->getDeclSource().fileInfo.name, "testfile.mtr");
+    EXPECT_EQ(decl->getDeclSource().fileInfo.topDir, "materials/");
+    EXPECT_EQ(decl->getDeclSource().fileInfo.visibility, vfs::Visibility::HIDDEN);
 }
 
 TEST_F(DeclManagerTest, SetDeclName)
@@ -1644,7 +1644,7 @@ TEST_F(DeclManagerTest, SetDeclName)
     decl->setDeclName(newName);
 
     EXPECT_EQ(decl->getDeclName(), newName) << "New name not accepted by the decl";
-    EXPECT_EQ(decl->getBlockSyntax().name, newName) << "New name not propagated to the decl block syntax";
+    EXPECT_EQ(decl->getDeclSource().name, newName) << "New name not propagated to the decl block syntax";
 }
 
 // Changed signal should fire on assigning a new syntax block
@@ -1659,9 +1659,9 @@ TEST_F(DeclManagerTest, ChangedSignalOnSyntaxBlockChange)
     decl->signal_DeclarationChanged().connect([&] { ++changedSignalReceiveCount; });
 
     // Assign a new syntax block, this should emit the signal
-    auto syntax = decl->getBlockSyntax();
+    auto syntax = decl->getDeclSource();
     syntax.contents += "\n";
-    decl->setBlockSyntax(syntax);
+    decl->setDeclSource(syntax);
 
     EXPECT_EQ(changedSignalReceiveCount, 1) << "Changed signal should have fired once after assigning the syntax block";
 }
@@ -1703,7 +1703,7 @@ decl/temporaryGame/1
     GlobalDeclarationManager().registerDeclFolder(decl::Type::TestDecl, TEST_DECL_FOLDER, ".decl");
 
     expectDeclIsNotPresent(decl::Type::TestDecl, "decl/temporaryGame/1");
-    
+
     // The numbers/3 decl is only present in the unchanged game config
     auto number3 = std::static_pointer_cast<TestDeclaration>(
         GlobalDeclarationManager().findDeclaration(decl::Type::TestDecl, "decl/numbers/3"));
@@ -1739,7 +1739,7 @@ TEST_F(DeclManagerTest, AssigningSyntaxBlockOverridesModification)
         GlobalDeclarationManager().findDeclaration(decl::Type::TestDecl, "decl/numbers/3"));
 
     // Retrieve a valid syntax block
-    auto syntax = decl->getBlockSyntax();
+    auto syntax = decl->getDeclSource();
 
     // This will internally mark the declaration as "modified after parsing"
     decl->setKeyValue("description", "This decl is missing and has been modified");
@@ -1750,7 +1750,7 @@ TEST_F(DeclManagerTest, AssigningSyntaxBlockOverridesModification)
 )";
 
     // Assigning a new syntax block after parsing should work even if the decl has been modified
-    decl->setBlockSyntax(syntax);
+    decl->setDeclSource(syntax);
 
     EXPECT_EQ(decl->getKeyValue("description"), "assigned") << "Assigned syntax block didn't take effect";
 }

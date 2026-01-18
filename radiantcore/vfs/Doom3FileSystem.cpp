@@ -13,27 +13,17 @@
 
 #include "Doom3FileSystem.h"
 
-#include <stdio.h>
 #include <stdlib.h>
-#include <locale>
 
-#include "iradiant.h"
-#include "idatastream.h"
 #include "ifilesystem.h"
-#include "iregistry.h"
-#include "igame.h"
 #include "itextstream.h"
 
-#include "string/string.h"
 #include "string/join.h"
 #include "string/case_conv.h"
 #include "string/encoding.h"
 #include "os/path.h"
 #include "os/dir.h"
 #include "os/file.h"
-
-#include "string/split.h"
-#include "debugging/ScopedDebugTimer.h"
 
 #include "DirectoryArchive.h"
 #include "DirectoryArchiveFile.h"
@@ -79,7 +69,7 @@ void Doom3FileSystem::initDirectory(const std::string& inputPath)
             catch (std::system_error& ex)
             {
                 rWarning() << "[vfs] Skipping file " << string::unicode_to_utf8(file.filename().wstring()) <<
-                    " - possibly unsupported characters in filename? " << 
+                    " - possibly unsupported characters in filename? " <<
                     "(Exception: " << ex.what() << ")" << std::endl;
             }
         });
@@ -412,20 +402,10 @@ const SearchPaths& Doom3FileSystem::getVfsSearchPaths()
 }
 
 // RegisterableModule implementation
-const std::string& Doom3FileSystem::getName() const
+std::string Doom3FileSystem::getName() const
 {
     static std::string _name(MODULE_VIRTUALFILESYSTEM);
     return _name;
-}
-
-const StringSet& Doom3FileSystem::getDependencies() const
-{
-    static StringSet _dependencies;
-    return _dependencies;
-}
-
-void Doom3FileSystem::initialiseModule(const IApplicationContext& ctx)
-{
 }
 
 void Doom3FileSystem::shutdownModule()

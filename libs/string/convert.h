@@ -1,7 +1,6 @@
 #pragma once
 
 #include "math/Vector3.h"
-#include "math/Vector4.h"
 #include <sstream>
 #include <cstdlib>
 
@@ -75,25 +74,47 @@ template<typename Src> float to_float(const Src& src)
 }
 #endif
 
-// Attempts to convert the given source string to a float value,
-// returning true on success. The value reference will then be holding
-// the resulting float value (or 0 in case of failure).
-// Note: this is using the exception-less std::strtof, making it preferable
-// over the string::convert<float> method (in certain hot code paths).
-inline bool tryConvertToFloat(const std::string& src, float& value)
+namespace detail
 {
-    char* lastChar;
-    auto* firstChar = src.c_str();
-    value = std::strtof(firstChar, &lastChar);
+    template<typename V>
+    bool tryConvertToRealInternal(const std::string& s, V& value,
+                                  V (*func)(const char*, char**))
+    {
+        char* lastChar;
+        auto* firstChar = s.c_str();
+        value = func(firstChar, &lastChar);
 
-    return lastChar != firstChar;
+        return lastChar != firstChar;
+    }
 }
 
-// Attempts to convert the given source string to an int value,
-// returning true on success. The value reference will then be holding
-// the resulting int value (or 0 in case of failure).
-// Note: this is using the exception-less std::strtol, making it preferable
-// over the string::convert<int> method (in certain hot code paths).
+/**
+ * @brief Non-throwing attempt to convert a string to a double value.
+ *
+ * @param src Input string to be converted
+ * @param value Reference to a double to hold the conversion result
+ * @return true if the conversion succeeded, false otherwise
+ */
+inline bool tryConvertToDouble(const std::string& src, double& value)
+{
+    return detail::tryConvertToRealInternal(src, value, &std::strtod);
+}
+
+/**
+ * @brief Non-throwing attempt to convert a string to a float value.
+ *
+ * @see tryConvertToDouble
+ */
+inline bool tryConvertToFloat(const std::string& src, float& value)
+{
+    return detail::tryConvertToRealInternal(src, value, &std::strtof);
+}
+
+/**
+ * @brief Non-throwing attempt to convert a string to a int value.
+ *
+ * @see tryConvertToDouble
+ */
 inline bool tryConvertToInt(const std::string& src, int& value)
 {
     char* lastChar;

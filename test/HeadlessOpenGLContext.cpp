@@ -182,7 +182,7 @@ public:
         }
 
         static int pixelFormat[] = { GLX_DRAWABLE_TYPE, GLX_PBUFFER_BIT, None };
-        
+
         int glx_major, glx_minor;
         if (!glXQueryVersion(_display, &glx_major, &glx_minor))
         {
@@ -216,7 +216,7 @@ public:
 
 	~HeadlessOpenGLContext()
 	{
-		if (_pixelBuffer) 
+		if (_pixelBuffer)
 		{
 			auto glxdestroypixelbuffer = (PFNGLXDESTROYPBUFFERPROC)glXGetProcAddress((GLubyte*)"glXDestroyPbuffer");
             glxdestroypixelbuffer(_display, _pixelBuffer);
@@ -230,9 +230,6 @@ public:
 };
 
 #endif
-
-void HeadlessOpenGLContextModule::initialiseModule(const IApplicationContext& ctx)
-{}
 
 void HeadlessOpenGLContextModule::createContext()
 {

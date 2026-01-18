@@ -90,7 +90,7 @@ public:
 	void connectUndoSystem(IUndoSystem& undoSystem);
     void disconnectUndoSystem(IUndoSystem& undoSystem);
 
-	const AABB& localAABB() const override;
+	AABB localAABB() const override;
 
     RenderSystemPtr getRenderSystem() const;
 	void setRenderSystem(const RenderSystemPtr& renderSystem);

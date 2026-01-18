@@ -15,8 +15,6 @@
  * execute an inner product of two vectors.
  */
 
-#include "lrint.h"
-#include "FloatTools.h"
 #include "Vector3.h"
 
 /// A 4-element vector of type <T>
@@ -83,6 +81,24 @@ public:
     const T& z() const { return _v[2]; }
     const T& w() const { return _v[3]; }
 
+    /// Access the raw data as a C array
+    const T* data() const
+    {
+        return _v.data();
+    }
+
+    /// Access a const element by indexing (no bounds checking)
+    const T& operator[] (const std::size_t index) const
+    {
+        return _v[index];
+    }
+
+    /// Access a non-const element by indexing (no bounds checking)
+    T& operator[] (const std::size_t index)
+    {
+        return _v[index];
+    }
+
     /// Dot product this BasicVector4 with another vector
     T dot(const BasicVector4<T>& other) const {
         return x() * other.x()
@@ -101,12 +117,6 @@ public:
     {
         return getVector3() / w();
     }
-
-    /// Cast to const raw array
-    operator const T* () const { return _v.data(); }
-
-    /// Cast to non-const raw array
-    operator T* () { return _v.data(); }
 };
 
 /// Equality comparison for BasicVector4

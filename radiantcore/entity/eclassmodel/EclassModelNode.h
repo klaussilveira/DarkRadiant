@@ -51,12 +51,12 @@ private:
 
 private:
 	// Constructor
-	EclassModelNode(const IEntityClassPtr& eclass);
+	EclassModelNode(const scene::EntityClass::Ptr& eclass);
 	// Copy Constructor
 	EclassModelNode(const EclassModelNode& other);
 
 public:
-	static EclassModelNodePtr Create(const IEntityClassPtr& eclass);
+	static EclassModelNodePtr Create(const scene::EntityClass::Ptr& eclass);
 
     virtual ~EclassModelNode();
 
@@ -64,7 +64,7 @@ public:
 	virtual void snapto(float snap) override;
 
 	// Bounded implementation
-	virtual const AABB& localAABB() const override;
+	AABB localAABB() const override;
 
 	scene::INodePtr clone() const override;
 

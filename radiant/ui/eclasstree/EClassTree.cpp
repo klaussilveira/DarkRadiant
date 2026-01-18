@@ -42,7 +42,7 @@ void EClassTree::onTreeViewPopulationFinished(wxutil::ResourceTreeView::Populati
 		// Get the last selected node and check if it's an entity
 		auto lastSelected = GlobalSelectionSystem().ultimateSelected();
 
-		if (const auto* entity = Node_getEntity(lastSelected); entity)
+		if (const auto* entity = lastSelected->tryGetEntity(); entity)
 		{
 			// There is an entity selected, extract the classname
             className = entity->getKeyValue("classname");

@@ -25,7 +25,7 @@ typedef std::shared_ptr<Gui> GuiPtr;
  */
 class GuiManager :
 	public IGuiManager,
-	public util::Noncopyable	
+	public util::Noncopyable
 {
 private:
 	struct GuiInfo
@@ -81,8 +81,8 @@ public:
     void reloadGuis() override;
 
 	// RegisterableModule
-	const std::string& getName() const override;
-	const StringSet& getDependencies() const override;
+	std::string getName() const override;
+	StringSet getDependencies() const override;
 	void initialiseModule(const IApplicationContext& ctx) override;
 	void shutdownModule() override;
 

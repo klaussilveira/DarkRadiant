@@ -32,13 +32,13 @@ StatusBarManager::StatusBarManager() :
 	_statusBar->SetSizer(sizer);
 }
 
-const std::string& StatusBarManager::getName() const
+std::string StatusBarManager::getName() const
 {
     static std::string _name(MODULE_STATUSBARMANAGER);
     return _name;
 }
 
-const StringSet& StatusBarManager::getDependencies() const
+StringSet StatusBarManager::getDependencies() const
 {
     static StringSet _dependencies
     {

@@ -53,7 +53,7 @@ private:
     // One entry for each decl
     std::map<Type, Declarations> _declarationsByType;
 
-    std::list<DeclarationBlockSyntax> _unrecognisedBlocks;
+    std::list<DeclarationBlockSource> _unrecognisedBlocks;
     std::recursive_mutex _unrecognisedBlockLock;
 
     std::map<Type, sigc::signal<void>> _declsReloadingSignals;
@@ -93,8 +93,8 @@ public:
     void removeDeclaration(Type type, const std::string& name) override;
     void saveDeclaration(const IDeclaration::Ptr& decl) override;
 
-    const std::string& getName() const override;
-    const StringSet& getDependencies() const override;
+    std::string getName() const override;
+    StringSet getDependencies() const override;
     void initialiseModule(const IApplicationContext& ctx) override;
     void shutdownModule() override;
 
@@ -111,12 +111,12 @@ private:
     // Attempts to resolve the block type of the given block, returns true on success, false otherwise.
     // Stores the determined type in the given reference.
     std::map<std::string, Type, string::ILess> getTypenameMapping();
-    bool tryDetermineBlockType(const DeclarationBlockSyntax& block, Type& type);
+    bool tryDetermineBlockType(const DeclarationBlockSource& block, Type& type);
     void processParsedBlocks(ParseResult& parsedBlocks);
     void removeDeclarationFromFile(const IDeclaration::Ptr& decl);
 
     // Requires the creatorsMutex and the declarationMutex to be locked
-    const IDeclaration::Ptr& createOrUpdateDeclaration(Type type, const DeclarationBlockSyntax& block);
+    const IDeclaration::Ptr& createOrUpdateDeclaration(Type type, const DeclarationBlockSource& block);
     void doWithDeclarationLock(Type type, const std::function<void(NamedDeclarations&)>& action);
     void handleUnrecognisedBlocks();
     void reloadDeclsCmd(const cmd::ArgumentList& args);

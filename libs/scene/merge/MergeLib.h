@@ -132,11 +132,11 @@ inline void focusNextConflictNode()
 // Returns the name of the entity affected by the given merge action
 inline std::string getAffectedEntityName(const IMergeAction::Ptr& action)
 {
-    auto entity = Node_getEntity(action->getAffectedNode());
+    auto entity = action->getAffectedNode()->tryGetEntity();
 
     if (entity == nullptr && action->getAffectedNode())
     {
-        entity = Node_getEntity(action->getAffectedNode()->getParent());
+        entity = action->getAffectedNode()->getParent()->tryGetEntity();
     }
 
     return entity ? (entity->isWorldspawn() ? "worldspawn" : entity->getKeyValue("name")) : "?";
@@ -166,7 +166,7 @@ inline std::string getAffectedKeyValue(const IMergeAction::Ptr& action)
 
 inline bool isKeyValueConflictAction(const IConflictResolutionAction::Ptr& conflictAction)
 {
-    return conflictAction && 
+    return conflictAction &&
            conflictAction->getConflictType() == ConflictType::ModificationOfRemovedKeyValue ||
            conflictAction->getConflictType() == ConflictType::RemovalOfModifiedKeyValue ||
            conflictAction->getConflictType() == ConflictType::SettingKeyToDifferentValue;
@@ -257,7 +257,7 @@ inline void resolveConflictByKeepingBothEntities()
 
         // Get all the actions from the conflict node that are targeting key values
         // and extract the source/target entity pairs from the conflict actions
-        
+
         // We expect that we only get one source/target combination from a single node
         auto sourceAndTargetEntities = getSourceAndTargetEntitiesAffectedByConflict(mergeNode);
 

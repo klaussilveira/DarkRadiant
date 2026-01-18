@@ -275,7 +275,7 @@ void ConversationDialog::onCancel(wxCommandEvent& ev)
 void ConversationDialog::onAddEntity(wxCommandEvent& ev)
 {
 	// Obtain the entity class object
-	IEntityClassPtr eclass =
+	scene::EntityClass::Ptr eclass =
 		GlobalEntityClassManager().findClass(CONVERSATION_ENTITY_CLASS);
 
     if (eclass)

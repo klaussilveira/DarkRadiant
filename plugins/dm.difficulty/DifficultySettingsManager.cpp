@@ -29,7 +29,7 @@ void DifficultySettingsManager::loadSettings() {
 
 void DifficultySettingsManager::loadDefaultSettings() {
     // Try to lookup the given entityDef
-    IEntityClassPtr eclass = GlobalEntityClassManager().findClass(
+    scene::EntityClass::Ptr eclass = GlobalEntityClassManager().findClass(
         game::current::getValue<std::string>(GKEY_DIFFICULTY_ENTITYDEF_DEFAULT)
     );
 
@@ -83,7 +83,7 @@ class ModDifficultyNames
     std::map<std::string, std::string> _transStrings;
 
     // Mod-specific entity giving default difficulty names
-    IEntityClassPtr _menuEclass;
+    scene::EntityClass::Ptr _menuEclass;
 
 public:
 
@@ -203,7 +203,7 @@ void DifficultySettingsManager::saveSettings()
     {
         // Create a new difficulty entity
         std::string eclassName = game::current::getValue<std::string>(GKEY_DIFFICULTY_ENTITYDEF_MAP);
-        IEntityClassPtr diffEclass = GlobalEntityClassManager().findClass(eclassName);
+        scene::EntityClass::Ptr diffEclass = GlobalEntityClassManager().findClass(eclassName);
 
         if (diffEclass == NULL) {
             rError() << "[Diff]: Cannot create difficulty entity!\n";

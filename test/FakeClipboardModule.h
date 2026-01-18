@@ -29,20 +29,11 @@ public:
         return _changedSignal;
     }
 
-    const std::string& getName() const override
+    std::string getName() const override
     {
         static std::string _name(MODULE_CLIPBOARD);
         return _name;
     }
-
-    const StringSet& getDependencies() const override
-    {
-        static StringSet _dependencies;
-        return _dependencies;
-    }
-
-    void initialiseModule(const IApplicationContext& ctx) override
-    {}
 };
 
 }

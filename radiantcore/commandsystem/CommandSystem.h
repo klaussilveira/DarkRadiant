@@ -51,8 +51,8 @@ public:
 	void printCmd(const ArgumentList& args);
 
 	// RegisterableModule implementation
-	const std::string& getName() const override;
-	const StringSet& getDependencies() const override;
+	std::string getName() const override;
+	StringSet getDependencies() const override;
 	void initialiseModule(const IApplicationContext& ctx) override;
 	void shutdownModule() override;
 

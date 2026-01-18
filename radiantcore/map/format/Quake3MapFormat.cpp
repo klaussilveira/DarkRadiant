@@ -5,67 +5,57 @@
 #include "Quake3MapReader.h"
 #include "Quake3MapWriter.h"
 
-#include "Doom3MapFormat.h"
-
 #include "module/StaticModule.h"
 
 namespace map
 {
 
-const StringSet& Quake3MapFormatBase::getDependencies() const
+StringSet Quake3MapFormatBase::getDependencies() const
 {
-	static StringSet _dependencies;
+    static StringSet _dependencies;
 
-	if (_dependencies.empty())
-	{
-		_dependencies.insert(MODULE_MAPFORMATMANAGER);
-	}
+    if (_dependencies.empty())
+    {
+        _dependencies.insert(MODULE_MAPFORMATMANAGER);
+    }
 
-	return _dependencies;
+    return _dependencies;
 }
 
 void Quake3MapFormatBase::initialiseModule(const IApplicationContext& ctx)
 {
-	// Register ourselves as map format for maps and regions
-	GlobalMapFormatManager().registerMapFormat("map", getSharedToThis());
-	GlobalMapFormatManager().registerMapFormat("reg", getSharedToThis());
-	GlobalMapFormatManager().registerMapFormat("pfb", getSharedToThis());
+    // Register ourselves as map format for maps and regions
+    GlobalMapFormatManager().registerMapFormat("map", getSharedToThis());
+    GlobalMapFormatManager().registerMapFormat("reg", getSharedToThis());
+    GlobalMapFormatManager().registerMapFormat("pfb", getSharedToThis());
 }
 
 void Quake3MapFormatBase::shutdownModule()
 {
-	// Unregister now that we're shutting down
-	GlobalMapFormatManager().unregisterMapFormat(getSharedToThis());
+    // Unregister now that we're shutting down
+    GlobalMapFormatManager().unregisterMapFormat(getSharedToThis());
 }
 
 IMapReaderPtr Quake3MapFormatBase::getMapReader(IMapImportFilter& filter) const
 {
-	return std::make_shared<Quake3MapReader>(filter);
-}
-
-bool Quake3MapFormatBase::allowInfoFileCreation() const
-{
-	// allow .darkradiant files to be saved
-	return true;
+    return std::make_shared<Quake3MapReader>(filter);
 }
 
 bool Quake3MapFormatBase::canLoad(std::istream& stream) const
 {
-	// Instantiate a tokeniser to read the first few tokens
-	parser::BasicDefTokeniser<std::istream> tok(stream);
+    // Instantiate a tokeniser to read the first few tokens
+    parser::BasicDefTokeniser<std::istream> tok(stream);
 
-	try
-	{
-		// Require the opening brace of the first entity as first token
-		tok.assertNextToken("{");
+    try
+    {
+        // Require the opening brace of the first entity as first token
+        if (const std::string token = tok.nextToken(); token == "{")
+            return true;
+    }
+    catch (parser::ParseException&)
+    {}
 
-		// That's it for the moment being
-		return true;
-	}
-	catch (parser::ParseException&)
-	{}
-
-	return false;
+    return false;
 }
 
 const std::string& Quake3MapFormat::getMapFormatName() const
@@ -80,7 +70,7 @@ const std::string& Quake3MapFormat::getGameType() const
     return _gameType;
 }
 
-const std::string& Quake3MapFormat::getName() const
+std::string Quake3MapFormat::getName() const
 {
     static std::string _name("Quake3MapLoader");
     return _name;
@@ -105,7 +95,7 @@ const std::string& Quake3AlternateMapFormat::getGameType() const
     return _gameType;
 }
 
-const std::string& Quake3AlternateMapFormat::getName() const
+std::string Quake3AlternateMapFormat::getName() const
 {
     static std::string _name("Quake3AlternateMapLoader");
     return _name;

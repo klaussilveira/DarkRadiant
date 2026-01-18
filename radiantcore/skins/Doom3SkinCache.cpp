@@ -6,6 +6,7 @@
 #include "module/StaticModule.h"
 #include "decl/DeclarationCreator.h"
 #include "decl/DeclLib.h"
+#include "skins/Doom3ModelSkin.h"
 
 namespace skins
 {
@@ -54,11 +55,11 @@ decl::ISkin::Ptr Doom3SkinCache::copySkin(const std::string& nameOfOriginal, con
         GlobalDeclarationManager().findOrCreateDeclaration(decl::Type::Skin, candidate));
 
     // Replace the syntax block of the target with the one of the original
-    auto syntax = existing->getBlockSyntax();
+    auto syntax = existing->getDeclSource();
     syntax.name = nameOfCopy;
     syntax.fileInfo = vfs::FileInfo{ "", "", vfs::Visibility::HIDDEN };
 
-    copiedSkin->setBlockSyntax(syntax);
+    copiedSkin->setDeclSource(syntax);
     copiedSkin->setIsModified();
 
     return copiedSkin;
@@ -91,7 +92,7 @@ bool Doom3SkinCache::skinCanBeModified(const std::string& name)
 
     if (!decl) return false;
 
-    const auto& fileInfo = decl->getBlockSyntax().fileInfo;
+    const auto& fileInfo = decl->getDeclSource().fileInfo;
     return fileInfo.name.empty() || fileInfo.getIsPhysicalFile();
 }
 
@@ -118,13 +119,13 @@ sigc::signal<void> Doom3SkinCache::signal_skinsReloaded()
 	return _sigSkinsReloaded;
 }
 
-const std::string& Doom3SkinCache::getName() const
+std::string Doom3SkinCache::getName() const
 {
 	static std::string _name(MODULE_MODELSKINCACHE);
 	return _name;
 }
 
-const StringSet& Doom3SkinCache::getDependencies() const
+StringSet Doom3SkinCache::getDependencies() const
 {
 	static StringSet _dependencies;
 

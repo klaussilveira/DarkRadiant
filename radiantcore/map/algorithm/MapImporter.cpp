@@ -91,7 +91,7 @@ bool MapImporter::addPrimitiveToEntity(const scene::INodePtr& primitive, const s
 		GlobalRadiantCore().getMessageBus().sendMessage(msg);
 	}
 
-	if (Node_getEntity(entity)->isContainer())
+	if (entity->tryGetEntity()->isContainer())
 	{
 		entity->addChildNode(primitive);
 		return true;

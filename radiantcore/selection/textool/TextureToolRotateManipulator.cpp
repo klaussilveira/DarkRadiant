@@ -4,7 +4,6 @@
 #include "itexturetoolmodel.h"
 #include "itexturetoolcolours.h"
 #include "ishaders.h"
-#include "selection/BestPoint.h"
 #include "selection/SelectionPool.h"
 #include "pivot.h"
 #include "math/Matrix3.h"
@@ -209,7 +208,7 @@ void TextureToolRotateManipulator::renderComponents(const render::IRenderView& v
     auto angle = _rotator.getCurAngle();
 
     // Crosshair
-    glColor3fv(deselectedColour);
+    glColor3fv(deselectedColour.data());
     glBegin(GL_LINES);
 
     auto crossHairSize = transformedDeviceUnit * DefaultCrossHairSize;
@@ -229,7 +228,7 @@ void TextureToolRotateManipulator::renderComponents(const render::IRenderView& v
         glBlendFunc(GL_CONSTANT_ALPHA_EXT, GL_ONE_MINUS_CONSTANT_ALPHA_EXT);
 
         auto surfaceColour = GlobalTextureToolColourSchemeManager().getColour(SchemeElement::ManipulatorSurface);
-        glColor3fv(surfaceColour);
+        glColor3fv(surfaceColour.data());
 
         glBegin(GL_TRIANGLE_FAN);
 
@@ -239,7 +238,7 @@ void TextureToolRotateManipulator::renderComponents(const render::IRenderView& v
         auto startDirection = _rotator.getStartDirectionInScreenSpace();
         Vector2 startingPointOnCircle = startDirection * DefaultCircleRadius;
 
-        glVertex3dv(screen2Pivot.transformPoint(Vector3(startingPointOnCircle.x(), startingPointOnCircle.y(), 0)));
+        glVertex3dv(screen2Pivot.transformPoint(Vector3(startingPointOnCircle.x(), startingPointOnCircle.y(), 0)).data());
 
         // 3 degree steps
         auto stepSize = degrees_to_radians(3.0);
@@ -254,12 +253,12 @@ void TextureToolRotateManipulator::renderComponents(const render::IRenderView& v
                 auto curAngle = i * stepSize;
                 auto pointOnCircle = Matrix3::getRotation(curAngle).transformPoint(startingPointOnCircle);
 
-                glVertex3dv(screen2Pivot.transformPoint(Vector3(pointOnCircle.x(), pointOnCircle.y(), 0)));
+                glVertex3dv(screen2Pivot.transformPoint(Vector3(pointOnCircle.x(), pointOnCircle.y(), 0)).data());
             }
         }
 
         auto currentPointOnCircle = Matrix3::getRotation(-angle).transformPoint(startingPointOnCircle);
-        glVertex3dv(screen2Pivot.transformPoint(Vector3(currentPointOnCircle.x(), currentPointOnCircle.y(), 0)));
+        glVertex3dv(screen2Pivot.transformPoint(Vector3(currentPointOnCircle.x(), currentPointOnCircle.y(), 0)).data());
 
         glEnd();
 
@@ -277,10 +276,10 @@ void TextureToolRotateManipulator::renderComponents(const render::IRenderView& v
 
     if (_selectableZ.isSelected())
     {
-        glColor3fv(deselectedColour);
+        glColor3fv(deselectedColour.data());
 
         auto transformedOffset = inverseView.transformDirection(Vector3(0.02, 0.02, 0));
-        glRasterPos3dv(transformedOffset);
+        glRasterPos3dv(transformedOffset.data());
 
         _glFont->drawString(fmt::format("Rotate: {0:3.2f} degrees", static_cast<float>(c_RAD2DEGMULT * angle)));
     }

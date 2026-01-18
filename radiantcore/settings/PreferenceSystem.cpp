@@ -1,7 +1,6 @@
 #include "PreferenceSystem.h"
 
 #include "ipreferencesystem.h"
-#include "itextstream.h"
 
 #include "module/StaticModule.h"
 
@@ -10,41 +9,28 @@ namespace settings
 
 IPreferencePage& PreferenceSystem::getPage(const std::string& path)
 {
-	ensureRootPage();
-
-	return _rootPage->createOrFindPage(path);
+    return getRootPage().createOrFindPage(path);
 }
 
 void PreferenceSystem::foreachPage(const std::function<void(IPreferencePage&)>& functor)
 {
-	ensureRootPage();
-
-	_rootPage->foreachChildPage(functor);
+    return getRootPage().foreachChildPage(functor);
 }
 
-void PreferenceSystem::ensureRootPage()
+PreferencePage& PreferenceSystem::getRootPage()
 {
-	if (!_rootPage)
-	{
-		_rootPage = std::make_shared<PreferencePage>("");
-	}
+    if (!_rootPage)
+    {
+        _rootPage = std::make_shared<PreferencePage>("");
+    }
+    return *_rootPage;
 }
 
 // RegisterableModule implementation
-const std::string& PreferenceSystem::getName() const
+std::string PreferenceSystem::getName() const
 {
-	static std::string _name(MODULE_PREFERENCESYSTEM);
-	return _name;
-}
-
-const StringSet& PreferenceSystem::getDependencies() const
-{
-	static StringSet _dependencies;
-	return _dependencies;
-}
-
-void PreferenceSystem::initialiseModule(const IApplicationContext& ctx)
-{
+    static std::string _name(MODULE_PREFERENCESYSTEM);
+    return _name;
 }
 
 // Define the static PreferenceSystem module

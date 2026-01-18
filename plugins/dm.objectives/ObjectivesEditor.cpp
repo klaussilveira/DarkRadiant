@@ -459,7 +459,7 @@ void ObjectivesEditor::_onAddEntity(wxCommandEvent& ev)
     const std::string& objEClass = _objectiveEClasses.front();
 
     // Obtain the entity class object
-    IEntityClassPtr eclass = GlobalEntityClassManager().findClass(objEClass);
+    scene::EntityClass::Ptr eclass = GlobalEntityClassManager().findClass(objEClass);
 
     if (eclass)
     {

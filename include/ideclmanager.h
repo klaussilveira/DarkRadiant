@@ -1,6 +1,5 @@
 #pragma once
 
-#include <map>
 #include <sigc++/signal.h>
 #include "imodule.h"
 #include "ifilesystem.h"
@@ -10,10 +9,11 @@
 namespace decl
 {
 
-// Represents a declaration block as found in the various decl files
-// Holds the name of the block, its typename and the raw block contents
-// including whitespace and comments but exluding the outermost brace pair
-struct DeclarationBlockSyntax : game::IResource
+/// Represents a declaration block as found in the various decl files.
+///
+/// Holds the name of the block, its typename and the raw block contents including
+/// whitespace and comments but exluding the outermost brace pair
+struct DeclarationBlockSource : game::IResource
 {
     // The type name of this block (e.g. "table")
     std::string typeName;
@@ -65,12 +65,22 @@ public:
     // The type of this declaration
     virtual Type getDeclType() const = 0;
 
+    /// Get the visibility of this declaration, which determines whether it should be
+    /// shown in the relevant UI browser.
+    ///
+    /// The visibility of a particular declaration may be determined by a separate
+    /// assets.lst file, or in any declaration-specific manner.
+    ///
+    /// Logically this method should be const, but currently it isn't because it might
+    /// trigger on-demand parsing in certain subclasses.
+    virtual vfs::Visibility getVisibility() { return vfs::Visibility::NORMAL; }
+
     // The raw syntax block (without the outer curly braces) used to construct this decl
-    virtual const DeclarationBlockSyntax& getBlockSyntax() = 0;
+    virtual const DeclarationBlockSource& getDeclSource() = 0;
 
     // Set the block contents of this declaration.
     // Implementations are free to either (re-)parse immediately or deferred.
-    virtual void setBlockSyntax(const DeclarationBlockSyntax& block) = 0;
+    virtual void setDeclSource(const DeclarationBlockSource& block) = 0;
 
     // Returns the mod-relative path to the file this decl has been declared in
     virtual std::string getDeclFilePath() const = 0;
@@ -81,7 +91,7 @@ public:
     // Returns the value of the internally used parse epoch counter
     virtual std::size_t getParseStamp() const = 0;
 
-    // Sets the internally used parse epoch counter 
+    // Sets the internally used parse epoch counter
     virtual void setParseStamp(std::size_t parseStamp) = 0;
 
     // Fired when this declaration changed (i.e. as result of a reloadDecls

@@ -1,13 +1,8 @@
 #include "GLTextureManager.h"
 
 #include "imodule.h"
-#include "iradiant.h"
 #include "itextstream.h"
-#include "texturelib.h"
-#include "igl.h"
-#include "../MapExpression.h"
-#include "TextureManipulator.h"
-#include "parser/DefTokeniser.h"
+#include "scene/textures/TextureManipulator.h"
 
 namespace
 {

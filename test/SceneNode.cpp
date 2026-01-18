@@ -12,8 +12,7 @@ namespace test
 using SceneNodeTest = RadiantTest;
 
 // Custom Node class to test the protected onVisibilityChanged method behaviour
-class VisibilityTestNode :
-    public scene::Node
+class VisibilityTestNode: public scene::Node
 {
 public:
     VisibilityTestNode() :
@@ -25,10 +24,9 @@ public:
         return Type::Unknown;
     }
 
-    const AABB& localAABB() const
+    AABB localAABB() const override
     {
-        static AABB dummy;
-        return dummy;
+        return {};
     }
 
     void onPreRender(const VolumeTest& volume) override
@@ -61,8 +59,7 @@ protected:
 };
 
 // Custom Node class to test the protected onRenderStateChanged method behaviour
-class RenderStateTestNode :
-    public scene::Node
+class RenderStateTestNode: public scene::Node
 {
 public:
     RenderStateTestNode() :
@@ -77,10 +74,9 @@ public:
         return Type::Unknown;
     }
 
-    const AABB& localAABB() const
+    AABB localAABB() const override
     {
-        static AABB dummy;
-        return dummy;
+        return {};
     }
 
     void onPreRender(const VolumeTest& volume) override {}

@@ -1,10 +1,10 @@
 /**
  * \file
- * Helper functions for dealing with IEntityClass and related objects.
+ * Helper functions for dealing with scene::EntityClass and related objects.
  */
 #pragma once
 
-#include "ieclass.h"
+#include "scene/EntityClass.h"
 
 #include <vector>
 
@@ -78,7 +78,7 @@ namespace detail
  * Whether to include class spawnargs inherited from the parent class. Defaults
  * to true.
  */
-inline AttributeList getSpawnargsWithPrefix(const IEntityClassPtr& eclass,
+inline AttributeList getSpawnargsWithPrefix(const scene::EntityClass::Ptr& eclass,
                                             const std::string& prefix,
                                             bool includeInherited = true)
 {
@@ -109,7 +109,7 @@ inline AttributeList getSpawnargsWithPrefix(const IEntityClassPtr& eclass,
  * The usage text consists of the values of all "editor_usage" spawnargs
  * concatenated in order.
  */
-inline std::string getUsage(const IEntityClassPtr& entityClass)
+inline std::string getUsage(const scene::EntityClass::Ptr& entityClass)
 {
     // Find all relevant spawnargs in order
     AttributeList usageAttrs = getSpawnargsWithPrefix(

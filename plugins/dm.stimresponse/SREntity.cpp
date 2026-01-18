@@ -70,7 +70,7 @@ void SREntity::load(Entity* source)
 	}
 
 	// Get the entity class to scan the inherited values
-	IEntityClassPtr eclass = GlobalEntityClassManager().findOrInsert(
+	scene::EntityClass::Ptr eclass = GlobalEntityClassManager().findOrInsert(
 		source->getKeyValue("classname"), true
 	);
 

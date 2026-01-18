@@ -37,20 +37,10 @@ void InfoFileManager::foreachModule(const std::function<void(IMapInfoFileModule&
 	}
 }
 
-const std::string& InfoFileManager::getName() const
+std::string InfoFileManager::getName() const
 {
 	static std::string _name(MODULE_MAPINFOFILEMANAGER);
 	return _name;
-}
-
-const StringSet& InfoFileManager::getDependencies() const
-{
-	static StringSet _dependencies;
-	return _dependencies;
-}
-
-void InfoFileManager::initialiseModule(const IApplicationContext& ctx)
-{
 }
 
 void InfoFileManager::shutdownModule()

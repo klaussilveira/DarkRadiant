@@ -206,7 +206,7 @@ inline Matrix3 Matrix3::byRows(double xx, double yx, double zx,
 template<typename T>
 inline BasicVector3<T> Matrix3::transform(const BasicVector3<T>& vector3) const
 {
-    Eigen::Matrix<T, 3, 1> eVec(static_cast<const double*>(vector3));
+    Eigen::Matrix<T, 3, 1> eVec(vector3.data());
     auto result = _transform * eVec;
     return BasicVector3<T>(result[0], result[1], result[2]);
 }

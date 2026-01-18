@@ -1,11 +1,8 @@
 #include "imodule.h"
 
 #include "i18n.h"
-#include "itextstream.h"
 #include "icommandsystem.h"
 #include "ui/imenumanager.h"
-#include "generic/callback.h"
-#include "debugging/debugging.h"
 
 #include "ConversationDialog.h"
 
@@ -17,12 +14,12 @@ class ConversationEditorModule :
 {
 public:
 	// RegisterableModule implementation
-	virtual const std::string& getName() const {
+	std::string getName() const {
 		static std::string _name("ConversationEditor");
 		return _name;
 	}
 
-	virtual const StringSet& getDependencies() const
+	StringSet getDependencies() const
     {
         static StringSet _dependencies
         {

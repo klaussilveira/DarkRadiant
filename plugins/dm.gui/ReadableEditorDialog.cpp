@@ -118,7 +118,7 @@ void ReadableEditorDialog::RunDialog(const cmd::ArgumentList& args)
 	if (info.entityCount == 1 && info.totalCount == info.entityCount)
 	{
 		// Check the entity type
-		Entity* entity = Node_getEntity(GlobalSelectionSystem().ultimateSelected());
+		Entity* entity = GlobalSelectionSystem().ultimateSelected()->tryGetEntity();
 
 		if (entity != NULL && entity->getKeyValue("editor_readable") == "1")
 		{

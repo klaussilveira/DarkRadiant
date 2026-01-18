@@ -53,7 +53,7 @@ void revertGroupToWorldSpawn(const cmd::ArgumentList& args)
 	// Get the worldspawn node
 	scene::INodePtr worldspawnNode = GlobalMapModule().findOrInsertWorldspawn();
 
-	Entity* worldspawn = Node_getEntity(worldspawnNode);
+	Entity* worldspawn = worldspawnNode->tryGetEntity();
 
 	if (!worldspawn)
     {
@@ -62,7 +62,7 @@ void revertGroupToWorldSpawn(const cmd::ArgumentList& args)
 
 	for (const scene::INodePtr& groupNode : walker.getList())
 	{
-		Entity* parent = Node_getEntity(groupNode);
+		Entity* parent = groupNode->tryGetEntity();
 
 		if (!parent) continue; // not an entity
 
@@ -270,7 +270,7 @@ class ExpandSelectionToSiblingsWalker :
 public:
 	bool pre(const scene::INodePtr& node) override
 	{
-		Entity* entity = Node_getEntity(node);
+		Entity* entity = node->tryGetEntity();
 
 		if (entity != nullptr)
 		{
@@ -307,7 +307,7 @@ class PropagateSelectionToParentEntityWalker :
 public:
 	bool pre(const scene::INodePtr& node) override
 	{
-		Entity* entity = Node_getEntity(node);
+		Entity* entity = node->tryGetEntity();
 
 		if (entity != nullptr)
 		{

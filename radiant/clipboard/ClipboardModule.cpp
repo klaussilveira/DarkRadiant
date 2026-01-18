@@ -61,16 +61,10 @@ sigc::signal<void>& ClipboardModule::signal_clipboardContentChanged()
     return _sigContentsChanged;
 }
 
-const std::string& ClipboardModule::getName() const
+std::string ClipboardModule::getName() const
 {
 	static std::string _name(MODULE_CLIPBOARD);
 	return _name;
-}
-
-const StringSet& ClipboardModule::getDependencies() const
-{
-    static StringSet _dependencies;
-	return _dependencies;
 }
 
 void ClipboardModule::initialiseModule(const IApplicationContext& ctx)

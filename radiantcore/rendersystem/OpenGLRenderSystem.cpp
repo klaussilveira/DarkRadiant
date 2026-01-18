@@ -4,11 +4,9 @@
 #include "igl.h"
 #include "itextstream.h"
 #include "iregistry.h"
-#include "iradiant.h"
 #include "icolourscheme.h"
 #include "ideclmanager.h"
 
-#include "math/Matrix4.h"
 #include "module/StaticModule.h"
 #include "backend/GLProgramFactory.h"
 #include "backend/BuiltInShader.h"
@@ -370,13 +368,13 @@ void OpenGLRenderSystem::setMergeModeEnabled(bool enabled)
 }
 
 // RegisterableModule implementation
-const std::string& OpenGLRenderSystem::getName() const
+std::string OpenGLRenderSystem::getName() const
 {
     static std::string _name(MODULE_RENDERSYSTEM);
     return _name;
 }
 
-const StringSet& OpenGLRenderSystem::getDependencies() const
+StringSet OpenGLRenderSystem::getDependencies() const
 {
     static StringSet _dependencies
 	{

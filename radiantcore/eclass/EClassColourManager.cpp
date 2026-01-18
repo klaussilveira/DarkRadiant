@@ -1,6 +1,5 @@
 #include "EClassColourManager.h"
 
-#include "itextstream.h"
 #include "module/StaticModule.h"
 
 namespace eclass
@@ -12,7 +11,7 @@ void EClassColourManager::addOverrideColour(const std::string& eclass, const Vec
     _overrideChangedSignal.emit(eclass, false); // false ==> colour added
 }
 
-bool EClassColourManager::applyColours(IEntityClass& eclass)
+bool EClassColourManager::applyColours(scene::EntityClass& eclass)
 {
     auto foundOverride = _overrides.find(eclass.getDeclName());
     if (foundOverride != _overrides.end())
@@ -59,20 +58,10 @@ sigc::signal<void, const std::string&, bool>& EClassColourManager::sig_overrideC
     return _overrideChangedSignal;
 }
 
-const std::string& EClassColourManager::getName() const
+std::string EClassColourManager::getName() const
 {
     static std::string _name(MODULE_ECLASS_COLOUR_MANAGER);
     return _name;
-}
-
-const StringSet& EClassColourManager::getDependencies() const
-{
-    static StringSet _dependencies;
-    return _dependencies;
-}
-
-void EClassColourManager::initialiseModule(const IApplicationContext& ctx)
-{
 }
 
 module::StaticModuleRegistration<EClassColourManager> eclassColourManagerModule;

@@ -18,13 +18,13 @@ TextureToolSceneGraph::TextureToolSceneGraph() :
     _activeMaterialNeedsRescan(true)
 {}
 
-const std::string& TextureToolSceneGraph::getName() const
+std::string TextureToolSceneGraph::getName() const
 {
     static std::string _name(MODULE_TEXTOOL_SCENEGRAPH);
     return _name;
 }
 
-const StringSet& TextureToolSceneGraph::getDependencies() const
+StringSet TextureToolSceneGraph::getDependencies() const
 {
     static StringSet _dependencies{ MODULE_SELECTIONSYSTEM };
     return _dependencies;

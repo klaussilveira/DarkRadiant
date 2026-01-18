@@ -63,7 +63,7 @@ void MD5Model::updateAABB()
 	}
 }
 
-const AABB& MD5Model::localAABB() const
+AABB MD5Model::localAABB() const
 {
 	return _aabb_local;
 }

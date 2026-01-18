@@ -17,7 +17,7 @@ public:
     // IColourManager implementation
 
     void addOverrideColour(const std::string& eclass, const Vector4& colour) override;
-    bool applyColours(IEntityClass& eclass) override;
+    bool applyColours(scene::EntityClass& eclass) override;
     void foreachOverrideColour(const std::function<void(const std::string&, const Vector4&)>& functor) override;
     void removeOverrideColour(const std::string& eclass) override;
     void clearOverrideColours() override;
@@ -25,9 +25,7 @@ public:
 
     // RegisterableModule implementation
 
-    const std::string& getName() const override;
-    const StringSet& getDependencies() const override;
-    void initialiseModule(const IApplicationContext& ctx) override;
+    std::string getName() const override;
 };
 
 }

@@ -63,7 +63,7 @@
     <ClCompile Include="..\..\radiantcore\entity\speaker\SpeakerRenderables.cpp" />
     <ClCompile Include="..\..\radiantcore\filetypes\FileTypeRegistry.cpp" />
     <ClCompile Include="..\..\radiantcore\filters\BasicFilterSystem.cpp" />
-    <ClCompile Include="..\..\radiantcore\filters\XMLFilter.cpp" />
+    <ClCompile Include="..\..\radiantcore\filters\SceneFilter.cpp" />
     <ClCompile Include="..\..\radiantcore\filters\XmlFilterEventAdapter.cpp" />
     <ClCompile Include="..\..\radiantcore\fonts\FontLoader.cpp" />
     <ClCompile Include="..\..\radiantcore\fonts\FontManager.cpp" />
@@ -788,7 +788,7 @@
     <ClInclude Include="..\..\radiantcore\filters\BasicFilterSystem.h" />
     <ClInclude Include="..\..\radiantcore\filters\InstanceUpdateWalker.h" />
     <ClInclude Include="..\..\radiantcore\filters\SetObjectSelectionByFilterWalker.h" />
-    <ClInclude Include="..\..\radiantcore\filters\XMLFilter.h" />
+    <ClInclude Include="..\..\radiantcore\filters\SceneFilter.h" />
     <ClInclude Include="..\..\radiantcore\filters\XmlFilterEventAdapter.h" />
     <ClInclude Include="..\..\radiantcore\fonts\FontInfo.h" />
     <ClInclude Include="..\..\radiantcore\fonts\FontLoader.h" />

@@ -12,8 +12,6 @@ public:
 	virtual INamespacePtr createNamespace() override;
 
 	// RegisterableModule implementation
-	virtual const std::string& getName() const override;
-	virtual const StringSet& getDependencies() const override;
-	virtual void initialiseModule(const IApplicationContext& ctx) override;
+	std::string getName() const override;
 };
 

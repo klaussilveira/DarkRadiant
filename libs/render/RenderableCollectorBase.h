@@ -15,8 +15,7 @@ namespace render
  * RenderableCollector's "highlight" flags based on the renderable object's
  * selection state.
  */
-class RenderableCollectorBase :
-    public IRenderableCollector
+class RenderableCollectorBase: public IRenderableCollector
 {
 protected:
     std::size_t _flags;
@@ -76,38 +75,42 @@ public:
             auto mergeActionNode = std::dynamic_pointer_cast<scene::IMergeActionNode>(node);
             assert(mergeActionNode);
 
+            using scene::merge::ActionType;
             switch (mergeActionNode->getActionType())
             {
-            case scene::merge::ActionType::AddChildNode:
-            case scene::merge::ActionType::AddEntity:
+            case ActionType::AddChildNode:
+            case ActionType::AddEntity:
                 setHighlightFlag(Highlight::MergeActionAdd, true);
                 setHighlightFlag(Highlight::MergeActionChange, false);
                 setHighlightFlag(Highlight::MergeActionRemove, false);
                 setHighlightFlag(Highlight::MergeActionConflict, false);
                 break;
 
-            case scene::merge::ActionType::AddKeyValue:
-            case scene::merge::ActionType::ChangeKeyValue:
-            case scene::merge::ActionType::RemoveKeyValue:
+            case ActionType::AddKeyValue:
+            case ActionType::ChangeKeyValue:
+            case ActionType::RemoveKeyValue:
                 setHighlightFlag(Highlight::MergeActionChange, true);
                 setHighlightFlag(Highlight::MergeActionAdd, false);
                 setHighlightFlag(Highlight::MergeActionRemove, false);
                 setHighlightFlag(Highlight::MergeActionConflict, false);
                 break;
 
-            case scene::merge::ActionType::RemoveChildNode:
-            case scene::merge::ActionType::RemoveEntity:
+            case ActionType::RemoveChildNode:
+            case ActionType::RemoveEntity:
                 setHighlightFlag(Highlight::MergeActionRemove, true);
                 setHighlightFlag(Highlight::MergeActionAdd, false);
                 setHighlightFlag(Highlight::MergeActionChange, false);
                 setHighlightFlag(Highlight::MergeActionConflict, false);
                 break;
 
-            case scene::merge::ActionType::ConflictResolution:
+            case ActionType::ConflictResolution:
                 setHighlightFlag(Highlight::MergeActionConflict, true);
                 setHighlightFlag(Highlight::MergeActionAdd, false);
                 setHighlightFlag(Highlight::MergeActionChange, false);
                 setHighlightFlag(Highlight::MergeActionRemove, false);
+                break;
+
+            case ActionType::NoAction:
                 break;
             }
         }

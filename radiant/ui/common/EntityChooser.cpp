@@ -105,7 +105,7 @@ void EntityChooser::populateEntityList()
         bool pre(const scene::INodePtr& node)
 		{
 			// Check for an entity
-            Entity* entity = Node_getEntity(node);
+            Entity* entity = node->tryGetEntity();
 
             if (entity != NULL)
 			{

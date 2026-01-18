@@ -48,7 +48,7 @@ bool EntitySelectByClassnameWalker::pre(const scene::INodePtr& node) {
 	// don't traverse invisible nodes
 	if (!node->visible()) return false;
 
-	Entity* entity = Node_getEntity(node);
+	Entity* entity = node->tryGetEntity();
 
 	if (entity != NULL) {
 
@@ -123,7 +123,7 @@ void selectAllOfType(const cmd::ArgumentList& args)
 		ClassnameList classnames;
 		GlobalSelectionSystem().foreachSelected([&] (const scene::INodePtr& node)
 		{
-			Entity* entity = Node_getEntity(node);
+			Entity* entity = node->tryGetEntity();
 
 			if (entity != NULL)
 			{
@@ -318,7 +318,7 @@ public:
 		// Ignore hidden nodes (including their whole subgraph)
 		if (!node->visible()) return false;
 
-		Entity* entity = Node_getEntity(node);
+		Entity* entity = node->tryGetEntity();
 
 		// Check if we have a selectable
 		ISelectablePtr selectable = scene::node_cast<ISelectable>(node);
@@ -392,7 +392,7 @@ public:
 		// Ignore hidden nodes
 		if (!node->visible()) return false;
 
-		Entity* entity = Node_getEntity(node);
+		Entity* entity = node->tryGetEntity();
 
 		// Check if we have a selectable
 		ISelectablePtr selectable = scene::node_cast<ISelectable>(node);
@@ -512,7 +512,7 @@ public:
 		ISelectablePtr selectable = scene::node_cast<ISelectable>(node);
 
 		// ignore worldspawn
-        Entity* entity = Node_getEntity(node);
+        Entity* entity = node->tryGetEntity();
 
 		if (entity != NULL && entity->isWorldspawn())
         {
@@ -867,7 +867,7 @@ Vector3 getOriginForFloorTrace(const scene::INodePtr& node)
 {
 	Vector3 origin = node->worldAABB().getOrigin();
 
-	Entity* entity = Node_getEntity(node);
+	Entity* entity = node->tryGetEntity();
 
 	if (entity != NULL)
 	{

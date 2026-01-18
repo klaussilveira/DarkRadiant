@@ -52,7 +52,7 @@ TEST_F(RadiantTest, DuplicateScaledModel)
     auto duplicate = GlobalSelectionSystem().ultimateSelected();
 
     // This must be the duplicate
-    ASSERT_TRUE(Node_getEntity(duplicate)->getKeyValue("name") != funcStaticName);
+    ASSERT_TRUE(duplicate->tryGetEntity()->getKeyValue("name") != funcStaticName);
 
     // The new model must have a modified scale too
     auto duplicatedModel = algorithm::findChildModel(duplicate);

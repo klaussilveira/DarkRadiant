@@ -9,10 +9,10 @@ namespace decl
 
 namespace
 {
-    DeclarationBlockSyntax createBlock(const parser::DefBlockSyntax& block,
+    DeclarationBlockSource createBlock(const parser::DefBlockSyntax& block,
         const vfs::FileInfo& fileInfo, const std::string& modName)
     {
-        DeclarationBlockSyntax syntax;
+        DeclarationBlockSource syntax;
 
         const auto& nameSyntax = block.getName();
         const auto& typeSyntax = block.getType();
@@ -27,7 +27,7 @@ namespace
     }
 }
 
-DeclarationFolderParser::DeclarationFolderParser(DeclarationManager& owner, Type declType, 
+DeclarationFolderParser::DeclarationFolderParser(DeclarationManager& owner, Type declType,
     const std::string& baseDir, const std::string& extension,
     const std::map<std::string, Type, string::ILess>& typeMapping) :
     ThreadedDeclParser<void>(declType, baseDir, extension, 1),
@@ -68,7 +68,7 @@ void DeclarationFolderParser::onFinishParsing()
     _owner.onParserFinished(_defaultDeclType, _parsedBlocks);
 }
 
-Type DeclarationFolderParser::determineBlockType(const DeclarationBlockSyntax& block)
+Type DeclarationFolderParser::determineBlockType(const DeclarationBlockSource& block)
 {
     if (block.typeName.empty())
     {

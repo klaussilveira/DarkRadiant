@@ -863,7 +863,7 @@ void RadiantSelectionSystem::onManipulationCancelled()
         }
 
         // In case of entities, we need to inform the child nodes as well
-        if (Node_getEntity(node))
+        if (node->tryGetEntity())
         {
             node->foreachNode([&](const scene::INodePtr& child)
             {
@@ -963,13 +963,13 @@ void RadiantSelectionSystem::onSceneBoundsChanged()
     _requestWorkZoneRecalculation = true;
 }
 
-const std::string& RadiantSelectionSystem::getName() const
+std::string RadiantSelectionSystem::getName() const
 {
     static std::string _name(MODULE_SELECTIONSYSTEM);
     return _name;
 }
 
-const StringSet& RadiantSelectionSystem::getDependencies() const
+StringSet RadiantSelectionSystem::getDependencies() const
 {
     static StringSet _dependencies;
 

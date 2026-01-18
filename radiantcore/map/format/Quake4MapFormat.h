@@ -7,28 +7,26 @@ namespace map
 
 namespace
 {
-	const float MAP_VERSION_Q4 = 3;
+    const float MAP_VERSION_Q4 = 3;
 }
 
 class Quake4MapFormat :
-	public MapFormat,
-	public std::enable_shared_from_this<Quake4MapFormat>
+    public MapFormat,
+    public std::enable_shared_from_this<Quake4MapFormat>
 {
 public:
-	// RegisterableModule implementation
-	virtual const std::string& getName() const;
-	virtual const StringSet& getDependencies() const;
-	virtual void initialiseModule(const IApplicationContext& ctx);
-	virtual void shutdownModule();
+    // RegisterableModule implementation
+    std::string getName() const override;
+    StringSet getDependencies() const override;
+    void initialiseModule(const IApplicationContext& ctx) override;
+    void shutdownModule() override;
 
-	virtual const std::string& getMapFormatName() const;
-	virtual const std::string& getGameType() const;
-	virtual IMapReaderPtr getMapReader(IMapImportFilter& filter) const;
-	virtual IMapWriterPtr getMapWriter() const;
+    virtual const std::string& getMapFormatName() const override;
+    virtual const std::string& getGameType() const override;
+    virtual IMapReaderPtr getMapReader(IMapImportFilter& filter) const override;
+    virtual IMapWriterPtr getMapWriter() const override;
 
-	virtual bool allowInfoFileCreation() const;
-
-	virtual bool canLoad(std::istream& stream) const;
+    virtual bool canLoad(std::istream& stream) const override;
 };
 typedef std::shared_ptr<Quake4MapFormat> Quake4MapFormatPtr;
 

@@ -1,0 +1,7 @@
+test/hidden_sound {
+    volume -7
+    minDistance 2
+    maxDistance 17
+
+    sound/test/jorge.ogg
+}

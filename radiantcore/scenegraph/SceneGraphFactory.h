@@ -12,9 +12,7 @@ public:
 	GraphPtr createSceneGraph();
 
 	// RegisterableModule implementation
-	const std::string& getName() const;
-	const StringSet& getDependencies() const;
-	void initialiseModule(const IApplicationContext& ctx);
+	std::string getName() const;
 };
 typedef std::shared_ptr<SceneGraphFactory> SceneGraphFactoryPtr;
 

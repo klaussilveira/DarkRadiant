@@ -3,7 +3,7 @@
 
 #include "i18n.h"
 #include "ui/imainframe.h"
-#include "ieclass.h"
+#include "scene/EntityClass.h"
 #include "igame.h"
 #include "scene/Entity.h"
 

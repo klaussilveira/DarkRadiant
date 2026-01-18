@@ -365,7 +365,7 @@ void SkinEditor::updateSourceView(const decl::ISkin::Ptr& skin)
     if (skin)
     {
         // Surround the definition with curly braces, these are not included
-        auto definition = fmt::format("{0}\n{{{1}}}", skin->getDeclName(), skin->getBlockSyntax().contents);
+        auto definition = fmt::format("{0}\n{{{1}}}", skin->getDeclName(), skin->getDeclSource().contents);
         _sourceView->SetValue(definition);
     }
     else
@@ -643,7 +643,7 @@ void SkinEditor::discardChanges()
     // Stop editing on all columns
     _remappingList->CancelEditing();
 
-    if (_skin->isModified() && _skin->getBlockSyntax().fileInfo.name.empty())
+    if (_skin->isModified() && _skin->getDeclSource().fileInfo.name.empty())
     {
         // This decl has been created but not saved yet, discarding it means removing it
         try
@@ -669,7 +669,7 @@ void SkinEditor::deleteSkin()
 {
     if (!_skin) return;
 
-    auto fileInfo = _skin->getBlockSyntax().fileInfo.isEmpty() ? _("") : " " + _skin->getBlockSyntax().fileInfo.fullPath();
+    auto fileInfo = _skin->getDeclSource().fileInfo.isEmpty() ? _("") : " " + _skin->getDeclSource().fileInfo.fullPath();
 
     if (wxutil::Messagebox::Show(_("Confirm Removal"),
         fmt::format(_("The selected skin {0} will be removed,\nincluding its source text in the .skin file{1}.\n"
@@ -812,7 +812,7 @@ void SkinEditor::onAddModelToSkin(wxCommandEvent& ev)
 
 bool SkinEditor::skinHasBeenNewlyCreated()
 {
-    return _skin && _skin->getBlockSyntax().fileInfo.fullPath().empty();
+    return _skin && _skin->getDeclSource().fileInfo.fullPath().empty();
 }
 
 void SkinEditor::onRemoveModelFromSkin(wxCommandEvent& ev)

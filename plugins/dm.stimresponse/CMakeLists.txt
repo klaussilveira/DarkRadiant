@@ -16,6 +16,10 @@ add_library(dm_stimresponse MODULE
             StimResponseEditor.cpp
             StimTypes.cpp)
 target_link_libraries(dm_stimresponse PUBLIC wxutil)
+set_target_properties(
+    dm_stimresponse PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${DR_STAGING_PLUGINSDIR}"
+)
+
 
 # Enable precompiled header for dm_stimresponse
 if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.16.0")

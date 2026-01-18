@@ -4,13 +4,13 @@
 #include "ilayer.h"
 #include "irenderable.h"
 
-#include <set>
 #include <string>
 #include <memory>
 
 class AABB;
 class Matrix4;
 
+class Entity;
 class IRenderEntity;
 typedef std::shared_ptr<IRenderEntity> IRenderEntityPtr;
 
@@ -218,10 +218,12 @@ public:
 	 */
 	virtual bool foreachNode(const VisitorFunc& functor) const = 0;
 
-	/**
-	 * Returns a shared_ptr to itself.
-	 */
+	/// Returns a shared_ptr to itself.
 	virtual scene::INodePtr getSelf() = 0;
+
+    /// If this is an entity node, return a pointer to the Entity interface,
+    /// otherwise nullptr.
+    virtual Entity* tryGetEntity() { return nullptr; }
 
 	// Set the parent of this node, is called on insertion in a traversable
 	virtual void setParent(const INodePtr& parent) = 0;

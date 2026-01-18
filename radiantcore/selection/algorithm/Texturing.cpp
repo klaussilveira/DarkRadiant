@@ -79,7 +79,7 @@ TextureFlipper::TextureFlipper(const Vector2& flipCenter, int axis)
 
     _transform = Matrix3::getTranslation(-flipCenter);
     _transform.premultiplyBy(flipMatrix);
-    _transform.premultiplyBy(Matrix3::getTranslation(+flipCenter));
+    _transform.premultiplyBy(Matrix3::getTranslation(flipCenter));
 }
 
 void TextureFlipper::FlipNode(const textool::INode::Ptr& node, int flipAxis)

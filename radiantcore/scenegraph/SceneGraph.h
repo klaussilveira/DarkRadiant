@@ -100,7 +100,7 @@ private:
 	void foreachNodeInVolume(const VolumeTest& volume, const INode::VisitorFunc& functor, bool visitHidden);
 
 	// Recursive method used to descend the SpacePartition tree, returns FALSE if the walker signaled stop
-	bool foreachNodeInVolume_r(const ISPNode& node, const VolumeTest& volume, 
+	bool foreachNodeInVolume_r(const ISPNode& node, const VolumeTest& volume,
 							   const INode::VisitorFunc& functor, bool visitHidden);
 
     void flushActionBuffer();
@@ -116,9 +116,7 @@ class SceneGraphModule :
 {
 public:
 	// RegisterableModule implementation
-	const std::string& getName() const;
-	const StringSet& getDependencies() const;
-	void initialiseModule(const IApplicationContext& ctx);
+	std::string getName() const;
 };
 typedef std::shared_ptr<SceneGraphModule> SceneGraphModulePtr;
 

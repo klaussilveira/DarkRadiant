@@ -94,7 +94,7 @@ inline scene::INodePtr setupTestEntity()
 {
     auto entity = GlobalEntityModule().createEntity(GlobalEntityClassManager().findClass("light"));
     scene::addNodeToContainer(entity, GlobalMapModule().getRoot());
-    Node_getEntity(entity)->setKeyValue("test", InitialTestKeyValue);
+    entity->tryGetEntity()->setKeyValue("test", InitialTestKeyValue);
 
     return entity;
 }
@@ -109,16 +109,16 @@ TEST_F(UndoTest, AddEntityKeyValue)
 
     {
         UndoableCommand cmd("testOperation");
-        Node_getEntity(entity)->setKeyValue("newkey", "ljdaslk");
+        entity->tryGetEntity()->setKeyValue("newkey", "ljdaslk");
     }
 
     EXPECT_TRUE(GlobalMapModule().isModified()) << "Map should be modified after this change";
 
     GlobalUndoSystem().undo();
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("newkey"), "");
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("newkey"), "");
 
     GlobalUndoSystem().redo();
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("newkey"), "ljdaslk");
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("newkey"), "ljdaslk");
 }
 
 TEST_F(UndoTest, ChangeEntityKeyValue)
@@ -129,16 +129,16 @@ TEST_F(UndoTest, ChangeEntityKeyValue)
 
     {
         UndoableCommand cmd("testOperation");
-        Node_getEntity(entity)->setKeyValue("test", "1");
+        entity->tryGetEntity()->setKeyValue("test", "1");
     }
 
     EXPECT_TRUE(GlobalMapModule().isModified()) << "Map should be modified after this change";
 
     GlobalUndoSystem().undo();
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("test"), InitialTestKeyValue);
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("test"), InitialTestKeyValue);
 
     GlobalUndoSystem().redo();
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("test"), "1");
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("test"), "1");
 }
 
 TEST_F(UndoTest, RemoveEntityKeyValue)
@@ -149,16 +149,16 @@ TEST_F(UndoTest, RemoveEntityKeyValue)
 
     {
         UndoableCommand cmd("testOperation");
-        Node_getEntity(entity)->setKeyValue("test", "");
+        entity->tryGetEntity()->setKeyValue("test", "");
     }
 
     EXPECT_TRUE(GlobalMapModule().isModified()) << "Map should be modified after this change";
 
     GlobalUndoSystem().undo();
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("test"), InitialTestKeyValue);
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("test"), InitialTestKeyValue);
 
     GlobalUndoSystem().redo();
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("test"), "");
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("test"), "");
 }
 
 TEST_F(UndoTest, MultipleChangesInSingleOperation)
@@ -170,33 +170,33 @@ TEST_F(UndoTest, MultipleChangesInSingleOperation)
 
     {
         UndoableCommand cmd("testOperation");
-        Node_getEntity(entity)->setKeyValue("test", "1");
-        Node_getEntity(entity)->setKeyValue("test1", "value1");
+        entity->tryGetEntity()->setKeyValue("test", "1");
+        entity->tryGetEntity()->setKeyValue("test1", "value1");
 
-        Node_getEntity(entity2)->setKeyValue("test", "2");
-        Node_getEntity(entity2)->setKeyValue("test2", "value2");
-        Node_getEntity(entity2)->setKeyValue("test3", "value3");
+        entity2->tryGetEntity()->setKeyValue("test", "2");
+        entity2->tryGetEntity()->setKeyValue("test2", "value2");
+        entity2->tryGetEntity()->setKeyValue("test3", "value3");
     }
 
     EXPECT_TRUE(GlobalMapModule().isModified()) << "Map should be modified after this change";
 
     GlobalUndoSystem().undo();
-    Node_getEntity(entity)->setKeyValue("test", InitialTestKeyValue);
-    Node_getEntity(entity)->setKeyValue("test1", "");
+    entity->tryGetEntity()->setKeyValue("test", InitialTestKeyValue);
+    entity->tryGetEntity()->setKeyValue("test1", "");
 
-    Node_getEntity(entity2)->setKeyValue("test", InitialTestKeyValue);
-    Node_getEntity(entity2)->setKeyValue("test2", "");
-    Node_getEntity(entity2)->setKeyValue("test3", "");
+    entity2->tryGetEntity()->setKeyValue("test", InitialTestKeyValue);
+    entity2->tryGetEntity()->setKeyValue("test2", "");
+    entity2->tryGetEntity()->setKeyValue("test3", "");
 
     EXPECT_FALSE(GlobalMapModule().isModified()) << "Map should be marked as unchanged again";
 
     GlobalUndoSystem().redo();
-    Node_getEntity(entity)->setKeyValue("test", "1");
-    Node_getEntity(entity)->setKeyValue("test1", "value1");
+    entity->tryGetEntity()->setKeyValue("test", "1");
+    entity->tryGetEntity()->setKeyValue("test1", "value1");
 
-    Node_getEntity(entity2)->setKeyValue("test", "2");
-    Node_getEntity(entity2)->setKeyValue("test2", "value2");
-    Node_getEntity(entity2)->setKeyValue("test3", "value3");
+    entity2->tryGetEntity()->setKeyValue("test", "2");
+    entity2->tryGetEntity()->setKeyValue("test2", "value2");
+    entity2->tryGetEntity()->setKeyValue("test3", "value3");
 
     EXPECT_TRUE(GlobalMapModule().isModified()) << "Map should be modified after redo";
 }
@@ -212,7 +212,7 @@ TEST_F(UndoTest, NodeOutsideScene)
 
     {
         UndoableCommand cmd("testOperation");
-        Node_getEntity(entity)->setKeyValue("test", "1");
+        entity->tryGetEntity()->setKeyValue("test", "1");
     }
 
     // The map should not care about this change
@@ -220,12 +220,12 @@ TEST_F(UndoTest, NodeOutsideScene)
 
     GlobalUndoSystem().undo();
     // Node should still be unaffected by this
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("test"), "1");
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("test"), "1");
 
     EXPECT_FALSE(GlobalMapModule().isModified()) << "Map should not be modified after this change";
 
     GlobalUndoSystem().redo();
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("test"), "1");
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("test"), "1");
 
     EXPECT_FALSE(GlobalMapModule().isModified()) << "Map should not be modified after this change";
 }
@@ -239,23 +239,23 @@ TEST_F(UndoTest, SequentialOperations)
 
     {
         UndoableCommand cmd("testOperation");
-        Node_getEntity(entity)->setKeyValue("test", "1");
+        entity->tryGetEntity()->setKeyValue("test", "1");
     }
     {
         UndoableCommand cmd("testOperation");
-        Node_getEntity(entity)->setKeyValue("test1", "value1");
+        entity->tryGetEntity()->setKeyValue("test1", "value1");
     }
     {
         UndoableCommand cmd("testOperation");
-        Node_getEntity(entity2)->setKeyValue("test", "2");
+        entity2->tryGetEntity()->setKeyValue("test", "2");
     }
     {
         UndoableCommand cmd("testOperation");
-        Node_getEntity(entity2)->setKeyValue("test2", "value2");
+        entity2->tryGetEntity()->setKeyValue("test2", "value2");
     }
     {
         UndoableCommand cmd("testOperation");
-        Node_getEntity(entity2)->setKeyValue("test3", "value3");
+        entity2->tryGetEntity()->setKeyValue("test3", "value3");
     }
 
     EXPECT_TRUE(GlobalMapModule().isModified()) << "Map should be modified after this change";
@@ -263,94 +263,94 @@ TEST_F(UndoTest, SequentialOperations)
     // Roll back one change after the other
 
     GlobalUndoSystem().undo();
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test3"), ""); // undone
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test2"), "value2"); // unchanged
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test"), "2"); // unchanged
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("test1"), "value1"); // unchanged
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("test"), "1"); // unchanged
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test3"), ""); // undone
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test2"), "value2"); // unchanged
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test"), "2"); // unchanged
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("test1"), "value1"); // unchanged
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("test"), "1"); // unchanged
 
     EXPECT_TRUE(GlobalMapModule().isModified()) << "Map should still be modified after 1 undo";
 
     GlobalUndoSystem().undo();
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test3"), ""); // undone
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test2"), ""); // undone
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test"), "2"); // unchanged
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("test1"), "value1"); // unchanged
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("test"), "1"); // unchanged
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test3"), ""); // undone
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test2"), ""); // undone
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test"), "2"); // unchanged
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("test1"), "value1"); // unchanged
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("test"), "1"); // unchanged
 
     EXPECT_TRUE(GlobalMapModule().isModified()) << "Map should still be modified after 2 undos";
 
     GlobalUndoSystem().undo();
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test3"), ""); // undone
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test2"), ""); // undone
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test"), InitialTestKeyValue); // undone
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("test1"), "value1"); // unchanged
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("test"), "1"); // unchanged
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test3"), ""); // undone
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test2"), ""); // undone
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test"), InitialTestKeyValue); // undone
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("test1"), "value1"); // unchanged
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("test"), "1"); // unchanged
 
     EXPECT_TRUE(GlobalMapModule().isModified()) << "Map should still be modified after 3 undos";
 
     GlobalUndoSystem().undo();
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test3"), ""); // undone
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test2"), ""); // undone
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test"), InitialTestKeyValue); // undone
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("test1"), ""); // undone
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("test"), "1"); // unchanged
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test3"), ""); // undone
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test2"), ""); // undone
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test"), InitialTestKeyValue); // undone
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("test1"), ""); // undone
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("test"), "1"); // unchanged
 
     EXPECT_TRUE(GlobalMapModule().isModified()) << "Map should still be modified after 4 undos";
 
     GlobalUndoSystem().undo();
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test3"), ""); // undone
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test2"), ""); // undone
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test"), InitialTestKeyValue); // undone
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("test1"), ""); // undone
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("test"), InitialTestKeyValue); // undone
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test3"), ""); // undone
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test2"), ""); // undone
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test"), InitialTestKeyValue); // undone
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("test1"), ""); // undone
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("test"), InitialTestKeyValue); // undone
 
     EXPECT_FALSE(GlobalMapModule().isModified()) << "Map should be unmodified after 5 undos";
 
     // Then redo all of these one after one
 
     GlobalUndoSystem().redo();
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test3"), ""); // undone
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test2"), ""); // undone
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test"), InitialTestKeyValue); // undone
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("test1"), ""); // undone
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("test"), "1"); // redone
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test3"), ""); // undone
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test2"), ""); // undone
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test"), InitialTestKeyValue); // undone
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("test1"), ""); // undone
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("test"), "1"); // redone
 
     EXPECT_TRUE(GlobalMapModule().isModified()) << "Map should be modified after 1 redo";
 
     GlobalUndoSystem().redo();
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test3"), ""); // undone
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test2"), ""); // undone
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test"), InitialTestKeyValue); // undone
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("test1"), "value1"); // redone
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("test"), "1"); // redone
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test3"), ""); // undone
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test2"), ""); // undone
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test"), InitialTestKeyValue); // undone
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("test1"), "value1"); // redone
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("test"), "1"); // redone
 
     EXPECT_TRUE(GlobalMapModule().isModified()) << "Map should be modified after 2 redos";
 
     GlobalUndoSystem().redo();
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test3"), ""); // undone
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test2"), ""); // undone
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test"), "2"); // redone
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("test1"), "value1"); // redone
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("test"), "1"); // redone
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test3"), ""); // undone
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test2"), ""); // undone
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test"), "2"); // redone
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("test1"), "value1"); // redone
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("test"), "1"); // redone
 
     EXPECT_TRUE(GlobalMapModule().isModified()) << "Map should be modified after 3 redos";
 
     GlobalUndoSystem().redo();
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test3"), ""); // undone
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test2"), "value2"); // redone
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test"), "2"); // redone
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("test1"), "value1"); // redone
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("test"), "1"); // redone
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test3"), ""); // undone
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test2"), "value2"); // redone
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test"), "2"); // redone
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("test1"), "value1"); // redone
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("test"), "1"); // redone
 
     EXPECT_TRUE(GlobalMapModule().isModified()) << "Map should be modified after 4 redos";
 
     GlobalUndoSystem().redo();
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test3"), "value3"); // redone
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test2"), "value2"); // redone
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test"), "2"); // redone
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("test1"), "value1"); // redone
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("test"), "1"); // redone
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test3"), "value3"); // redone
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test2"), "value2"); // redone
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test"), "2"); // redone
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("test1"), "value1"); // redone
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("test"), "1"); // redone
 
     EXPECT_TRUE(GlobalMapModule().isModified()) << "Map should be modified after 5 redos";
 }
@@ -365,42 +365,42 @@ TEST_F(UndoTest, NestedOperations)
     // A nested set of operations, should be undoable as one single operation
     {
         UndoableCommand cmd("testOperation");
-        Node_getEntity(entity)->setKeyValue("test", "1");
+        entity->tryGetEntity()->setKeyValue("test", "1");
 
         {
             UndoableCommand cmd("testOperation");
-            Node_getEntity(entity)->setKeyValue("test1", "value1");
+            entity->tryGetEntity()->setKeyValue("test1", "value1");
         }
         {
             UndoableCommand cmd("testOperation");
-            Node_getEntity(entity2)->setKeyValue("test", "2");
+            entity2->tryGetEntity()->setKeyValue("test", "2");
 
             {
                 UndoableCommand cmd("testOperation");
-                Node_getEntity(entity2)->setKeyValue("test2", "value2");
+                entity2->tryGetEntity()->setKeyValue("test2", "value2");
             }
         }
 
-        Node_getEntity(entity)->setKeyValue("last", "one");
+        entity->tryGetEntity()->setKeyValue("last", "one");
     }
 
     EXPECT_TRUE(GlobalMapModule().isModified()) << "Map should be modified after this change";
 
     GlobalUndoSystem().undo();
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("last"), ""); // undone
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test2"), ""); // undone
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test"), InitialTestKeyValue); // undone
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("test1"), ""); // undone
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("test"), InitialTestKeyValue); // undone
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("last"), ""); // undone
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test2"), ""); // undone
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test"), InitialTestKeyValue); // undone
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("test1"), ""); // undone
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("test"), InitialTestKeyValue); // undone
 
     EXPECT_FALSE(GlobalMapModule().isModified()) << "Map should be unmodified after undo";
 
     GlobalUndoSystem().redo();
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("last"), "one"); // redone
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test2"), "value2"); // redone
-    EXPECT_EQ(Node_getEntity(entity2)->getKeyValue("test"), "2"); // redone
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("test1"), "value1"); // redone
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("test"), "1"); // redone
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("last"), "one"); // redone
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test2"), "value2"); // redone
+    EXPECT_EQ(entity2->tryGetEntity()->getKeyValue("test"), "2"); // redone
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("test1"), "value1"); // redone
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("test"), "1"); // redone
 
     EXPECT_TRUE(GlobalMapModule().isModified()) << "Map should be modified after redo";
 }
@@ -414,19 +414,19 @@ TEST_F(UndoTest, MultipleKeyValueChangeInSingleOperation)
 
     {
         UndoableCommand cmd("testOperation");
-        Node_getEntity(entity)->setKeyValue("test", "1");
-        Node_getEntity(entity)->setKeyValue("test", "2");
-        Node_getEntity(entity)->setKeyValue("test", "3");
-        Node_getEntity(entity)->setKeyValue("test", "4");
+        entity->tryGetEntity()->setKeyValue("test", "1");
+        entity->tryGetEntity()->setKeyValue("test", "2");
+        entity->tryGetEntity()->setKeyValue("test", "3");
+        entity->tryGetEntity()->setKeyValue("test", "4");
     }
 
     EXPECT_TRUE(GlobalMapModule().isModified()) << "Map should be modified after this change";
 
     GlobalUndoSystem().undo();
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("test"), InitialTestKeyValue);
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("test"), InitialTestKeyValue);
 
     GlobalUndoSystem().redo();
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("test"), "4");
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("test"), "4");
 }
 
 TEST_F(UndoTest, SceneNodeRemoval)
@@ -538,7 +538,7 @@ TEST_F(UndoTest, CreateBrushBasedEntity)
     Node_setSelected(brush, true);
 
     // Initially, this brush has the worldspawn as parent
-    EXPECT_TRUE(Node_getEntity(brush->getParent())->isWorldspawn());
+    EXPECT_TRUE(brush->getParent()->tryGetEntity()->isWorldspawn());
 
     EXPECT_TRUE(GlobalEntityClassManager().findClass("atdm:mover_door_sliding")) << "Need atdm:mover_door_sliding for this test";
 
@@ -552,16 +552,16 @@ TEST_F(UndoTest, CreateBrushBasedEntity)
     EXPECT_TRUE(brush->getParent());
     EXPECT_FALSE(algorithm::findFirstBrushWithMaterial(worldspawn, "textures/numbers/1")) << "Worldspawn should have lost this brush";
 
-    EXPECT_FALSE(Node_getEntity(brush->getParent())->isWorldspawn());
-    EXPECT_EQ(Node_getEntity(brush->getParent())->getEntityClass()->getDeclName(), "atdm:mover_door_sliding");
+    EXPECT_FALSE(brush->getParent()->tryGetEntity()->isWorldspawn());
+    EXPECT_EQ(brush->getParent()->tryGetEntity()->getEntityClass()->getDeclName(), "atdm:mover_door_sliding");
 
-    auto entityName = Node_getEntity(entity)->getKeyValue("name");
+    auto entityName = entity->tryGetEntity()->getKeyValue("name");
     EXPECT_TRUE(algorithm::getEntityByName(GlobalMapModule().getRoot(), entityName)) << "Could not look up the entity by name";
 
     GlobalUndoSystem().undo();
 
     // The brush should be back at worldspawn
-    EXPECT_TRUE(Node_getEntity(brush->getParent())->isWorldspawn());
+    EXPECT_TRUE(brush->getParent()->tryGetEntity()->isWorldspawn());
     EXPECT_TRUE(algorithm::findFirstBrushWithMaterial(worldspawn, "textures/numbers/1")) << "Worldspawn should have this brush again";
 
     // The entity should be gone
@@ -573,8 +573,8 @@ TEST_F(UndoTest, CreateBrushBasedEntity)
     // All should be back in place after redo
     EXPECT_FALSE(algorithm::findFirstBrushWithMaterial(worldspawn, "textures/numbers/1")) << "Worldspawn should have lost this brush";
     EXPECT_TRUE(algorithm::findFirstBrushWithMaterial(entity, "textures/numbers/1")) << "The door should have this brush now";
-    EXPECT_FALSE(Node_getEntity(brush->getParent())->isWorldspawn());
-    EXPECT_EQ(Node_getEntity(brush->getParent())->getEntityClass()->getDeclName(), "atdm:mover_door_sliding");
+    EXPECT_FALSE(brush->getParent()->tryGetEntity()->isWorldspawn());
+    EXPECT_EQ(brush->getParent()->tryGetEntity()->getEntityClass()->getDeclName(), "atdm:mover_door_sliding");
     EXPECT_TRUE(algorithm::getEntityByName(GlobalMapModule().getRoot(), entityName)) << "Could not look up the entity by name";
 }
 
@@ -588,23 +588,23 @@ TEST_F(UndoTest, MapChangeTracking)
     // Issue 5 commands to the undo stack
     {
         UndoableCommand cmd("testOperation");
-        Node_getEntity(entity)->setKeyValue("test", "1");
+        entity->tryGetEntity()->setKeyValue("test", "1");
     }
     {
         UndoableCommand cmd("testOperation");
-        Node_getEntity(entity)->setKeyValue("test1", "value1");
+        entity->tryGetEntity()->setKeyValue("test1", "value1");
     }
     {
         UndoableCommand cmd("testOperation");
-        Node_getEntity(entity2)->setKeyValue("test", "2");
+        entity2->tryGetEntity()->setKeyValue("test", "2");
     }
     {
         UndoableCommand cmd("testOperation");
-        Node_getEntity(entity2)->setKeyValue("test2", "value2");
+        entity2->tryGetEntity()->setKeyValue("test2", "value2");
     }
     {
         UndoableCommand cmd("testOperation");
-        Node_getEntity(entity2)->setKeyValue("test3", "value3");
+        entity2->tryGetEntity()->setKeyValue("test3", "value3");
     }
 
     EXPECT_TRUE(GlobalMapModule().isModified()) << "Map should be modified after this change";

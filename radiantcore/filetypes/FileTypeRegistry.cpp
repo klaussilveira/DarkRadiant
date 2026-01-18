@@ -1,10 +1,6 @@
 #include "FileTypeRegistry.h"
 
 #include "i18n.h"
-#include "itextstream.h"
-#include "os/path.h"
-#include "debugging/debugging.h"
-
 #include "string/case_conv.h"
 #include "module/StaticModule.h"
 
@@ -71,16 +67,10 @@ std::string FileTypeRegistry::getIconForExtension(const std::string& extension)
     return std::string();
 }
 
-const std::string& FileTypeRegistry::getName() const
+std::string FileTypeRegistry::getName() const
 {
 	static std::string _name(MODULE_FILETYPES);
 	return _name;
-}
-
-const StringSet& FileTypeRegistry::getDependencies() const
-{
-	static StringSet _dependencies; // no dependencies
-	return _dependencies;
 }
 
 void FileTypeRegistry::initialiseModule(const IApplicationContext& ctx)

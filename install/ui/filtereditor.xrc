@@ -1,165 +1,181 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<resource xmlns="http://www.wxwindows.org/wxxrc" version="2.3.0.1">
-	<object class="wxPanel" name="FilterEditorMainPanel">
-		<style>wxTAB_TRAVERSAL</style>
-		<size>500,300</size>
-		<object class="wxBoxSizer">
-			<orient>wxVERTICAL</orient>
-			<object class="sizeritem">
-				<option>1</option>
-				<flag>wxALL|wxEXPAND</flag>
-				<border>12</border>
-				<object class="wxBoxSizer">
-					<orient>wxVERTICAL</orient>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxBOTTOM</flag>
-						<border>6</border>
-						<object class="wxStaticText" name="FilterEditorTopLabel">
-							<label>Name</label>
-							<wrap>-1</wrap>
-						</object>
-					</object>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxEXPAND|wxLEFT</flag>
-						<border>12</border>
-						<object class="wxTextCtrl" name="FilterEditorNameEntry">
-							<value></value>
-						</object>
-					</object>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxTOP|wxBOTTOM</flag>
-						<border>6</border>
-						<object class="wxStaticText" name="FilterEditorRuleLabel">
-							<label>Rules</label>
-							<wrap>-1</wrap>
-						</object>
-					</object>
-					<object class="sizeritem">
-						<option>1</option>
-						<flag>wxEXPAND</flag>
-						<border>12</border>
-						<object class="wxBoxSizer">
-							<orient>wxHORIZONTAL</orient>
-							<object class="sizeritem">
-								<option>1</option>
-								<flag>wxEXPAND|wxRIGHT</flag>
-								<border>6</border>
-								<object class="wxPanel" name="FilterEditorTreeViewPanel">
-									<style>wxTAB_TRAVERSAL</style>
-									<object class="wxBoxSizer">
-										<orient>wxVERTICAL</orient>
-									</object>
-								</object>
-							</object>
-							<object class="sizeritem">
-								<option>0</option>
-								<flag></flag>
-								<border>12</border>
-								<object class="wxBoxSizer">
-									<orient>wxVERTICAL</orient>
-									<object class="sizeritem">
-										<option>0</option>
-										<flag>wxBOTTOM|wxEXPAND</flag>
-										<border>6</border>
-										<object class="wxButton" name="FilterEditorAddButton">
-											<label>Add</label>
-											<default>0</default>
-											<markup>0</markup>
-											<bitmap />
-										</object>
-									</object>
-									<object class="sizeritem">
-										<option>0</option>
-										<flag>wxBOTTOM|wxEXPAND</flag>
-										<border>6</border>
-										<object class="wxButton" name="FilterEditorUpButton">
-											<label>Move Up</label>
-											<default>0</default>
-											<markup>0</markup>
-											<bitmap />
-										</object>
-									</object>
-									<object class="sizeritem">
-										<option>0</option>
-										<flag>wxBOTTOM|wxEXPAND</flag>
-										<border>6</border>
-										<object class="wxButton" name="FilterEditorDownButton">
-											<label>Move Down</label>
-											<default>0</default>
-											<markup>0</markup>
-											<bitmap />
-										</object>
-									</object>
-									<object class="sizeritem">
-										<option>0</option>
-										<flag>wxEXPAND</flag>
-										<border>6</border>
-										<object class="wxButton" name="FilterEditorDeleteButton">
-											<label>Delete</label>
-											<default>0</default>
-											<markup>0</markup>
-											<bitmap />
-										</object>
-									</object>
-								</object>
-							</object>
-						</object>
-					</object>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxALL</flag>
-						<border>5</border>
-						<object class="wxStaticText" name="FilterEditorHelpText">
-							<label>Filter rules are applied in the shown order.\n&quot;Match&quot; is accepting regular expressions.\n&quot;Object&quot;-type filters can be used to match &quot;patch&quot; or &quot;brush&quot;.</label>
-							<wrap>-1</wrap>
-						</object>
-					</object>
-				</object>
-			</object>
-			<object class="sizeritem">
-				<option>0</option>
-				<flag>wxALIGN_RIGHT|wxBOTTOM|wxLEFT|wxRIGHT|wxTOP</flag>
-				<border>12</border>
-				<object class="wxBoxSizer">
-					<orient>wxHORIZONTAL</orient>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxEXPAND</flag>
-						<border>0</border>
-						<object class="wxButton" name="FilterEditorOkButton">
-							<label>OK</label>
-							<default>0</default>
-							<markup>0</markup>
-							<bitmap />
-						</object>
-					</object>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxEXPAND|wxLEFT</flag>
-						<border>6</border>
-						<object class="wxButton" name="FilterEditorCancelButton">
-							<label>Cancel</label>
-							<default>0</default>
-							<markup>0</markup>
-							<bitmap />
-						</object>
-					</object>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxEXPAND|wxLEFT</flag>
-						<border>6</border>
-						<object class="wxButton" name="FilterEditorSaveButton">
-							<label>Save</label>
-							<default>0</default>
-							<markup>0</markup>
-							<bitmap />
-						</object>
-					</object>
-				</object>
-			</object>
-		</object>
-	</object>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.3.0.1">
+  <object class="wxPanel" name="FilterEditorMainPanel">
+    <size>618,481</size>
+    <style>wxTAB_TRAVERSAL</style>
+    <object class="wxBoxSizer" name="bSizer5">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <flag>wxALL|wxEXPAND</flag>
+        <border>12</border>
+        <option>1</option>
+        <object class="wxBoxSizer" name="bSizer10">
+          <orient>wxVERTICAL</orient>
+          <object class="sizeritem">
+            <flag>wxBOTTOM</flag>
+            <border>6</border>
+            <option>0</option>
+            <object class="wxStaticText" name="FilterEditorTopLabel">
+              <label>Name</label>
+              <wrap>-1</wrap>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <flag>wxEXPAND|wxLEFT</flag>
+            <border>12</border>
+            <option>0</option>
+            <object class="wxTextCtrl" name="FilterEditorNameEntry">
+              <value></value>
+              <maxlength>0</maxlength>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <flag>wxTOP|wxBOTTOM</flag>
+            <border>6</border>
+            <option>0</option>
+            <object class="wxStaticText" name="FilterEditorRuleLabel">
+              <label>Rules</label>
+              <wrap>-1</wrap>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <flag>wxEXPAND</flag>
+            <border>12</border>
+            <option>1</option>
+            <object class="wxBoxSizer" name="bSizer6">
+              <orient>wxHORIZONTAL</orient>
+              <object class="sizeritem">
+                <flag>wxEXPAND|wxRIGHT</flag>
+                <border>6</border>
+                <option>1</option>
+                <object class="wxPanel" name="FilterEditorTreeViewPanel">
+                  <style>wxTAB_TRAVERSAL</style>
+                  <object class="wxBoxSizer" name="bSizer9">
+                    <orient>wxVERTICAL</orient>
+                  </object>
+                </object>
+              </object>
+              <object class="sizeritem">
+                <flag></flag>
+                <border>12</border>
+                <option>0</option>
+                <object class="wxBoxSizer" name="ButtonSizer">
+                  <orient>wxVERTICAL</orient>
+                  <object class="sizeritem">
+                    <flag>wxBOTTOM|wxEXPAND</flag>
+                    <border>6</border>
+                    <option>0</option>
+                    <object class="wxButton" name="FilterEditorAddButton">
+                      <style>wxBU_EXACTFIT</style>
+                      <tooltip>Add a rule</tooltip>
+                      <label></label>
+                      <default>0</default>
+                      <auth_needed>0</auth_needed>
+                      <markup>0</markup>
+                      <bitmap>../bitmaps/add.png</bitmap>
+                    </object>
+                  </object>
+                  <object class="sizeritem">
+                    <flag>wxBOTTOM|wxEXPAND</flag>
+                    <border>6</border>
+                    <option>0</option>
+                    <object class="wxButton" name="FilterEditorUpButton">
+                      <style>wxBU_EXACTFIT</style>
+                      <tooltip>Move rule up</tooltip>
+                      <label></label>
+                      <default>0</default>
+                      <auth_needed>0</auth_needed>
+                      <markup>0</markup>
+                      <bitmap>../bitmaps/arrow_up_blue.png</bitmap>
+                    </object>
+                  </object>
+                  <object class="sizeritem">
+                    <flag>wxBOTTOM|wxEXPAND</flag>
+                    <border>6</border>
+                    <option>0</option>
+                    <object class="wxButton" name="FilterEditorDownButton">
+                      <style>wxBU_EXACTFIT</style>
+                      <tooltip>Move rule down</tooltip>
+                      <label></label>
+                      <default>0</default>
+                      <auth_needed>0</auth_needed>
+                      <markup>0</markup>
+                      <bitmap>../bitmaps/arrow_down_blue.png</bitmap>
+                    </object>
+                  </object>
+                  <object class="sizeritem">
+                    <flag>wxEXPAND</flag>
+                    <border>6</border>
+                    <option>0</option>
+                    <object class="wxButton" name="FilterEditorDeleteButton">
+                      <style>wxBU_EXACTFIT</style>
+                      <tooltip>Delete selected rule</tooltip>
+                      <label></label>
+                      <default>0</default>
+                      <auth_needed>0</auth_needed>
+                      <markup>0</markup>
+                      <bitmap>../bitmaps/delete.png</bitmap>
+                    </object>
+                  </object>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <flag>wxALL</flag>
+            <border>5</border>
+            <option>0</option>
+            <object class="wxStaticText" name="FilterEditorHelpText">
+              <label>Filter rules are applied in the shown order.\n&quot;Match&quot; is accepting regular expressions.\n&quot;Object&quot;-type filters can be used to match &quot;patch&quot; or &quot;brush&quot;.</label>
+              <wrap>-1</wrap>
+            </object>
+          </object>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <flag>wxALIGN_RIGHT|wxBOTTOM|wxLEFT|wxRIGHT|wxTOP</flag>
+        <border>12</border>
+        <option>0</option>
+        <object class="wxBoxSizer" name="bSizer8">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <flag>wxEXPAND</flag>
+            <border>0</border>
+            <option>0</option>
+            <object class="wxButton" name="FilterEditorOkButton">
+              <label>OK</label>
+              <default>0</default>
+              <auth_needed>0</auth_needed>
+              <markup>0</markup>
+              <bitmap/>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <flag>wxEXPAND|wxLEFT</flag>
+            <border>6</border>
+            <option>0</option>
+            <object class="wxButton" name="FilterEditorCancelButton">
+              <label>Cancel</label>
+              <default>0</default>
+              <auth_needed>0</auth_needed>
+              <markup>0</markup>
+              <bitmap/>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <flag>wxEXPAND|wxLEFT</flag>
+            <border>6</border>
+            <option>0</option>
+            <object class="wxButton" name="FilterEditorSaveButton">
+              <label>Save</label>
+              <default>0</default>
+              <auth_needed>0</auth_needed>
+              <markup>0</markup>
+              <bitmap/>
+            </object>
+          </object>
+        </object>
+      </object>
+    </object>
+  </object>
 </resource>

@@ -128,7 +128,7 @@ protected:
         assert(_node);
         assert(Node_getCloneable(node));
 
-        auto* entity = Node_getEntity(node);
+        auto* entity = node->tryGetEntity();
         _modelIsEqualToName = entity && entity->getKeyValue("name") == entity->getKeyValue("model");
 
         // No post-clone callback since we don't care about selection groups right now
@@ -158,7 +158,7 @@ public:
         // Check if we need to synchronise the model and name key values
         if (_modelIsEqualToName)
         {
-            auto* entity = Node_getEntity(_cloneToBeInserted);
+            auto* entity = _cloneToBeInserted->tryGetEntity();
 
             if (entity)
             {
@@ -241,7 +241,7 @@ public:
         assert(!_key.empty());
 
         // Store the existing value, it's reverted when deactivating this action
-        _unchangedValue = Node_getEntity(node)->getKeyValue(key);
+        _unchangedValue = node->tryGetEntity()->getKeyValue(key);
     }
 
     void applyChanges() override
@@ -295,7 +295,7 @@ public:
 private:
     void applyValue(const std::string& value)
     {
-        auto entity = Node_getEntity(_node);
+        auto entity = _node->tryGetEntity();
 
         if (!entity)
         {

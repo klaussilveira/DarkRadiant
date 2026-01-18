@@ -13,13 +13,13 @@ public:
 	void createContext();
 
 	// Inherited via RegisterableModule
-	const std::string& getName() const override
+	std::string getName() const override
 	{
 		static std::string _name("HeadlessOpenGLContext");
 		return _name;
 	}
 
-	const StringSet& getDependencies() const override
+	StringSet getDependencies() const override
 	{
 		static StringSet _dependencies;
 
@@ -30,8 +30,6 @@ public:
 
 		return _dependencies;
 	}
-
-	void initialiseModule(const IApplicationContext& ctx) override;
 
 	void shutdownModule() override
 	{

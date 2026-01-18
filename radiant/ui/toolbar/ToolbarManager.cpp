@@ -18,13 +18,13 @@ namespace
 	const char* const CMD_VARIANT_NAME = "command";
 }
 
-const std::string& ToolbarManager::getName() const
+std::string ToolbarManager::getName() const
 {
     static std::string _name(MODULE_TOOLBARMANAGER);
     return _name;
 }
 
-const StringSet& ToolbarManager::getDependencies() const
+StringSet ToolbarManager::getDependencies() const
 {
     static StringSet _dependencies;
 

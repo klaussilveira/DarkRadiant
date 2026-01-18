@@ -1,7 +1,6 @@
 #pragma once
 
-#include "ieclass.h"
-#include "scene/Entity.h"
+#include "scene/EntityClass.h"
 #include "scene/Entity.h"
 
 class NameKey :

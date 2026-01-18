@@ -101,20 +101,10 @@ std::set<MapFormatPtr> MapFormatManager::getMapFormatList(const std::string& ext
 }
 
 // RegisterableModule implementation
-const std::string& MapFormatManager::getName() const
+std::string MapFormatManager::getName() const
 {
 	static std::string _name(MODULE_MAPFORMATMANAGER);
 	return _name;
-}
-
-const StringSet& MapFormatManager::getDependencies() const
-{
-	static StringSet _dependencies; // no deps
-	return _dependencies;
-}
-
-void MapFormatManager::initialiseModule(const IApplicationContext& ctx)
-{
 }
 
 // Creates the static module instance

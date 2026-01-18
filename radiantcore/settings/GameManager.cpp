@@ -42,13 +42,13 @@ namespace
 Manager::Manager()
 {}
 
-const std::string& Manager::getName() const
+std::string Manager::getName() const
 {
 	static std::string _name(MODULE_GAMEMANAGER);
 	return _name;
 }
 
-const StringSet& Manager::getDependencies() const
+StringSet Manager::getDependencies() const
 {
 	static StringSet _dependencies;
 

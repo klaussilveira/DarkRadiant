@@ -76,8 +76,8 @@ public:
 	static OrthoContextMenu& Instance();
 
 	// RegisterableModule implementation
-	const std::string& getName() const;
-	const StringSet& getDependencies() const;
+	std::string getName() const;
+	StringSet getDependencies() const;
 	void initialiseModule(const IApplicationContext& ctx);
 	void shutdownModule();
 

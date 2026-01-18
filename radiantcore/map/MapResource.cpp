@@ -339,13 +339,10 @@ stream::MapResourceStream::Ptr MapResource::openFileStream(const std::string& pa
 {
     // Call the factory method to acquire a stream
     auto stream = stream::MapResourceStream::OpenFromPath(path);
-
-    if (!stream->isOpen())
-    {
-        throw OperationException(fmt::format(_("Could not open file:\n{0}"), path));
-    }
-
-    return stream;
+    if (stream->isOpen())
+        return stream;
+    else
+        return {};
 }
 
 stream::MapResourceStream::Ptr MapResource::openMapfileStream()
@@ -358,18 +355,17 @@ stream::MapResourceStream::Ptr MapResource::openInfofileStream()
     auto fullPath = getAbsoluteResourcePath();
     auto infoFilePath = os::replaceExtension(fullPath, game::current::getInfoFileExtension());
 
-    try
+    if (auto stream = openFileStream(infoFilePath); stream)
     {
-        return openFileStream(infoFilePath);
+        return stream;
     }
-    catch (const OperationException& ex)
+    else
     {
         // Info file load file does not stop us, just issue a warning
         radiant::NotificationMessage::SendWarning(
             fmt::format(_("No existing file named {0} found, could not load any group or layer information. "
                 "A new info file will be created the next time the map is saved."), os::getFilename(infoFilePath)),
             _("Missing .darkradiant File"));
-        rWarning() << ex.what() << std::endl;
         return stream::MapResourceStream::Ptr();
     }
 }

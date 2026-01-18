@@ -1,5 +1,6 @@
 #include "MaterialManager.h"
 #include "MaterialSourceGenerator.h"
+#include "TableDefinition.h"
 
 #include "i18n.h"
 #include "ideclmanager.h"
@@ -10,17 +11,13 @@
 #include "ifiletypes.h"
 #include "igame.h"
 
-#include "ShaderExpression.h"
-
-#include "debugging/ScopedDebugTimer.h"
+#include "scene/shaders/ShaderExpression.h"
+#include "scene/textures/TextureManipulator.h"
 #include "module/StaticModule.h"
-
 #include "decl/DeclarationCreator.h"
-#include "stream/TemporaryOutputStream.h"
-#include "materials/ParseLib.h"
-#include <functional>
-
 #include "decl/DeclLib.h"
+
+#include <functional>
 
 namespace
 {
@@ -48,6 +45,20 @@ void MaterialManager::construct()
 {
     _library = std::make_shared<ShaderLibrary>();
     _textureManager = std::make_shared<GLTextureManager>();
+
+    // Add necessary preference pages
+    IPreferencePage& page = GlobalPreferenceSystem().getPage("Textures");
+
+    // Quality combo
+    const std::list<std::string> percentages = {"12.5%", "25%", "50%", "100%"};
+    page.appendCombo(
+        "Texture Quality", TextureManipulator::RKEY_TEXTURES_QUALITY, percentages
+    );
+
+    // Gamma spinner
+    page.appendSpinner(
+        "Texture Gamma", TextureManipulator::RKEY_TEXTURES_GAMMA, 0.0f, 1.0f, 10
+    );
 }
 
 void MaterialManager::destroy()
@@ -80,7 +91,7 @@ bool MaterialManager::materialCanBeModified(const std::string& name)
     }
 
     auto decl = _library->getTemplate(name);
-    const auto& fileInfo = decl->getBlockSyntax().fileInfo;
+    const auto& fileInfo = decl->getDeclSource().fileInfo;
     return fileInfo.name.empty() || fileInfo.getIsPhysicalFile();
 }
 
@@ -98,6 +109,15 @@ const char* MaterialManager::getTexturePrefix() const
 GLTextureManager& MaterialManager::getTextureManager()
 {
     return *_textureManager;
+}
+
+TextureManipulator& MaterialManager::getTextureManipulator()
+{
+    // Construct on demand
+    if (!_textureManip) {
+        _textureManip = std::make_unique<TextureManipulator>();
+    }
+    return *_textureManip;
 }
 
 // Get default textures
@@ -274,13 +294,13 @@ void MaterialManager::reloadImages()
     });
 }
 
-const std::string& MaterialManager::getName() const
+std::string MaterialManager::getName() const
 {
     static std::string _name(MODULE_SHADERSYSTEM);
     return _name;
 }
 
-const StringSet& MaterialManager::getDependencies() const
+StringSet MaterialManager::getDependencies() const
 {
     static StringSet _dependencies
     {
@@ -290,6 +310,7 @@ const StringSet& MaterialManager::getDependencies() const
         MODULE_XMLREGISTRY,
         MODULE_GAMEMANAGER,
         MODULE_FILETYPES,
+        MODULE_PREFERENCESYSTEM,
     };
 
     return _dependencies;
@@ -297,19 +318,33 @@ const StringSet& MaterialManager::getDependencies() const
 
 void MaterialManager::initialiseModule(const IApplicationContext& ctx)
 {
-    GlobalDeclarationManager().registerDeclType("table", std::make_shared<decl::DeclarationCreator<TableDefinition>>(decl::Type::Table));
-    GlobalDeclarationManager().registerDeclType("material", std::make_shared<decl::DeclarationCreator<ShaderTemplate>>(decl::Type::Material));
+    GlobalDeclarationManager().registerDeclType(
+        "table", std::make_shared<decl::DeclarationCreator<TableDefinition>>(decl::Type::Table)
+    );
+    GlobalDeclarationManager().registerDeclType(
+        "material",
+        std::make_shared<decl::DeclarationCreator<ShaderTemplate>>(decl::Type::Material)
+    );
     GlobalDeclarationManager().registerDeclFolder(decl::Type::Material, "materials/", ".mtr");
 
-    _materialsReloadedSignal = GlobalDeclarationManager().signal_DeclsReloaded(decl::Type::Material)
-        .connect(sigc::mem_fun(this, &MaterialManager::onMaterialDefsReloaded));
+    // Connect to materials reloaded signal
+    auto& materialsReloadedSig = GlobalDeclarationManager().signal_DeclsReloaded(
+        decl::Type::Material
+    );
+    _materialsReloadedConn = materialsReloadedSig.connect(
+        sigc::mem_fun(this, &MaterialManager::onMaterialDefsReloaded)
+    );
 
     construct();
 
     // Register the mtr file extension
-    GlobalFiletypes().registerPattern("material", FileTypePattern(_("Material File"), "mtr", "*.mtr"));
+    GlobalFiletypes().registerPattern(
+        "material", FileTypePattern(_("Material File"), "mtr", "*.mtr")
+    );
 
-    GlobalCommandSystem().addCommand("ReloadImages", [this](const cmd::ArgumentList&) { reloadImages(); });
+    GlobalCommandSystem().addCommand("ReloadImages", [this](const cmd::ArgumentList&) {
+        reloadImages();
+    });
 }
 
 void MaterialManager::onMaterialDefsReloaded()

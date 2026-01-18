@@ -1,7 +1,6 @@
 #pragma once
 
 #include "imodule.h"
-#include "xmlutil/Document.h"
 #include "xmlutil/Node.h"
 
 #include <sigc++/slot.h>

@@ -1,7 +1,7 @@
 #include "ParticlePreview.h"
 
 #include "ui/ieventmanager.h"
-#include "scene/Entity.h"
+#include "scene/EntityNode.h"
 #include "ieclass.h"
 #include "iparticles.h"
 #include "iparticlestage.h"
@@ -9,10 +9,7 @@
 
 #include "scene/Node.h"
 #include "scene/BasicRootNode.h"
-#include "entitylib.h"
 
-#include "string/string.h"
-#include "wxutil/GLWidget.h"
 #include "wxutil/dialog/MessageBox.h"
 
 #include "../Bitmap.h"
@@ -170,8 +167,6 @@ void ParticlePreview::SetPreviewDeclName(const std::string& declName)
 
 void ParticlePreview::setupSceneGraph()
 {
-    RenderPreview::setupSceneGraph();
-
 	try
 	{
         _rootNode = std::make_shared<scene::BasicRootNode>();
@@ -278,7 +273,7 @@ void ParticlePreview::onModelRotationChanged()
             << _modelRotation.zy() << ' '
             << _modelRotation.zz();
 
-        Node_getEntity(_entity)->setKeyValue("rotation", value.str());
+        _entity->tryGetEntity()->setKeyValue("rotation", value.str());
     }
 }
 

@@ -62,7 +62,7 @@ class GenericEntityNode final : public EntityNode, public Snappable
 	bool _3DdirectionUsesUp;
 
 public:
-	GenericEntityNode(const IEntityClassPtr& eclass);
+	GenericEntityNode(const scene::EntityClass::Ptr& eclass);
 
 private:
 	GenericEntityNode(const GenericEntityNode& other);
@@ -80,13 +80,13 @@ private:
 	void rotationChanged();
 
 public:
-	static std::shared_ptr<GenericEntityNode> Create(const IEntityClassPtr& eclass);
+	static std::shared_ptr<GenericEntityNode> Create(const scene::EntityClass::Ptr& eclass);
 
 	// Snappable implementation
 	void snapto(float snap) override;
 
 	// Bounded implementation
-	const AABB& localAABB() const override;
+	AABB localAABB() const override;
 
 	// SelectionTestable implementation
 	void testSelect(Selector& selector, SelectionTest& test) override;

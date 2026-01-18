@@ -1,14 +1,12 @@
 #include "XmlFilterEventAdapter.h"
 
-#include "itextstream.h"
-#include "XMLFilter.h"
-#include "BasicFilterSystem.h"
+#include "scene/filters/SceneFilter.h"
 #include <fmt/format.h>
 
 namespace filters
 {
 
-XmlFilterEventAdapter::XmlFilterEventAdapter(XMLFilter& filter) :
+XmlFilterEventAdapter::XmlFilterEventAdapter(SceneFilter& filter) :
     _filter(filter)
 {
     // Add the corresponding events/commands

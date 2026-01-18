@@ -17,7 +17,7 @@
 #include "string/trim.h"
 #include <iostream>
 
-#include "ShaderExpression.h"
+#include "scene/shaders/ShaderExpression.h"
 #include "util/ScopedBoolLock.h"
 #include "materials/ParseLib.h"
 
@@ -56,7 +56,7 @@ ShaderTemplate::ShaderTemplate(const ShaderTemplate& other) :
     _frobStageType(other._frobStageType)
 {
     _editorTex = other._editorTex ? MapExpression::createForString(other._editorTex->getExpressionString()) : MapExpressionPtr();
-    _frobStageMapExpression = other._frobStageMapExpression ? 
+    _frobStageMapExpression = other._frobStageMapExpression ?
         MapExpression::createForString(other._frobStageMapExpression->getExpressionString()) : MapExpressionPtr();
 
     _frobStageRgbParameter[0] = other._frobStageRgbParameter[0];
@@ -101,7 +101,7 @@ void ShaderTemplate::setDecalInfo(const Material::DecalInfo& info)
 
     _decalInfo = info;
 
-    // Check if this decal info is empty, if yes: clear the flag 
+    // Check if this decal info is empty, if yes: clear the flag
     Material::DecalInfo emptyInfo;
 
     if (_decalInfo.stayMilliSeconds == emptyInfo.stayMilliSeconds &&
@@ -589,7 +589,7 @@ bool ShaderTemplate::parseLightKeywords(parser::DefTokeniser& tokeniser, const s
 		}
 		catch (std::logic_error& e)
 		{
-			rWarning() << "Expect integer number as spectrum value, found " << 
+			rWarning() << "Expect integer number as spectrum value, found " <<
 				value << ": " << e.what() << std::endl;
 		}
 	}
@@ -656,7 +656,7 @@ bool ShaderTemplate::parseBlendType(parser::DefTokeniser& tokeniser, const std::
         _currentLayer->setBlendFuncStrings(blendFuncStrings);
 	    return true;
     }
-	
+
     return false; // unrecognised token, return false
 }
 
@@ -792,7 +792,7 @@ bool ShaderTemplate::parseStageModifiers(parser::DefTokeniser& tokeniser,
 	else if (token == "red")
 	{
 		IShaderExpression::Ptr expr = ShaderExpression::createFromTokens(tokeniser);
-		
+
 		if (expr)
 		{
 			_currentLayer->setColourExpression(Doom3ShaderLayer::COMP_RED, expr);
@@ -818,7 +818,7 @@ bool ShaderTemplate::parseStageModifiers(parser::DefTokeniser& tokeniser,
 	else if (token == "blue")
 	{
 		IShaderExpression::Ptr expr = ShaderExpression::createFromTokens(tokeniser);
-		
+
 		if (expr)
 		{
 			_currentLayer->setColourExpression(Doom3ShaderLayer::COMP_BLUE, expr);
@@ -831,7 +831,7 @@ bool ShaderTemplate::parseStageModifiers(parser::DefTokeniser& tokeniser,
 	else if (token == "alpha")
 	{
 		IShaderExpression::Ptr expr = ShaderExpression::createFromTokens(tokeniser);
-		
+
 		if (expr)
 		{
 			_currentLayer->setColourExpression(Doom3ShaderLayer::COMP_ALPHA, expr);
@@ -964,7 +964,7 @@ bool ShaderTemplate::parseStageModifiers(parser::DefTokeniser& tokeniser,
     {
 		// Get the alphatest expression
 		IShaderExpression::Ptr expr = ShaderExpression::createFromTokens(tokeniser);
-		   
+
 		if (expr)
 		{
 			_currentLayer->setAlphaTest(expr);
@@ -986,8 +986,8 @@ bool ShaderTemplate::parseStageModifiers(parser::DefTokeniser& tokeniser,
 		{
             _currentLayer->appendTransformation(IShaderLayer::Transformation
             {
-                IShaderLayer::TransformType::Scale, 
-                xScaleExpr, 
+                IShaderLayer::TransformType::Scale,
+                xScaleExpr,
                 yScaleExpr
             });
 		}
@@ -1200,7 +1200,7 @@ bool ShaderTemplate::parseFrobstageKeywords(parser::DefTokeniser& tokeniser, con
         _frobStageRgbParameter[1] = parseScalarOrVector3(tokeniser);
         return true;
     }
-    
+
     if (suffix == "none")
     {
         _frobStageType = Material::FrobStageType::NoFrobStage;
@@ -1267,7 +1267,7 @@ bool ShaderTemplate::parseSurfaceFlags(parser::DefTokeniser& tokeniser,
 
         return true;
 	}
-	
+
     return false; // unrecognised token, return false
 }
 
@@ -1277,7 +1277,7 @@ bool ShaderTemplate::parseCondition(parser::DefTokeniser& tokeniser, const std::
 	{
 		// Parse condition
 		IShaderExpression::Ptr expr = ShaderExpression::createFromTokens(tokeniser);
-		
+
 		_currentLayer->setCondition(expr);
 
 		return true;
@@ -1293,7 +1293,7 @@ bool ShaderTemplate::parseCondition(parser::DefTokeniser& tokeniser, const std::
 bool ShaderTemplate::saveLayer()
 {
     // Append layer to list of all layers
-    if (_currentLayer->getBindableTexture() || 
+    if (_currentLayer->getBindableTexture() ||
         _currentLayer->getMapType() == IShaderLayer::MapType::RemoteRenderMap ||
         _currentLayer->getMapType() == IShaderLayer::MapType::MirrorRenderMap ||
         !_currentLayer->getVertexProgram().empty() || !_currentLayer->getFragmentProgram().empty())
@@ -1334,7 +1334,7 @@ void ShaderTemplate::clear()
     _frobStageMapExpression.reset();
     _frobStageRgbParameter[0].set(0, 0, 0);
     _frobStageRgbParameter[1].set(0, 0, 0);
-    
+
     _decalInfo.stayMilliSeconds = 0;
     _decalInfo.fadeMilliSeconds = 0;
     _decalInfo.startColour = Vector4(1, 1, 1, 1);
@@ -1355,7 +1355,7 @@ void ShaderTemplate::parseFromTokens(parser::DefTokeniser& tokeniser)
     while (level > 0 && tokeniser.hasMoreTokens())
     {
         auto token = tokeniser.nextToken();
-        
+
         if (token == "}")
         {
             if (--level == 1)
@@ -1430,7 +1430,7 @@ void ShaderTemplate::determineCoverage()
             }
         }
 
-        // automatically set MC_TRANSLUCENT if we don't have any interaction stages and 
+        // automatically set MC_TRANSLUCENT if we don't have any interaction stages and
         // the first stage is blended and not an alpha test mask or a subview
         if (_layers.empty())
         {
@@ -1635,7 +1635,7 @@ std::string ShaderTemplate::generateSyntax()
     return MaterialSourceGenerator::GenerateDefinitionBlock(*this);
 }
 
-void ShaderTemplate::onSyntaxBlockAssigned(const decl::DeclarationBlockSyntax& block)
+void ShaderTemplate::onSyntaxBlockAssigned(const decl::DeclarationBlockSource& block)
 {
     EditableDeclaration<IShaderTemplate>::onSyntaxBlockAssigned(block);
 

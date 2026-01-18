@@ -6,8 +6,6 @@
 #include "dds.h"
 
 #include "ifilesystem.h"
-#include "iarchive.h"
-#include "iregistry.h"
 #include "igame.h"
 
 #include "string/case_conv.h"
@@ -123,13 +121,13 @@ ImagePtr ImageLoader::imageFromFile(const std::string& filename) const
     return image;
 }
 
-const std::string& ImageLoader::getName() const
+std::string ImageLoader::getName() const
 {
     static std::string _name(MODULE_IMAGELOADER);
     return _name;
 }
 
-const StringSet& ImageLoader::getDependencies() const
+StringSet ImageLoader::getDependencies() const
 {
     static StringSet _dependencies;
 

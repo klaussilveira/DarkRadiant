@@ -5,11 +5,11 @@
 
 /**
  * Implementation of the file type registry, associating file types
- * with FileTypePatterns. 
+ * with FileTypePatterns.
  *
  * <type> => [ <pattern>, <pattern>, ... ]
  *
- * "map" => [	("Map", "*.map", "map", ""), 
+ * "map" => [	("Map", "*.map", "map", ""),
  *			    ("Map Backup", "*.bak", "bak", "") ]
  * "prefab" => [ ("Prefab", "*.pfb", "pfb", "") ]
  * "region" => [ ("Region", "*.reg", "reg", "") ]
@@ -30,9 +30,8 @@ public:
 	FileTypePatterns getPatternsForType(const std::string& fileType) override;
 
     std::string getIconForExtension(const std::string& extension) override;
-	
+
 	// RegisterableModule implementation
-	const std::string& getName() const override;
-	const StringSet& getDependencies() const override;
+	std::string getName() const override;
 	void initialiseModule(const IApplicationContext& ctx) override;
 };

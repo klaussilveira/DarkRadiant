@@ -1,0 +1,14 @@
+particle should_be_hidden
+{
+    {
+        count               80
+        material            textures/particles/pfiresmall2
+        time                1.000
+        cycles              0.000
+        bunching            0.950
+        distribution        rect 0.000 0.000 0.000
+        direction           cone "50.000"
+        orientation         view
+        speed               "4.000"  to "0.000"
+    }
+}

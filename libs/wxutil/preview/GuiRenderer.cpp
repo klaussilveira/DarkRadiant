@@ -3,7 +3,6 @@
 #include "igl.h"
 #include "ifonts.h"
 #include "ishaders.h"
-#include "math/Matrix4.h"
 
 namespace wxutil
 {
@@ -89,7 +88,7 @@ void GuiRenderer::render(const gui::IGuiWindowDefPtr& window, bool ignoreFilter)
 
 	if (backcolor[3] > 0)
 	{
-		glColor4dv(backcolor);
+		glColor4dv(backcolor.data());
 
 		// Background quad
 		glBegin(GL_QUADS);
@@ -135,7 +134,7 @@ void GuiRenderer::render(const gui::IGuiWindowDefPtr& window, bool ignoreFilter)
 			glBindTexture(GL_TEXTURE_2D, tex->getGLTexNum());
 
 			// Draw the textured quad
-			glColor4dv(matcolor);
+			glColor4dv(matcolor.data());
 
 			// Render background image as opaque if _ignoreVisibility is set to true
 			if (_ignoreVisibility && matcolor[3] <= 0)
@@ -171,7 +170,7 @@ void GuiRenderer::render(const gui::IGuiWindowDefPtr& window, bool ignoreFilter)
 
 		glEnable(GL_TEXTURE_2D);
 		Vector4 forecolor = window->forecolor;
-		glColor4dv(forecolor);
+		glColor4dv(forecolor.data());
 
 		// Render text as opaque if _ignoreVisibility is set to true
 		if (_ignoreVisibility && forecolor[3] <= 0)

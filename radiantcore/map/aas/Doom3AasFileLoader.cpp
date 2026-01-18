@@ -93,13 +93,13 @@ void Doom3AasFileLoader::parseVersion(parser::DefTokeniser& tok) const
     }
 }
 
-const std::string& Doom3AasFileLoader::getName() const
+std::string Doom3AasFileLoader::getName() const
 {
 	static std::string _name("Doom3AasFileLoader");
 	return _name;
 }
 
-const StringSet& Doom3AasFileLoader::getDependencies() const
+StringSet Doom3AasFileLoader::getDependencies() const
 {
 	static StringSet _dependencies;
 

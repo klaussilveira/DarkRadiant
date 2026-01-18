@@ -12,13 +12,13 @@ class UndoSystemFactory final :
     public IUndoSystemFactory
 {
 public:
-    const std::string& getName() const override
+    std::string getName() const override
     {
         static std::string _name(MODULE_UNDOSYSTEM_FACTORY);
         return _name;
     }
 
-    const StringSet& getDependencies() const override
+    StringSet getDependencies() const override
     {
         static StringSet _dependencies{ MODULE_PREFERENCESYSTEM };
         return _dependencies;

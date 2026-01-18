@@ -317,7 +317,7 @@ void OpenGLShader::realise()
     if (_material)
 	{
 		// greebo: Check the filtersystem whether we're filtered
-		_material->setVisible(GlobalFilterSystem().isVisible(FilterRule::TYPE_TEXTURE, _name));
+		_material->setVisible(GlobalFilterSystem().isVisible(FilterType::TEXTURE, _name));
 
 		if (_useCount != 0)
 		{

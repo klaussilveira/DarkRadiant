@@ -45,6 +45,13 @@ Node Node::createChild(const std::string& name)
     return Node(_owner, newChild);
 }
 
+Node Node::getChild(const std::string& name) const
+{
+    std::lock_guard lock(_owner->getLock());
+
+    return Node(_owner, _xmlNode.child(name.c_str()));
+}
+
 NodeList Node::getNamedChildren(const std::string& name) const
 {
     std::lock_guard lock(_owner->getLock());

@@ -3,10 +3,8 @@
 
 #include "ivolumetest.h"
 #include "iselectiontest.h"
-#include "texturelib.h"
 #include "ishaders.h"
 #include "modelskin.h"
-#include "ifilter.h"
 #include "imodelsurface.h"
 #include "VolumeIntersectionValue.h"
 #include "math/Ray.h"
@@ -61,22 +59,6 @@ void StaticModel::disconnectUndoSystem(IUndoSystem& undoSystem)
 
     _undoStateSaver = nullptr;
     undoSystem.releaseStateSaver(*this);
-}
-
-void StaticModel::foreachVisibleSurface(const std::function<void(const Surface& s)>& func) const
-{
-    for (const Surface& surface : _surfaces)
-    {
-        assert(surface.shader);
-
-        // Check if the surface's shader is filtered, if not then submit it for rendering
-        const MaterialPtr& surfaceShader = surface.shader->getMaterial();
-
-        if (surfaceShader && surfaceShader->isVisible())
-        {
-            func(surface);
-        }
-    }
 }
 
 void StaticModel::setRenderSystem(const RenderSystemPtr& renderSystem)

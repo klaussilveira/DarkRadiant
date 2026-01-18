@@ -344,10 +344,10 @@ TEST_F(AseImportTest, VertexNormalTransformation)
 TEST_F(AseImportTest, VertexHashFunction)
 {
     // Construct two mesh vertices which should be considered equal
-    MeshVertex vertex1(Vertex3(-0.0218, -0.7449, 2.2385), Normal3(-0.8698, 0, -0.493405), 
+    MeshVertex vertex1(Vertex3(-0.0218, -0.7449, 2.2385), Normal3(-0.8698, 0, -0.493405),
         TexCoord2f(0.9808, 0.8198), Vector3(1, 1, 1));
 
-    MeshVertex vertex2(Vertex3(-0.0218, -0.7434, 2.2385), Normal3(-0.872, 0, -0.489505), 
+    MeshVertex vertex2(Vertex3(-0.0218, -0.7434, 2.2385), Normal3(-0.872, 0, -0.489505),
         TexCoord2f(0.9808, 0.8198), Vector3(1, 1, 1));
 
     // Construct a that is differing in the normal part
@@ -478,7 +478,7 @@ TEST_F(ModelTest, NullModelTransformAfterSceneInsertion)
 
     // Check the localToWorld() matrix of the model node, it should be a translation to the entity's origin
     auto modelTranslation = nullModelNode->localToWorld().tCol().getVector3();
-    EXPECT_TRUE(math::isNear(modelTranslation, entityOrigin, 0.01)) << 
+    EXPECT_TRUE(math::isNear(modelTranslation, entityOrigin, 0.01)) <<
         "Model node should be at the entity's origin, but was at " << modelTranslation;
 }
 
@@ -603,11 +603,11 @@ TEST_F(ModelTest, ModelKeyMonitorsDef)
 
     // Change the syntax block of the def
     auto newMd5Mesh = "models/md5/flag01.md5mesh";
-    auto syntax = modelDef->getBlockSyntax();
+    auto syntax = modelDef->getDeclSource();
     string::replace_all(syntax.contents, modelDef->getMesh(), newMd5Mesh);
 
     // Assign the new syntax, this fires the decl changed signal, the entity should react
-    modelDef->setBlockSyntax(syntax);
+    modelDef->setDeclSource(syntax);
 
     auto model = algorithm::findChildModel(funcStatic);
 
@@ -641,22 +641,22 @@ TEST_F(ModelTest, ModelKeyMonitorsDefAfterUndo)
     std::string newMd5Mesh("models/md5/flag01.md5mesh");
 
     // Change the syntax of the modelDef
-    auto syntax = modelDef->getBlockSyntax();
+    auto syntax = modelDef->getDeclSource();
     syntax.contents = "mesh " + newMd5Mesh;
-    modelDef->setBlockSyntax(syntax);
+    modelDef->setDeclSource(syntax);
 
     // The entity should not be monitoring that modelDef, so no change is expected
     EXPECT_EQ(algorithm::findChildModel(funcStatic)->getIModel().getPolyCount(), 12) << "Model should still be a cube";
 
     // Change the modelDef back to something non-existent before undo
     syntax.contents = "mesh some/nonexistent/mesh.md5mesh";
-    modelDef->setBlockSyntax(syntax);
+    modelDef->setDeclSource(syntax);
 
     // Now hit Undo, the entity's ModelKey should resume to monitor the modelDef
     GlobalCommandSystem().execute("Undo");
 
     syntax.contents = "mesh " + newMd5Mesh;
-    modelDef->setBlockSyntax(syntax);
+    modelDef->setDeclSource(syntax);
 
     auto model = algorithm::findChildModel(funcStatic);
 
@@ -687,9 +687,9 @@ TEST_F(ModelTest, ModelOriginIsPreservedAfterDefChange)
 
     // Change the syntax block of the def
     auto newMd5Mesh = "models/md5/flag01.md5mesh";
-    auto syntax = modelDef->getBlockSyntax();
+    auto syntax = modelDef->getDeclSource();
     string::replace_all(syntax.contents, modelDef->getMesh(), newMd5Mesh);
-    modelDef->setBlockSyntax(syntax);
+    modelDef->setDeclSource(syntax);
 
     modelNode = algorithm::findChildModelNode(funcStatic);
 

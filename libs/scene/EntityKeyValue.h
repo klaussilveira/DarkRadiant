@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ientity.h"
+#include "inameobserver.h"
 #include "ObservedUndoable.h"
 #include "string/string.h"
 #include <vector>

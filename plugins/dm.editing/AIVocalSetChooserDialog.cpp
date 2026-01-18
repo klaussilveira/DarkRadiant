@@ -32,7 +32,7 @@ public:
     {}
 
 protected:
-    bool ClassShouldBeListed(const IEntityClassPtr& eclass) override
+    bool ClassShouldBeListed(const scene::EntityClass::Ptr& eclass) override
     {
         return eclass->getAttributeValue("editor_vocal_set") == "1";
     }
@@ -76,7 +76,7 @@ AIVocalSetChooserDialog::AIVocalSetChooserDialog() :
 	auto label2 = new wxStaticText(this, wxID_ANY, _("Description"));
 	label2->SetFont(label2->GetFont().Bold());
 
-	_description = new wxTextCtrl(this, wxID_ANY, "", 
+	_description = new wxTextCtrl(this, wxID_ANY, "",
 		wxDefaultPosition, wxDefaultSize, wxTE_LEFT | wxTE_MULTILINE | wxTE_READONLY | wxTE_WORDWRAP);
 	_description->SetMinClientSize(wxSize(-1, 60));
 
@@ -128,10 +128,10 @@ void AIVocalSetChooserDialog::handleSetSelectionChanged()
     // Update sensitivity
     FindWindowById(wxID_OK, this)->Enable(!_selectedSet.empty());
     _description->Enable(!_selectedSet.empty());
-    
+
     if (!_selectedSet.empty())
 	{
-		// Lookup the IEntityClass instance
+		// Lookup the scene::EntityClass instance
 		if (auto ecls = GlobalEntityClassManager().findClass(_selectedSet); ecls)
 		{
 			// Update the preview pane
@@ -148,7 +148,7 @@ void AIVocalSetChooserDialog::handleSetSelectionChanged()
 	{
 		if (_preview)
 		{
-			_preview->setVocalSetEclass(IEntityClassPtr());
+			_preview->setVocalSetEclass(scene::EntityClass::Ptr());
 		}
 	}
 }

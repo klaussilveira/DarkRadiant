@@ -24,7 +24,7 @@ public:
 	{
 		if (_foundNode) return false; // we've already found what we're looking for
 
-		Entity* entity = Node_getEntity(node);
+		Entity* entity = node->tryGetEntity();
 
 		if (entity == nullptr) return true;
 

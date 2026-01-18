@@ -4,6 +4,7 @@
 
 #include "icommandsystem.h"
 #include "ui/imainframe.h"
+#include "ui/script/ScriptMenu.h"
 #include "wxutil/WindowPosition.h"
 
 namespace ui
@@ -16,6 +17,7 @@ class AuiLayout;
 class MainFrame: public IMainFrame
 {
     TopLevelFrame* _topLevelWindow = nullptr;
+    ScriptMenuPtr _scriptMenu;
 
     bool _screenUpdatesEnabled = false; // not enabled until constructed
     bool _defLoadingBlocksUpdates = false;
@@ -28,6 +30,7 @@ class MainFrame: public IMainFrame
 
     sigc::connection _mapNameChangedConn;
     sigc::connection _mapModifiedChangedConn;
+    sigc::connection _scriptsReloadedConn;
 
     sigc::signal<void> _sigMainFrameConstructed;
     sigc::signal<void> _sigMainFrameReady;
@@ -44,6 +47,8 @@ private:
     void preDestructionCleanup();
     void updateTitle();
     void onTopLevelFrameClose(wxCloseEvent& ev);
+    void addPythonControls();
+    void onScriptsReloaded();
 
 public:
     // IMainFrame implementation
@@ -71,13 +76,13 @@ public:
     void toggleFullscreenCameraView(const cmd::ArgumentList& args);
 
     // RegisterableModule implementation
-    const std::string& getName() const override;
-    const StringSet& getDependencies() const override;
+    std::string getName() const override;
+    StringSet getDependencies() const override;
     void initialiseModule(const IApplicationContext& ctx) override;
     void shutdownModule() override;
 
 private:
-    void create();
+    void createWidgets();
 
     void exitCmd(const cmd::ArgumentList& args);
     void focusControl(const cmd::ArgumentList& args);

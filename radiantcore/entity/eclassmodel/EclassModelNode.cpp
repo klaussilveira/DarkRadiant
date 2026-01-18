@@ -4,7 +4,7 @@
 
 namespace entity {
 
-EclassModelNode::EclassModelNode(const IEntityClassPtr& eclass) :
+EclassModelNode::EclassModelNode(const scene::EntityClass::Ptr& eclass) :
 	EntityNode(eclass),
     _originKey(std::bind(&EclassModelNode::originChanged, this)),
     _origin(ORIGINKEY_IDENTITY),
@@ -33,7 +33,7 @@ EclassModelNode::~EclassModelNode()
 {
 }
 
-EclassModelNodePtr EclassModelNode::Create(const IEntityClassPtr& eclass)
+EclassModelNodePtr EclassModelNode::Create(const scene::EntityClass::Ptr& eclass)
 {
 	EclassModelNodePtr instance(new EclassModelNode(eclass));
 	instance->construct();
@@ -63,7 +63,7 @@ void EclassModelNode::snapto(float snap)
 	_originKey.write(_spawnArgs);
 }
 
-const AABB& EclassModelNode::localAABB() const
+AABB EclassModelNode::localAABB() const
 {
 	return _localAABB;
 }

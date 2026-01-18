@@ -125,21 +125,26 @@ inline std::vector<unsigned int> generateTriangleBoxIndices()
 
 }
 
-class RenderableBox :
-    public RenderableGeometry
+/// Simple renderable box for various generic entities
+class RenderableBox: public RenderableGeometry
 {
-private:
-    const AABB& _bounds;
+    // Original entity bounding box owned by calling code
+    const AABB* _bounds = nullptr;
+
     const Vector3& _worldPos;
-    bool _needsUpdate;
-    bool _filledBox;
+    bool _needsUpdate = true;
+    bool _filledBox = true;
 
 public:
-    RenderableBox(const AABB& bounds, const Vector3& worldPos) :
+    /// Initialise with source bounding box and world position
+    ///
+    /// @param bounds
+    /// The bounding box to render, owned by the caller. This is intentionally a pointer
+    /// not a reference so that it cannot be accidentally bound to a temporary returned
+    /// from a method like localAABB().
+    RenderableBox(const AABB* bounds, const Vector3& worldPos) :
         _bounds(bounds),
-        _worldPos(worldPos),
-        _needsUpdate(true),
-        _filledBox(true)
+        _worldPos(worldPos)
     {}
 
     void queueUpdate()
@@ -169,8 +174,8 @@ public:
         _needsUpdate = false;
 
         // Calculate the corner vertices of this bounding box
-        Vector3 max(_bounds.origin + _bounds.extents);
-        Vector3 min(_bounds.origin - _bounds.extents);
+        Vector3 max(_bounds->origin + _bounds->extents);
+        Vector3 min(_bounds->origin - _bounds->extents);
 
         auto colour = getVertexColour();
 

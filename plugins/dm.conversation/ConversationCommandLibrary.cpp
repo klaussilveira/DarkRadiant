@@ -1,6 +1,6 @@
 #include "ConversationCommandLibrary.h"
 
-#include "ieclass.h"
+#include "scene/EntityClass.h"
 #include "iregistry.h"
 #include "gamelib.h"
 #include "string/convert.h"
@@ -30,7 +30,7 @@ public:
 		_prefix(game::current::getValue<std::string>(GKEY_CONVERSATION_COMMAND_INFO_PREFIX))
 	{}
 
-	void visit(const IEntityClassPtr& eclass)
+	void visit(const scene::EntityClass::Ptr& eclass)
 	{
 		if (string::starts_with(eclass->getDeclName(), _prefix))
 		{

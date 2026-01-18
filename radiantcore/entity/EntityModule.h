@@ -1,7 +1,5 @@
 #pragma once
 
-#include "scene/Entity.h"
-#include "ieclass.h"
 #include <sigc++/connection.h>
 
 namespace entity
@@ -16,7 +14,7 @@ private:
 
 public:
     // EntityCreator implementation
-	EntityNodePtr createEntity(const IEntityClassPtr& eclass) override;
+	EntityNodePtr createEntity(const scene::EntityClass::Ptr& eclass) override;
     ITargetManagerPtr createTargetManager() override;
 	IEntitySettings& getSettings() override;
 
@@ -29,8 +27,8 @@ public:
 	EntityNodePtr createEntityFromSelection(const std::string& name, const Vector3& origin) override;
 
 	// RegisterableModule implementation
-	const std::string& getName() const override;
-	const StringSet& getDependencies() const override;
+	std::string getName() const override;
+	StringSet getDependencies() const override;
 	void initialiseModule(const IApplicationContext& ctx) override;
 	void shutdownModule() override;
 

@@ -14,8 +14,7 @@ namespace ui
  *
  * Use the setRootNode() method to specify the subgraph to preview.
  */
-class MapPreview :
-	public wxutil::RenderPreview
+class MapPreview: public wxutil::RenderPreview
 {
 public:
 	MapPreview(wxWindow* parent);

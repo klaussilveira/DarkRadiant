@@ -132,11 +132,11 @@ void Node::renderComponents()
     {
         if (vertex.isSelected())
         {
-            glColor4fv(selectedColour);
+            glColor4fv(selectedColour.data());
         }
         else
         {
-            glColor4fv(deselectedColour);
+            glColor4fv(deselectedColour.data());
         }
 
         // Move the selected vertices a bit up in the Z area

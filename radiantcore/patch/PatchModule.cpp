@@ -38,13 +38,13 @@ IPatchSettings& PatchModule::getSettings()
 	return *_settings;
 }
 
-const std::string& PatchModule::getName() const
+std::string PatchModule::getName() const
 {
 	static std::string _name(MODULE_PATCH);
 	return _name;
 }
 
-const StringSet& PatchModule::getDependencies() const
+StringSet PatchModule::getDependencies() const
 {
 	static StringSet _dependencies;
 

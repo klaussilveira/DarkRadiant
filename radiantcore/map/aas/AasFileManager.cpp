@@ -60,7 +60,7 @@ void AasFileManager::ensureAasTypesLoaded()
     _typesLoaded = true;
     _typeList.clear();
 
-    IEntityClassPtr aasTypesClass = GlobalEntityClassManager().findClass(AAS_TYPES_ENTITYDEF);
+    scene::EntityClass::Ptr aasTypesClass = GlobalEntityClassManager().findClass(AAS_TYPES_ENTITYDEF);
 
     if (aasTypesClass)
     {
@@ -71,7 +71,7 @@ void AasFileManager::ensureAasTypesLoaded()
             AasType type;
             type.entityDefName = attr.getValue();
 
-            IEntityClassPtr aasType = GlobalEntityClassManager().findClass(type.entityDefName);
+            scene::EntityClass::Ptr aasType = GlobalEntityClassManager().findClass(type.entityDefName);
 
             if (!aasType)
             {
@@ -136,13 +136,13 @@ std::list<AasFileInfo> AasFileManager::getAasFilesForMap(const std::string& mapP
     return list;
 }
 
-const std::string& AasFileManager::getName() const
+std::string AasFileManager::getName() const
 {
 	static std::string _name(MODULE_AASFILEMANAGER);
 	return _name;
 }
 
-const StringSet& AasFileManager::getDependencies() const
+StringSet AasFileManager::getDependencies() const
 {
 	static StringSet _dependencies;
 
@@ -153,10 +153,6 @@ const StringSet& AasFileManager::getDependencies() const
 	}
 
 	return _dependencies;
-}
-
-void AasFileManager::initialiseModule(const IApplicationContext& ctx)
-{
 }
 
 // Define the static AasFileManager module

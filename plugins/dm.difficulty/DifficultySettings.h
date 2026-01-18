@@ -98,7 +98,7 @@ public:
 	void updateTreeModel();
 
 	// Loads all settings (matching the internal _level) from the given entityDef.
-	void parseFromEntityDef(const IEntityClassPtr& def);
+	void parseFromEntityDef(const scene::EntityClass::Ptr& def);
 
 	// Loads all settings (matching the internal _level) from the given entity.
 	void parseFromMapEntity(Entity* entity);

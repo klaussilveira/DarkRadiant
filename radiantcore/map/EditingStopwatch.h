@@ -12,7 +12,7 @@ namespace map
 {
 
 /**
-* Stopwatch to measure the time spent editing a particular map. 
+* Stopwatch to measure the time spent editing a particular map.
 * The time is persisted to the .darkradiant file and keeps running
 * as long as the application is in focus.
 */
@@ -35,8 +35,8 @@ private:
 public:
 	EditingStopwatch();
 
-	const std::string& getName() const override;
-	const StringSet& getDependencies() const override;
+	std::string getName() const override;
+	StringSet getDependencies() const override;
 	void initialiseModule(const IApplicationContext& ctx) override;
 	void shutdownModule() override;
 

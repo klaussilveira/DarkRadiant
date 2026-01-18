@@ -9,17 +9,16 @@
 
 #include "i18n.h"
 #include "ifavourites.h"
-#include "ideclmanager.h"
 #include "gamelib.h"
 
 #include <wx/button.h>
 #include <wx/panel.h>
+#include "ifilter.h"
 #include "wxutil/Bitmap.h"
 #include "wxutil/Icon.h"
 
 #include "eclass.h"
 
-#include "debugging/ScopedDebugTimer.h"
 #include "preview/EntityClassPreview.h"
 
 namespace wxutil
@@ -77,7 +76,7 @@ public:
     }
 
     // EntityClassVisitor implementation
-    void visit(const IEntityClassPtr& eclass) override
+    void visit(const scene::EntityClass::Ptr& eclass) override
     {
         // Skip hidden entity classes
         if (eclass->getVisibility() == vfs::Visibility::HIDDEN)
@@ -186,7 +185,7 @@ public:
 
     void SetPreviewDeclName(const std::string& declName) override
     {
-        // Lookup the IEntityClass instance
+        // Lookup the scene::EntityClass instance
         auto eclass = GlobalEntityClassManager().findClass(declName);
         _textCtrl->SetValue(eclass ? eclass::getUsage(eclass) : "");
 
@@ -227,7 +226,7 @@ EntityClassChooser::EntityClassChooser(Purpose purpose) :
 
     switch (purpose)
     {
-    case Purpose::AddEntity: 
+    case Purpose::AddEntity:
         affirmativeButton->SetLabelText(_("Create"));
         break;
     case Purpose::ConvertEntity:
@@ -253,11 +252,12 @@ std::string EntityClassChooser::ChooseEntityClass(Purpose purpose, const std::st
         instance.SetSelectedDeclName(eclassToSelect);
     }
 
+    filters::ScopedFilterState filterState(GlobalFilterSystem());
     if (instance.ShowModal() == wxID_OK)
     {
         return instance.GetSelectedDeclName();
     }
-    
+
     return ""; // Empty selection on cancel
 }
 

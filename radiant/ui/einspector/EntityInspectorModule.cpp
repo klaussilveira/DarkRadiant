@@ -45,13 +45,13 @@ PropertyEditorFactory& EntityInspectorModule::getPropertyEditorFactory()
     return *_propertyEditorFactory;
 }
 
-const std::string& EntityInspectorModule::getName() const
+std::string EntityInspectorModule::getName() const
 {
     static std::string _name(MODULE_ENTITYINSPECTOR);
     return _name;
 }
 
-const StringSet& EntityInspectorModule::getDependencies() const
+StringSet EntityInspectorModule::getDependencies() const
 {
     static StringSet _dependencies
     {

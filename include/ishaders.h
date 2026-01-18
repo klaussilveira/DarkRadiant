@@ -10,13 +10,16 @@
 #include "math/Vector4.h"
 
 #include <ostream>
-#include <vector>
 
 #include "Texture.h"
 #include "ishaderlayer.h"
 #include "ishaderexpression.h"
 
 class Image;
+
+namespace shaders {
+    class TextureManipulator;
+}
 
 /**
  * \brief Interface for a material shader.
@@ -227,7 +230,7 @@ public:
     virtual const char* getShaderFileName() const = 0;
 
     // Set the mtr file name to define where this material should be saved to
-    // This will throw an exception if the given path (absolute or relative) 
+    // This will throw an exception if the given path (absolute or relative)
     // is not located within the current mod file tree (VFS)
     virtual void setShaderFileName(const std::string& fullPath) = 0;
 
@@ -410,11 +413,11 @@ public:
     // Set the lightFallOff expression to define the image/cubemap to use
     virtual void setLightFalloffExpressionFromString(const std::string& expressionString) = 0;
 
-    // Return the type of the light fall off image 
+    // Return the type of the light fall off image
     // (can be MapType::Map (lightFalloffImage or MapType::CameraCubeMap for lightFalloffCubeMap)
     virtual IShaderLayer::MapType getLightFalloffCubeMapType() = 0;
 
-    // Set the type of the light fall off image 
+    // Set the type of the light fall off image
     // (can be MapType::Map (lightFalloffImage or MapType::CameraCubeMap for lightFalloffCubeMap)
     virtual void setLightFalloffCubeMapType(IShaderLayer::MapType type) = 0;
 
@@ -462,7 +465,7 @@ public:
     // Returns the argument string after the renderbumpflat keyword, or an empty string if no statement is present
     virtual std::string getRenderBumpFlatArguments() = 0;
 
-    // The argument to the "guisurf" keyword, if not entity[2]3]. 
+    // The argument to the "guisurf" keyword, if not entity[2]3].
     // In case entity[2]3] is set, the corresponding surface flags are enabled
     virtual const std::string& getGuiSurfArgument() = 0;
 
@@ -561,6 +564,9 @@ public:
 	 */
 	virtual bool materialExists(const std::string& name) = 0;
 
+    /// Return the global TextureManipulator object
+    virtual shaders::TextureManipulator& getTextureManipulator() = 0;
+
     /**
      * A material can be modified if it has been declared in a physical file,
      * i.e. outside a PAK file.
@@ -591,7 +597,7 @@ public:
      */
     virtual void setActiveShaderUpdates(bool val) = 0;
 
-  virtual const char* getTexturePrefix() const = 0;
+    virtual const char* getTexturePrefix() const = 0;
 
     /**
      * \brief
@@ -629,7 +635,7 @@ public:
     // Creates a copy of the given material and returns the reference to it
     virtual MaterialPtr copyMaterial(const std::string& nameOfOriginal, const std::string& nameOfCopy) = 0;
 
-    // Renames the material named oldName to newName, and returns true if the operation was successful. 
+    // Renames the material named oldName to newName, and returns true if the operation was successful.
     // If the new name is already in use, this returns false too.
     virtual bool renameMaterial(const std::string& oldName, const std::string& newName) = 0;
 

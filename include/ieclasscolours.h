@@ -3,7 +3,7 @@
 #include <functional>
 #include <sigc++/signal.h>
 #include "imodule.h"
-#include "ieclass.h"
+#include "scene/EntityClass.h"
 #include "math/Vector3.h"
 
 namespace eclass
@@ -35,7 +35,7 @@ public:
      *
      * \return true if an override was found, false otherwise.
      */
-    virtual bool applyColours(IEntityClass& eclass) = 0;
+    virtual bool applyColours(scene::EntityClass& eclass) = 0;
 
     // Visit each override definition with the given functor
     virtual void foreachOverrideColour(const std::function<void(const std::string&, const Vector4&)>& functor) = 0;

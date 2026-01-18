@@ -18,12 +18,12 @@ ScriptEntityNode::ScriptEntityNode(const scene::INodePtr& node) :
 
 // Methods wrapping to Entity class
 std::string ScriptEntityNode::getKeyValue(const std::string& key) {
-	Entity* entity = Node_getEntity(*this);
+	Entity* entity = static_cast<scene::INodePtr>(*this)->tryGetEntity();
 	return (entity != NULL) ? entity->getKeyValue(key) : "";
 }
 
 void ScriptEntityNode::setKeyValue(const std::string& key, const std::string& value) {
-	Entity* entity = Node_getEntity(*this);
+	Entity* entity = static_cast<scene::INodePtr>(*this)->tryGetEntity();
 
 	if (entity != NULL) {
 		entity->setKeyValue(key, value);
@@ -31,34 +31,34 @@ void ScriptEntityNode::setKeyValue(const std::string& key, const std::string& va
 }
 
 bool ScriptEntityNode::isInherited(const std::string& key) {
-	Entity* entity = Node_getEntity(*this);
+	Entity* entity = static_cast<scene::INodePtr>(*this)->tryGetEntity();
 
 	return (entity != NULL) ? entity->isInherited(key) : false;
 }
 
 ScriptEntityClass ScriptEntityNode::getEntityClass() {
-	Entity* entity = Node_getEntity(*this);
-	return ScriptEntityClass(entity != NULL ? entity->getEntityClass() : IEntityClassPtr());
+	Entity* entity = static_cast<scene::INodePtr>(*this)->tryGetEntity();
+	return ScriptEntityClass(entity != NULL ? entity->getEntityClass() : scene::EntityClass::Ptr());
 }
 
 bool ScriptEntityNode::isModel() {
-	Entity* entity = Node_getEntity(*this);
+	Entity* entity = static_cast<scene::INodePtr>(*this)->tryGetEntity();
 	return (entity != NULL) ? entity->isModel() : false;
 }
 
 bool ScriptEntityNode::isOfType(const std::string& className)
 {
-	Entity* entity = Node_getEntity(*this);
+	Entity* entity = static_cast<scene::INodePtr>(*this)->tryGetEntity();
 	return entity == NULL ? false : entity->isOfType(className);
 }
 
 Entity::KeyValuePairs ScriptEntityNode::getKeyValuePairs(const std::string& prefix) {
-	Entity* entity = Node_getEntity(*this);
+	Entity* entity = static_cast<scene::INodePtr>(*this)->tryGetEntity();
 	return (entity != NULL) ? entity->getKeyValuePairs(prefix) : Entity::KeyValuePairs();
 }
 
 void ScriptEntityNode::forEachKeyValue(EntityVisitor& visitor) {
-	Entity* entity = Node_getEntity(*this);
+	Entity* entity = static_cast<scene::INodePtr>(*this)->tryGetEntity();
 
 	if (entity)
     {
@@ -103,7 +103,7 @@ ScriptSceneNode EntityInterface::createEntity(const ScriptEntityClass& eclass)
 // Creates a new entity for the given entityclass
 ScriptSceneNode EntityInterface::createEntity(const std::string& eclassName) {
 	// Find the eclass
-	IEntityClassPtr eclass = GlobalEntityClassManager().findClass(eclassName);
+	scene::EntityClass::Ptr eclass = GlobalEntityClassManager().findClass(eclassName);
 
 	if (eclass == NULL) {
 		rMessage() << "Could not find entity class: " << eclassName << std::endl;

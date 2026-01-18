@@ -64,7 +64,7 @@ public:
     std::string getFingerprint() override;
 
 	// Bounded implementation
-	const AABB& localAABB() const override;
+	AABB localAABB() const override;
 
 	// IPatchNode implementation
 	Patch& getPatchInternal() override;

@@ -34,7 +34,7 @@ ClassNameStorePtr& ClassNameStore::InstancePtr()
 }
 
 // EntityClassVisitor implementation
-void ClassNameStore::visit(const IEntityClassPtr& eclass)
+void ClassNameStore::visit(const scene::EntityClass::Ptr& eclass)
 {
 	_classNames.Add(eclass->getDeclName());
 }

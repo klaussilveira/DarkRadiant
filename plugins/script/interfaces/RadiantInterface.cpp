@@ -23,7 +23,7 @@ ScriptEntityNode RadiantInterface::findEntityByName(const std::string& name)
 
 	GlobalSceneGraph().root()->foreachNode([&] (const scene::INodePtr& node)
 	{
-	    if (Node_isEntity(node) && Node_getEntity(node)->getKeyValue("name") == name)
+	    if (Node_isEntity(node) && node->tryGetEntity()->getKeyValue("name") == name)
 	    {
             found = node;
 	    }

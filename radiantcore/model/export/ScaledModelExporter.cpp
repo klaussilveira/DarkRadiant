@@ -108,7 +108,7 @@ void ScaledModelExporter::saveScaledModel(const scene::INodePtr& entityNode, con
 	}
 
 	// Get the current model file name
-	Entity* entity = Node_getEntity(entityNode);
+	Entity* entity = entityNode->tryGetEntity();
 
 	fs::path targetPath = getWritableGamePath();
 

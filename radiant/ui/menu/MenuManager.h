@@ -3,7 +3,7 @@
 #include <string>
 #include "ui/imenumanager.h"
 
-/** 
+/**
  * greebo: The MenuManager takes care of adding and inserting the
  * menuitems at the given paths.
  *
@@ -88,8 +88,8 @@ public:
 	void clear();
 
     // RegisterableModule
-    const std::string& getName() const override;
-    const StringSet& getDependencies() const override;
+    std::string getName() const override;
+    StringSet getDependencies() const override;
     void initialiseModule(const IApplicationContext& ctx) override;
     void shutdownModule() override;
 

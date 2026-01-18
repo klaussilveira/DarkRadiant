@@ -12,7 +12,7 @@ namespace decl
  * To avoid subclasses having to inherit the IDeclaration interface themselves
  * (and to circumvent the diamond pattern and virtual inheritance), subclasses
  * should pass the desired interface as template argument:
- * 
+ *
  * class SoundShader : public DeclarationBase<ISoundShader>
  * {}
  *
@@ -24,7 +24,7 @@ class DeclarationBase :
     public DeclarationInterface
 {
 private:
-    static_assert(std::is_base_of_v<IDeclaration, DeclarationInterface>, 
+    static_assert(std::is_base_of_v<IDeclaration, DeclarationInterface>,
         "DeclarationInterface type must inherit from IDeclaration");
 
     std::string _name;
@@ -34,7 +34,7 @@ private:
     std::size_t _parseStamp;
 
     // The raw unparsed definition block
-    DeclarationBlockSyntax _declBlock;
+    DeclarationBlockSource _declBlock;
 
     bool _parsed;
     std::string _parseErrors;
@@ -57,7 +57,7 @@ public:
     {
         return _name;
     }
-    
+
     void setDeclName(const std::string& newName) override
     {
         _name = newName;
@@ -79,12 +79,12 @@ public:
         return _type;
     }
 
-    const DeclarationBlockSyntax& getBlockSyntax() override
+    const DeclarationBlockSource& getDeclSource() override
     {
         return _declBlock;
     }
 
-    void setBlockSyntax(const DeclarationBlockSyntax& block) final
+    void setDeclSource(const DeclarationBlockSource& block) final
     {
         _declBlock = block;
 
@@ -162,7 +162,7 @@ protected:
         try
         {
             // Set up a tokeniser to let the subclass implementation parse the contents
-            parser::BasicDefTokeniser<std::string> tokeniser(getBlockSyntax().contents,
+            parser::BasicDefTokeniser<std::string> tokeniser(getDeclSource().contents,
                 getWhitespaceDelimiters(), getKeptDelimiters());
             parseFromTokens(tokeniser);
         }
@@ -192,9 +192,9 @@ protected:
     virtual void onParsingFinished()
     {}
 
-    // Invoked after a new syntax block has been assigned through setBlockSyntax()
+    // Invoked after a new syntax block has been assigned through setDeclSource()
     // Allows subclasses to either reparse immediately or schedule a later parse
-    virtual void onSyntaxBlockAssigned(const DeclarationBlockSyntax& block)
+    virtual void onSyntaxBlockAssigned(const DeclarationBlockSource& block)
     {}
 
     // Updates the contents member of the attached syntax block without

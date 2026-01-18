@@ -1,12 +1,7 @@
 #include "SceneGraph.h"
 
 #include "ivolumetest.h"
-#include "itextstream.h"
-
 #include "scene/InstanceWalkers.h"
-#include "debugging/debugging.h"
-
-#include "math/AABB.h"
 #include "Octree.h"
 #include "SceneGraphFactory.h"
 #include "util/ScopedBoolLock.h"
@@ -358,20 +353,10 @@ void SceneGraph::flushActionBuffer()
 }
 
 // RegisterableModule implementation
-const std::string& SceneGraphModule::getName() const
+std::string SceneGraphModule::getName() const
 {
 	static std::string _name(MODULE_SCENEGRAPH);
 	return _name;
-}
-
-const StringSet& SceneGraphModule::getDependencies() const
-{
-	static StringSet _dependencies; // no deps
-	return _dependencies;
-}
-
-void SceneGraphModule::initialiseModule(const IApplicationContext& ctx)
-{
 }
 
 // Static module instances

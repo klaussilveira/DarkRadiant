@@ -60,7 +60,7 @@ public:
 	{}
 
 	// Fills the member variables from the given entityDef
-	void parseFromEntityClass(const IEntityClassPtr& eclass);
+	void parseFromEntityClass(const scene::EntityClass::Ptr& eclass);
 
 private:
 	// Highest ID so far

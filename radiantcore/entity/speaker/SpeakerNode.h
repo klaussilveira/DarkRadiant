@@ -67,7 +67,7 @@ class SpeakerNode final :
     ShaderPtr _radiiFillOutlineShader;
 
 private:
-    SpeakerNode(const IEntityClassPtr& eclass);
+    SpeakerNode(const scene::EntityClass::Ptr& eclass);
     SpeakerNode(const SpeakerNode& other);
     void translate(const Vector3& translation);
     void revertTransform() override;
@@ -86,7 +86,7 @@ private:
 public:
 
     /// Public construction function
-    static SpeakerNodePtr create(const IEntityClassPtr& eclass);
+    static SpeakerNodePtr create(const scene::EntityClass::Ptr& eclass);
 
     ~SpeakerNode();
 
@@ -94,7 +94,7 @@ public:
     void snapto(float snap) override;
 
     // Bounded implementation
-    const AABB& localAABB() const override;
+    AABB localAABB() const override;
 
     AABB getSpeakerAABB() const override;
 

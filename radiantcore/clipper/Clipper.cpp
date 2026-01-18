@@ -2,11 +2,9 @@
 
 #include "i18n.h"
 #include "ipreferencesystem.h"
-#include "itextstream.h"
 #include "iundo.h"
 #include "iscenegraph.h"
 #include "iselection.h"
-#include "itexdef.h"
 
 #include "registry/registry.h"
 #include "module/StaticModule.h"
@@ -15,8 +13,6 @@
 #include "brush/csg/CSG.h"
 #include "debugging/debugging.h"
 #include "selectionlib.h"
-
-#include <functional>
 
 namespace
 {
@@ -36,11 +32,12 @@ void Clipper::keyChanged()
 	_useCaulk = registry::getValue<bool>(RKEY_CLIPPER_USE_CAULK);
 }
 
-void Clipper::constructPreferences() {
-	IPreferencePage& page = GlobalPreferenceSystem().getPage(_("Clipper"));
+void Clipper::constructPreferences()
+{
+    IPreferencePage& page = GlobalPreferenceSystem().getPage(_("Textures"));
 
-	page.appendCheckBox(_("Clipper tool uses caulk texture"), RKEY_CLIPPER_USE_CAULK);
-	page.appendEntry(_("Caulk shader name"), RKEY_CLIPPER_CAULK_SHADER);
+    page.appendCheckBox(_("Clipper tool uses caulk texture"), RKEY_CLIPPER_USE_CAULK);
+    page.appendEntry(_("Caulk shader name"), RKEY_CLIPPER_CAULK_SHADER);
 }
 
 OrthoOrientation Clipper::getViewType() const {
@@ -246,12 +243,12 @@ void Clipper::newClipPoint(const Vector3& point) {
 }
 
 // RegisterableModule implementation
-const std::string& Clipper::getName() const {
+std::string Clipper::getName() const {
 	static std::string _name(MODULE_CLIPPER);
 	return _name;
 }
 
-const StringSet& Clipper::getDependencies() const {
+StringSet Clipper::getDependencies() const {
 	static StringSet _dependencies;
 
 	if (_dependencies.empty())

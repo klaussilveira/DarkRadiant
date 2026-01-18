@@ -32,11 +32,11 @@ public:
 	bool pre(const scene::INodePtr& node) override
 	{
 		// Is this node an entity?
-		Entity* entity = Node_getEntity(node);
+		Entity* entity = node->tryGetEntity();
 
 		if (entity != nullptr)
 		{
-			IEntityClassConstPtr eclass = entity->getEntityClass();
+			scene::EntityClass::CPtr eclass = entity->getEntityClass();
 			std::string ecName = eclass->getDeclName();
 
 			auto found = _map.find(ecName);

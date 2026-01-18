@@ -58,20 +58,10 @@ void CounterManager::onCounterChanged()
 }
 
 // RegisterableModule implementation
-const std::string& CounterManager::getName() const
+std::string CounterManager::getName() const
 {
 	static std::string _name(MODULE_COUNTER);
 	return _name;
-}
-
-const StringSet& CounterManager::getDependencies() const
-{
-	static StringSet _dependencies;
-	return _dependencies;
-}
-
-void CounterManager::initialiseModule(const IApplicationContext& ctx)
-{
 }
 
 // Register the counter module in the registry

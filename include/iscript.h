@@ -35,8 +35,7 @@ public:
  * DarkRadiant's Scripting System, based on pybind11. It's possible
  * to expose additional interfaces by using the addInterface() method.
  */
-class IScriptingSystem :
-	public RegisterableModule
+class IScriptingSystem: public RegisterableModule
 {
 public:
 	/**

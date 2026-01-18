@@ -49,7 +49,7 @@ protected:
     EditableDeclaration(const EditableDeclaration<DeclarationInterface>& other) = default;
 
 public:
-    const DeclarationBlockSyntax& getBlockSyntax() override
+    const DeclarationBlockSource& getDeclSource() override
     {
         // In case the contents have been invalidated, acquire the new source text
         if (_syntaxBlockInvalidated)
@@ -58,15 +58,15 @@ public:
             DeclarationBase<DeclarationInterface>::assignSyntaxBlockContents(generateSyntax());
         }
 
-        return DeclarationBase<DeclarationInterface>::getBlockSyntax();
+        return DeclarationBase<DeclarationInterface>::getDeclSource();
     }
 
 protected:
-    void onSyntaxBlockAssigned(const DeclarationBlockSyntax& block) override
+    void onSyntaxBlockAssigned(const DeclarationBlockSource& block) override
     {
         // Assigning a new syntax block overrides any previous edits to the decl
         // Otherwise the block contents would immediately get overwritten again
-        // in getBlockSyntax() by invoking generateSyntax()
+        // in getDeclSource() by invoking generateSyntax()
         _syntaxBlockInvalidated = false;
 
         DeclarationBase<DeclarationInterface>::onSyntaxBlockAssigned(block);

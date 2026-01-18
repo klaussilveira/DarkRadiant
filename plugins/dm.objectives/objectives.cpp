@@ -3,14 +3,9 @@
 #include "i18n.h"
 #include "imodule.h"
 #include "ui/imenumanager.h"
-#include "iradiant.h"
-#include "iscenegraph.h"
-#include "ieclass.h"
-#include "scene/Entity.h"
 #include "itextstream.h"
 
 #include "ce/ComponentEditorFactory.h"
-#include <iostream>
 
 /**
  * \defgroup objectives Objectives Editor (Dark Mod only)
@@ -31,12 +26,12 @@ class ObjectivesEditorModule :
 {
 public:
 	// RegisterableModule implementation
-	virtual const std::string& getName() const {
+	std::string getName() const {
 		static std::string _name("ObjectivesEditor");
 		return _name;
 	}
 
-	virtual const StringSet& getDependencies() const {
+	StringSet getDependencies() const {
 		static StringSet _dependencies;
 
 		if (_dependencies.empty()) {

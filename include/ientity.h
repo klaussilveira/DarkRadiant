@@ -3,17 +3,10 @@
 #include "inode.h"
 #include "imodule.h"
 #include "irender.h"
-#include "inameobserver.h"
-#include "iscenegraph.h"
-#include "itransformnode.h"
 #include <functional>
 
 #include "scene/scene_fwd.h"
-#include "string/predicate.h"
-
-class IEntityClass;
-typedef std::shared_ptr<IEntityClass> IEntityClassPtr;
-typedef std::shared_ptr<const IEntityClass> IEntityClassConstPtr;
+#include "scene/EntityClass.h"
 
 // Observes a single entity key value and gets notified on change
 class KeyObserver: public sigc::trackable
@@ -200,7 +193,7 @@ public:
     virtual ~IEntityModule() {}
 
     /// Create an entity node with the given entity class.
-    virtual EntityNodePtr createEntity(const IEntityClassPtr& eclass) = 0;
+    virtual EntityNodePtr createEntity(const scene::EntityClass::Ptr& eclass) = 0;
 
     // Constructs a new targetmanager instance (used by root nodes)
     virtual ITargetManagerPtr createTargetManager() = 0;

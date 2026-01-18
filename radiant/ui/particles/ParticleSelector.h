@@ -3,7 +3,6 @@
 #include <sigc++/trackable.h>
 
 #include "wxutil/decl/DeclarationSelector.h"
-#include "wxutil/dataview/DeclarationTreeView.h"
 #include "wxutil/preview/ParticlePreview.h"
 
 namespace ui
@@ -18,7 +17,6 @@ class ParticleSelector :
     public wxutil::DeclarationSelector,
     public sigc::trackable
 {
-private:
     // The preview widget
     wxutil::ParticlePreviewPtr _preview;
 
@@ -33,9 +31,6 @@ public:
 
     // Populate the list of particles
     void Populate() override;
-
-private:
-    void reloadParticles();
 };
 
 }

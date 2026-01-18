@@ -1499,13 +1499,13 @@ void Map::emitMapEvent(MapEvent ev)
 }
 
 // RegisterableModule implementation
-const std::string& Map::getName() const
+std::string Map::getName() const
 {
     static std::string _name(MODULE_MAP);
     return _name;
 }
 
-const StringSet& Map::getDependencies() const
+StringSet Map::getDependencies() const
 {
     static StringSet _dependencies
     {

@@ -1,7 +1,6 @@
 #pragma once
 
-#include "ieclass.h"
-
+#include "scene/EntityClass.h"
 #include "wxutil/dataview/DeclarationTreeView.h"
 #include "wxutil/dataview/ThreadedDeclarationTreePopulator.h"
 
@@ -29,7 +28,7 @@ protected:
 
 private:
     // Returns an inheritance path, like this: "moveables/swords/"
-    static std::string GetInheritancePathRecursively(IEntityClass& eclass);
+    static std::string GetInheritancePathRecursively(scene::EntityClass& eclass);
 };
 
 } // namespace

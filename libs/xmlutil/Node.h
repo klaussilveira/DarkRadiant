@@ -51,8 +51,14 @@ public:
     // Get a list of nodes which are children of this node
     NodeList getChildren() const;
 
-    // Creates a new child under this XML Node
+    /// Creates a new child under this Node, using the given name.
+    ///
+    /// Does not check if the child already exists, so may create duplicate children.
     Node createChild(const std::string& name);
+
+    /// Get a single child with the given name, if present, or a null node if there is no
+    /// such child.
+    Node getChild(const std::string& name) const;
 
     // Get a list of nodes which are children of this node and match the
     // given name.
@@ -85,5 +91,28 @@ private:
     // Private accessor, used by the friend Document class
     pugi::xml_node getNodePtr() const;
 };
+
+/// Create a named child node under the given node, storing the given value as content (an
+/// alternative to XML attributes).
+inline void storeKeyValue(Node& node, const std::string& key, const std::string& value)
+{
+    Node child = node.getChild(key);
+    if (!child.isValid())
+    {
+        child = node.createChild(key);
+    }
+    child.setContent(value);
+}
+
+/// Get a named value from the given node, checking both XML attributes and named children
+/// created with storeKeyValue.
+inline std::string getKeyValue(const Node& node, const std::string& key)
+{
+    Node child = node.getChild(key);
+    if (child.isValid())
+        return child.getContent();
+    else
+        return node.getAttributeValue(key);
+}
 
 } // namespace xml

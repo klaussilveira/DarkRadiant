@@ -1,14 +1,7 @@
 #include "imodule.h"
 
-#include "itextstream.h"
-#include "ieclass.h"
-#include "iscenegraph.h"
 #include "icommandsystem.h"
 #include "ui/imenumanager.h"
-#include "iregistry.h"
-#include "iselection.h"
-#include "iradiant.h"
-#include "iundo.h"
 #include "i18n.h"
 #include "selectionlib.h"
 
@@ -23,17 +16,17 @@ class StimResponseModule :
 {
 public:
 	// RegisterableModule implementation
-	virtual const std::string& getName() const override
+	std::string getName() const override
 	{
 		static std::string _name("StimResponseEditor");
 		return _name;
 	}
 
-	const StringSet& getDependencies() const override
+	StringSet getDependencies() const override
 	{
         static StringSet _dependencies
         {
-            MODULE_MENUMANAGER, 
+            MODULE_MENUMANAGER,
             MODULE_COMMANDSYSTEM
         };
 
@@ -64,7 +57,7 @@ public:
 };
 typedef std::shared_ptr<StimResponseModule> StimResponseModulePtr;
 
-extern "C" void DARKRADIANT_DLLEXPORT RegisterModule(IModuleRegistry& registry) 
+extern "C" void DARKRADIANT_DLLEXPORT RegisterModule(IModuleRegistry& registry)
 {
 	module::performDefaultInitialisation(registry);
 

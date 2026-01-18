@@ -15,51 +15,51 @@ namespace
     const std::string KEY_S_SHADER("s_shader");
 }
 
-SpeakerNode::SpeakerNode(const IEntityClassPtr& eclass) :
-	EntityNode(eclass),
-	m_originKey(std::bind(&SpeakerNode::originChanged, this)),
-    _renderableBox(*this, m_aabb_local, worldAABB().getOrigin()),
+SpeakerNode::SpeakerNode(const scene::EntityClass::Ptr& eclass) :
+    EntityNode(eclass),
+    m_originKey(std::bind(&SpeakerNode::originChanged, this)),
+    _renderableBox(*this, &m_aabb_local, worldAABB().getOrigin()),
     _renderableRadiiWireframe(*this, m_origin, _radiiTransformed),
     _renderableRadiiFill(*this, m_origin, _radiiTransformed),
     _renderableRadiiFillOutline(*this, m_origin, _radiiTransformed),
     _showRadiiWhenUnselected(EntitySettings::InstancePtr()->getShowAllSpeakerRadii()),
-	_dragPlanes(std::bind(&SpeakerNode::selectedChangedComponent, this, std::placeholders::_1))
+    _dragPlanes(std::bind(&SpeakerNode::selectedChangedComponent, this, std::placeholders::_1))
 {}
 
 SpeakerNode::SpeakerNode(const SpeakerNode& other) :
-	EntityNode(other),
-	Snappable(other),
-	m_originKey(std::bind(&SpeakerNode::originChanged, this)),
-    _renderableBox(*this, m_aabb_local, worldAABB().getOrigin()),
+    EntityNode(other),
+    Snappable(other),
+    m_originKey(std::bind(&SpeakerNode::originChanged, this)),
+    _renderableBox(*this, &m_aabb_local, worldAABB().getOrigin()),
     _renderableRadiiWireframe(*this, m_origin, _radiiTransformed),
     _renderableRadiiFill(*this, m_origin, _radiiTransformed),
     _renderableRadiiFillOutline(*this, m_origin, _radiiTransformed),
     _showRadiiWhenUnselected(EntitySettings::InstancePtr()->getShowAllSpeakerRadii()),
-	_dragPlanes(std::bind(&SpeakerNode::selectedChangedComponent, this, std::placeholders::_1))
+    _dragPlanes(std::bind(&SpeakerNode::selectedChangedComponent, this, std::placeholders::_1))
 {}
 
-std::shared_ptr<SpeakerNode> SpeakerNode::create(const IEntityClassPtr& eclass)
+std::shared_ptr<SpeakerNode> SpeakerNode::create(const scene::EntityClass::Ptr& eclass)
 {
-	SpeakerNodePtr speaker(new SpeakerNode(eclass));
-	speaker->construct();
+    SpeakerNodePtr speaker(new SpeakerNode(eclass));
+    speaker->construct();
 
-	return speaker;
+    return speaker;
 }
 
 void SpeakerNode::construct()
 {
-	EntityNode::construct();
+    EntityNode::construct();
 
-	m_aabb_local = _spawnArgs.getEntityClass()->getBounds();
-	m_aabb_border = m_aabb_local;
+    m_aabb_local = _spawnArgs.getEntityClass()->getBounds();
+    m_aabb_border = m_aabb_local;
 
-	observeKey("origin", sigc::mem_fun(m_originKey, &OriginKey::onKeyValueChanged));
+    observeKey("origin", sigc::mem_fun(m_originKey, &OriginKey::onKeyValueChanged));
 
     // Observe speaker-related spawnargs
     static_assert(std::is_base_of<sigc::trackable, SpeakerNode>::value);
-	observeKey(KEY_S_SHADER, sigc::mem_fun(this, &SpeakerNode::sShaderChanged));
-	observeKey(KEY_S_MINDISTANCE, sigc::mem_fun(this, &SpeakerNode::sMinChanged));
-	observeKey(KEY_S_MAXDISTANCE, sigc::mem_fun(this, &SpeakerNode::sMaxChanged));
+    observeKey(KEY_S_SHADER, sigc::mem_fun(this, &SpeakerNode::sShaderChanged));
+    observeKey(KEY_S_MINDISTANCE, sigc::mem_fun(this, &SpeakerNode::sMinChanged));
+    observeKey(KEY_S_MAXDISTANCE, sigc::mem_fun(this, &SpeakerNode::sMaxChanged));
 }
 
 SpeakerNode::~SpeakerNode()
@@ -68,100 +68,100 @@ SpeakerNode::~SpeakerNode()
 
 void SpeakerNode::originChanged()
 {
-	m_origin = m_originKey.get();
-	updateTransform();
+    m_origin = m_originKey.get();
+    updateTransform();
 }
 
 void SpeakerNode::sShaderChanged(const std::string& value)
 {
-	if (value.empty())
-	{
-		_defaultRadii.setMin(0);
-		_defaultRadii.setMax(0);
-	}
-	else
-	{
-		if (module::RegistryReference::Instance().getRegistry().moduleExists(MODULE_SOUNDMANAGER))
-		{
-			// Non-zero shader set, retrieve the default radii
-			_defaultRadii = GlobalSoundManager().getSoundShader(value)->getRadii();
-		}
-		else
-		{
-			_defaultRadii.setMin(0);
-			_defaultRadii.setMax(0);
-		}
-	}
+    if (value.empty())
+    {
+        _defaultRadii.setMin(0);
+        _defaultRadii.setMax(0);
+    }
+    else
+    {
+        if (module::RegistryReference::Instance().getRegistry().moduleExists(MODULE_SOUNDMANAGER))
+        {
+            // Non-zero shader set, retrieve the default radii
+            _defaultRadii = GlobalSoundManager().getSoundShader(value)->getRadii();
+        }
+        else
+        {
+            _defaultRadii.setMin(0);
+            _defaultRadii.setMax(0);
+        }
+    }
 
-	// If we haven't overridden our distances yet, adjust these values to defaults
-	if (!m_minIsSet)
-	{
-		_radii.setMin(_defaultRadii.getMin());
-	}
+    // If we haven't overridden our distances yet, adjust these values to defaults
+    if (!m_minIsSet)
+    {
+        _radii.setMin(_defaultRadii.getMin());
+    }
 
-	if (!m_maxIsSet)
-	{
-		_radii.setMax(_defaultRadii.getMax());
-	}
+    if (!m_maxIsSet)
+    {
+        _radii.setMax(_defaultRadii.getMax());
+    }
 
-	// Store the new values into our working set
-	_radiiTransformed = _radii;
+    // Store the new values into our working set
+    _radiiTransformed = _radii;
 
-	updateAABB();
+    updateAABB();
 }
 
 void SpeakerNode::sMinChanged(const std::string& value)
 {
-	// Check whether the spawnarg got set or removed
-	m_minIsSet = value.empty() ? false : true;
+    // Check whether the spawnarg got set or removed
+    m_minIsSet = value.empty() ? false : true;
 
-	if (m_minIsSet)
-	{
-		// we need to parse in metres
-		_radii.setMin(string::convert<float>(value), true);
-	}
-	else
-	{
-		_radii.setMin(_defaultRadii.getMin());
-	}
+    if (m_minIsSet)
+    {
+        // we need to parse in metres
+        _radii.setMin(string::convert<float>(value), true);
+    }
+    else
+    {
+        _radii.setMin(_defaultRadii.getMin());
+    }
 
-	// Store the new value into our working set
-	_radiiTransformed.setMin(_radii.getMin());
+    // Store the new value into our working set
+    _radiiTransformed.setMin(_radii.getMin());
 
-	updateAABB();
+    updateAABB();
     updateRenderables();
 }
 
 void SpeakerNode::sMaxChanged(const std::string& value)
 {
-	m_maxIsSet = value.empty() ? false : true;
+    m_maxIsSet = value.empty() ? false : true;
 
-	if (m_maxIsSet)
-	{
-		// we need to parse in metres
-		_radii.setMax(string::convert<float>(value), true);
-	}
-	else
-	{
-		_radii.setMax(_defaultRadii.getMax());
-	}
+    if (m_maxIsSet)
+    {
+        // we need to parse in metres
+        _radii.setMax(string::convert<float>(value), true);
+    }
+    else
+    {
+        _radii.setMax(_defaultRadii.getMax());
+    }
 
-	// Store the new value into our working set
-	_radiiTransformed.setMax(_radii.getMax());
+    // Store the new value into our working set
+    _radiiTransformed.setMax(_radii.getMax());
 
-	updateAABB();
+    updateAABB();
     updateRenderables();
 }
 
 void SpeakerNode::snapto(float snap)
 {
-	m_originKey.snap(snap);
-	m_originKey.write(_spawnArgs);
+    m_originKey.snap(snap);
+    m_originKey.write(_spawnArgs);
 }
 
-const AABB& SpeakerNode::localAABB() const
+AABB SpeakerNode::localAABB() const
 {
-	return m_aabb_border;
+    return m_aabb_border;
 }
 
 AABB SpeakerNode::getSpeakerAABB() const
@@ -171,65 +171,65 @@ AABB SpeakerNode::getSpeakerAABB() const
 
 void SpeakerNode::selectPlanes(Selector& selector, SelectionTest& test, const PlaneCallback& selectedPlaneCallback)
 {
-	test.BeginMesh(localToWorld());
+    test.BeginMesh(localToWorld());
 
-	_dragPlanes.selectPlanes(localAABB(), selector, test, selectedPlaneCallback);
+    _dragPlanes.selectPlanes(localAABB(), selector, test, selectedPlaneCallback);
 }
 
 void SpeakerNode::selectReversedPlanes(Selector& selector, const SelectedPlanes& selectedPlanes)
 {
-	_dragPlanes.selectReversedPlanes(localAABB(), selector, selectedPlanes);
+    _dragPlanes.selectReversedPlanes(localAABB(), selector, selectedPlanes);
 }
 
 void SpeakerNode::testSelect(Selector& selector, SelectionTest& test)
 {
-	EntityNode::testSelect(selector, test);
+    EntityNode::testSelect(selector, test);
 
-	test.BeginMesh(localToWorld());
+    test.BeginMesh(localToWorld());
 
-	SelectionIntersection best;
-	aabb_testselect(m_aabb_local, test, best);
-	if(best.isValid()) {
-		selector.addIntersection(best);
-	}
+    SelectionIntersection best;
+    aabb_testselect(m_aabb_local, test, best);
+    if(best.isValid()) {
+        selector.addIntersection(best);
+    }
 }
 
 void SpeakerNode::selectedChangedComponent(const ISelectable& selectable)
 {
-	// add the selectable to the list of selected components (see RadiantSelectionSystem::onComponentSelection)
-	GlobalSelectionSystem().onComponentSelection(Node::getSelf(), selectable);
+    // add the selectable to the list of selected components (see RadiantSelectionSystem::onComponentSelection)
+    GlobalSelectionSystem().onComponentSelection(Node::getSelf(), selectable);
 }
 
 bool SpeakerNode::isSelectedComponents() const
 {
-	return _dragPlanes.isSelected();
+    return _dragPlanes.isSelected();
 }
 
 void SpeakerNode::setSelectedComponents(bool select, selection::ComponentSelectionMode mode)
 {
-	if (mode == selection::ComponentSelectionMode::Face)
-	{
-		_dragPlanes.setSelected(false);
-	}
+    if (mode == selection::ComponentSelectionMode::Face)
+    {
+        _dragPlanes.setSelected(false);
+    }
 }
 
 void SpeakerNode::invertSelectedComponents(selection::ComponentSelectionMode mode)
 {
-	// nothing, planes are selected via selectPlanes()
+    // nothing, planes are selected via selectPlanes()
 }
 
 void SpeakerNode::testSelectComponents(Selector& selector, SelectionTest& test, selection::ComponentSelectionMode mode)
 {
-	// nothing, planes are selected via selectPlanes()
+    // nothing, planes are selected via selectPlanes()
 }
 
 scene::INodePtr SpeakerNode::clone() const
 {
-	SpeakerNodePtr node(new SpeakerNode(*this));
-	node->construct();
+    SpeakerNodePtr node(new SpeakerNode(*this));
+    node->construct();
     node->constructClone(*this);
 
-	return node;
+    return node;
 }
 
 void SpeakerNode::onPreRender(const VolumeTest& volume)
@@ -290,103 +290,103 @@ void SpeakerNode::setRenderSystem(const RenderSystemPtr& renderSystem)
 
 void SpeakerNode::translate(const Vector3& translation)
 {
-	m_origin += translation;
+    m_origin += translation;
 }
 
 void SpeakerNode::updateTransform()
 {
-	setLocalToParent(Matrix4::getTranslation(m_origin));
-	transformChanged();
+    setLocalToParent(Matrix4::getTranslation(m_origin));
+    transformChanged();
 
     updateRenderables();
 }
 
 void SpeakerNode::updateAABB()
 {
-	// set the AABB to the biggest AABB the speaker contains
-	m_aabb_border = m_aabb_local;
+    // set the AABB to the biggest AABB the speaker contains
+    m_aabb_border = m_aabb_local;
 
-	float radius = _radiiTransformed.getMax();
-	m_aabb_border.extents = Vector3(radius, radius, radius);
+    float radius = _radiiTransformed.getMax();
+    m_aabb_border.extents = Vector3(radius, radius, radius);
 
-	boundsChanged();
+    boundsChanged();
 }
 
 void SpeakerNode::setRadiusFromAABB(const AABB& aabb)
 {
-	// Find out which dimension got changed the most
-	Vector3 delta = aabb.getExtents() - localAABB().getExtents();
+    // Find out which dimension got changed the most
+    Vector3 delta = aabb.getExtents() - localAABB().getExtents();
 
-	double maxTrans;
+    double maxTrans;
 
-	// Get the maximum translation component
-	if (fabs(delta.x()) > fabs(delta.y()))
-	{
-		maxTrans = (fabs(delta.x()) > fabs(delta.z())) ? delta.x() : delta.z();
-	}
-	else
-	{
-		maxTrans = (fabs(delta.y()) > fabs(delta.z())) ? delta.y() : delta.z();
-	}
+    // Get the maximum translation component
+    if (fabs(delta.x()) > fabs(delta.y()))
+    {
+        maxTrans = (fabs(delta.x()) > fabs(delta.z())) ? delta.x() : delta.z();
+    }
+    else
+    {
+        maxTrans = (fabs(delta.y()) > fabs(delta.z())) ? delta.y() : delta.z();
+    }
 
-	if (EntitySettings::InstancePtr()->getDragResizeEntitiesSymmetrically())
-	{
-		// For a symmetric AABB change, take the extents delta times 2
-		maxTrans *= 2;
-	}
-	else
-	{
-		// Update the origin accordingly
-		m_origin += aabb.origin - localAABB().getOrigin();
-	}
+    if (EntitySettings::InstancePtr()->getDragResizeEntitiesSymmetrically())
+    {
+        // For a symmetric AABB change, take the extents delta times 2
+        maxTrans *= 2;
+    }
+    else
+    {
+        // Update the origin accordingly
+        m_origin += aabb.origin - localAABB().getOrigin();
+    }
 
-	float oldRadius = _radii.getMax() > 0 ? _radii.getMax() : _radii.getMin();
+    float oldRadius = _radii.getMax() > 0 ? _radii.getMax() : _radii.getMin();
 
-	// Prevent division by zero
-	if (oldRadius == 0)
-	{
-		oldRadius = 1;
-	}
+    // Prevent division by zero
+    if (oldRadius == 0)
+    {
+        oldRadius = 1;
+    }
 
-	float newMax = static_cast<float>(oldRadius + maxTrans);
+    float newMax = static_cast<float>(oldRadius + maxTrans);
 
-	float ratio = newMax / oldRadius;
-	float newMin = _radii.getMin() * ratio;
+    float ratio = newMax / oldRadius;
+    float newMin = _radii.getMin() * ratio;
 
-	if (newMax < 0) newMax = 0.02f;
-	if (newMin < 0) newMin = 0.01f;
+    if (newMax < 0) newMax = 0.02f;
+    if (newMin < 0) newMin = 0.01f;
 
-	// Resize the radii and update the min radius proportionally
-	_radiiTransformed.setMax(newMax);
-	_radiiTransformed.setMin(newMin);
+    // Resize the radii and update the min radius proportionally
+    _radiiTransformed.setMax(newMax);
+    _radiiTransformed.setMin(newMin);
 
-	updateAABB();
-	updateTransform();
+    updateAABB();
+    updateTransform();
 }
 
 void SpeakerNode::evaluateTransform()
 {
-	if (getType() == TRANSFORM_PRIMITIVE)
-	{
-		translate(getTranslation());
-	}
-	else
-	{
-		// This seems to be a drag operation
-		_dragPlanes.m_bounds = localAABB();
+    if (getType() == TRANSFORM_PRIMITIVE)
+    {
+        translate(getTranslation());
+    }
+    else
+    {
+        // This seems to be a drag operation
+        _dragPlanes.m_bounds = localAABB();
 
-		// Let the dragplanes helper resize our local AABB
-		AABB resizedAABB = _dragPlanes.evaluateResize(getTranslation(), Matrix4::getIdentity());
+        // Let the dragplanes helper resize our local AABB
+        AABB resizedAABB = _dragPlanes.evaluateResize(getTranslation(), Matrix4::getIdentity());
 
-		setRadiusFromAABB(resizedAABB);
-	}
+        setRadiusFromAABB(resizedAABB);
+    }
 }
 
 void SpeakerNode::revertTransform()
 {
-	m_origin = m_originKey.get();
+    m_origin = m_originKey.get();
 
-	_radiiTransformed = _radii;
+    _radiiTransformed = _radii;
 }
 
 void SpeakerNode::freezeTransform()
@@ -419,16 +419,16 @@ void SpeakerNode::freezeTransform()
 
 void SpeakerNode::_onTransformationChanged()
 {
-	revertTransform();
-	evaluateTransform();
-	updateTransform();
+    revertTransform();
+    evaluateTransform();
+    updateTransform();
 }
 
 void SpeakerNode::_applyTransformation()
 {
-	revertTransform();
-	evaluateTransform();
-	freezeTransform();
+    revertTransform();
+    evaluateTransform();
+    freezeTransform();
 }
 
 void SpeakerNode::onSelectionStatusChange(bool changeGroupStatus)

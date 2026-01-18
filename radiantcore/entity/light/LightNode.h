@@ -4,6 +4,7 @@
 #include "Renderables.h"
 #include "LightShader.h"
 
+#include "generic/callback.h"
 #include "ilightnode.h"
 #include "registry/CachedKey.h"
 #include "scene/TransformedCopy.h"
@@ -11,7 +12,6 @@
 #include "editable.h"
 
 #include "dragplanes.h"
-#include "../VertexInstance.h"
 #include "scene/EntityNode.h"
 #include "scene/OriginKey.h"
 #include "../RotationKey.h"
@@ -100,13 +100,13 @@ class LightNode :
 	mutable Matrix4 m_projectionOrientation;
 
 public:
-	LightNode(const IEntityClassPtr& eclass);
+	LightNode(const scene::EntityClass::Ptr& eclass);
 
 private:
 	LightNode(const LightNode& other);
 
 public:
-	static LightNodePtr Create(const IEntityClassPtr& eclass);
+	static LightNodePtr Create(const scene::EntityClass::Ptr& eclass);
 
     // ILightNode implementation
     const RendererLight& getRendererLight() const override { return *this; }
@@ -117,7 +117,7 @@ public:
 	virtual float getShaderParm(int parmNum) const override;
 
 	// Bounded implementation
-	const AABB& localAABB() const override;
+	AABB localAABB() const override;
 
 	// override scene::Node methods to deselect the child components
 	virtual void onRemoveFromScene(scene::IMapRootNode& root) override;

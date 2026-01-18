@@ -223,7 +223,7 @@ void InteractionProgram::setupLightParameters(OpenGLState& state, const Renderer
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 
     glUniform1i(_locAmbientLight, lightMat->isAmbientLight());
-    glUniform3fv(_locLightColour, 1, layer->getColour());
+    glUniform3fv(_locLightColour, 1, layer->getColour().data());
 
     // Send the light texture transform
     loadMatrixUniform(_locLightTextureMatrix, light.getLightTextureTransformation());

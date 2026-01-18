@@ -1,12 +1,12 @@
 #pragma once
 
-#include "ieclass.h"
+#include "scene/EntityClass.h"
 #include "iscript.h"
 #include "iscriptinterface.h"
 
 #include <pybind11/pybind11.h>
 
-namespace script 
+namespace script
 {
 
 /**
@@ -14,16 +14,16 @@ namespace script
  */
 class ScriptEntityClass
 {
-	IEntityClassPtr _eclass;
+	scene::EntityClass::Ptr _eclass;
 	EntityClassAttribute _emptyAttribute;
 
 public:
-	ScriptEntityClass(const IEntityClassPtr& eclass) :
+	ScriptEntityClass(const scene::EntityClass::Ptr& eclass) :
 		_eclass(eclass),
 		_emptyAttribute("text", "", "")
 	{}
 
-	operator const IEntityClassPtr&() const
+	operator const scene::EntityClass::Ptr&() const
 	{
 		return _eclass;
 	}
@@ -80,7 +80,7 @@ class EntityClassVisitorWrapper :
 	public EntityClassVisitor
 {
 public:
-    void visit(const IEntityClassPtr& eclass) override
+    void visit(const scene::EntityClass::Ptr& eclass) override
 	{
 		// Wrap this method to python
 		PYBIND11_OVERLOAD_PURE(

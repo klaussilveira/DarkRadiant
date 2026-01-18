@@ -192,13 +192,13 @@ GuiPtr GuiManager::loadGui(const std::string& guiPath)
 	}
 }
 
-const std::string& GuiManager::getName() const
+std::string GuiManager::getName() const
 {
 	static std::string _name(MODULE_GUIMANAGER);
 	return _name;
 }
 
-const StringSet& GuiManager::getDependencies() const
+StringSet GuiManager::getDependencies() const
 {
 	static StringSet _dependencies;
 

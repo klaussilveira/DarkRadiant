@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Doom3ModelSkin.h"
-
 #include <map>
 #include "imodule.h"
 
@@ -57,8 +55,8 @@ public:
 	sigc::signal<void> signal_skinsReloaded() override;
 
 	// RegisterableModule implementation
-	const std::string& getName() const override;
-    const StringSet& getDependencies() const override;
+	std::string getName() const override;
+    StringSet getDependencies() const override;
     void initialiseModule(const IApplicationContext& ctx) override;
     void shutdownModule() override;
 

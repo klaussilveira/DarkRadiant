@@ -33,20 +33,10 @@ void WxGLWidgetManager::unregisterGLWidget(wxutil::GLWidget* widget)
 	}
 }
 
-const std::string& WxGLWidgetManager::getName() const
+std::string WxGLWidgetManager::getName() const
 {
 	static std::string _name(MODULE_WXGLWIDGET_MANAGER);
 	return _name;
-}
-
-const StringSet& WxGLWidgetManager::getDependencies() const
-{
-	static StringSet _dependencies;
-	return _dependencies;
-}
-
-void WxGLWidgetManager::initialiseModule(const IApplicationContext& ctx)
-{
 }
 
 void WxGLWidgetManager::shutdownModule()

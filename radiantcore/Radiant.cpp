@@ -122,20 +122,11 @@ void Radiant::createLogFile()
 	}
 }
 
-const std::string& Radiant::getName() const
+std::string Radiant::getName() const
 {
 	static std::string _name(MODULE_RADIANT_CORE);
 	return _name;
 }
-
-const StringSet& Radiant::getDependencies() const
-{
-	static StringSet _dependencies;
-	return _dependencies;
-}
-
-void Radiant::initialiseModule(const IApplicationContext& ctx)
-{}
 
 std::shared_ptr<Radiant>& Radiant::InstancePtr()
 {

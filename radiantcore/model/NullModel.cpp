@@ -9,7 +9,7 @@ NullModel::NullModel() :
 	_aabbLocal(Vector3(0, 0, 0), Vector3(8, 8, 8))
 {}
 
-const AABB& NullModel::localAABB() const
+AABB NullModel::localAABB() const
 {
 	return _aabbLocal;
 }

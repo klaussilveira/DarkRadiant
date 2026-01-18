@@ -9,7 +9,7 @@ namespace image
 {
 
 /// ImageLoader implementing module
-class ImageLoader: 
+class ImageLoader:
     public IImageLoader
 {
 private:
@@ -33,8 +33,8 @@ public:
 	ImagePtr imageFromFile(const std::string& filename) const override;
 
     // RegisterableModule implementation
-    const std::string& getName() const override;
-    const StringSet& getDependencies() const override;
+    std::string getName() const override;
+    StringSet getDependencies() const override;
     void initialiseModule(const IApplicationContext&) override;
 };
 

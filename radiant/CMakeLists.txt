@@ -153,7 +153,6 @@ add_executable(darkradiant
                ui/prefdialog/PreferenceItem.cpp
                ui/prefdialog/PrefPage.cpp
                ui/script/ScriptMenu.cpp
-               ui/script/ScriptUserInterfaceModule.cpp
                ui/script/ScriptWindow.cpp
                ui/selectionset/SelectionSetToolmenu.cpp
                ui/skin/SkinEditor.cpp
@@ -187,3 +186,14 @@ if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.16.0")
 target_precompile_headers(darkradiant PRIVATE
                           "$<$<COMPILE_LANGUAGE:CXX>:precompiled.h>")
 endif()
+
+# Quick copy of the contents of the "install" directory into the staging area.
+# This copies more than needed but it doesn't matter: this is just for running a
+# developer build out of ${CMAKE_BINARY_DIR}, not for packaging.
+add_custom_command(
+    TARGET darkradiant POST_BUILD
+    COMMAND
+        ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_SOURCE_DIR}/install"
+        "${DR_STAGING_DATADIR}"
+)

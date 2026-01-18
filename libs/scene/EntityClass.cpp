@@ -1,5 +1,6 @@
 #include "EntityClass.h"
 
+#include "ieclass.h"
 #include "itextstream.h"
 #include "ieclasscolours.h"
 #include "string/convert.h"
@@ -8,7 +9,7 @@
 #include <functional>
 #include <utility>
 
-namespace eclass
+namespace scene
 {
 
 namespace
@@ -18,7 +19,7 @@ namespace
 }
 
 EntityClass::EntityClass(const std::string& name)
-: DeclarationBase<IEntityClass>(decl::Type::EntityDef, name),
+: DeclarationBase<decl::IDeclaration>(decl::Type::EntityDef, name),
   _visibility([this] { return determineVisibilityFromValues(); }),
   _colour(DefaultEntityColour),
   // greebo: Changed default behaviour when unknown entites are encountered to isFixedSize == FALSE
@@ -31,7 +32,7 @@ EntityClass::~EntityClass()
     _parentChangedConnection.disconnect();
 }
 
-IEntityClass* EntityClass::getParent()
+scene::EntityClass* EntityClass::getParent()
 {
     ensureParsed();
 
@@ -42,7 +43,7 @@ vfs::Visibility EntityClass::determineVisibilityFromValues()
 {
     // Entity class visibility is NOT inherited -- hiding an abstract base entity from the list
     // does not imply all of its concrete subclasses should also be hidden.
-    return getAttributeValue("editor_visibility", false) == "hidden" ? 
+    return getAttributeValue("editor_visibility", false) == "hidden" ?
         vfs::Visibility::HIDDEN : vfs::Visibility::NORMAL;
 }
 
@@ -51,7 +52,7 @@ vfs::Visibility EntityClass::getVisibility()
     ensureParsed();
 
     // File visibility overrides the setting in the entity key/value pairs
-    return getBlockSyntax().fileInfo.visibility == vfs::Visibility::HIDDEN ?
+    return getDeclSource().fileInfo.visibility == vfs::Visibility::HIDDEN ?
         vfs::Visibility::HIDDEN : _visibility.get();
 }
 
@@ -60,9 +61,9 @@ sigc::signal<void>& EntityClass::changedSignal()
     return _changedSignal;
 }
 
-void EntityClass::onSyntaxBlockAssigned(const decl::DeclarationBlockSyntax& block)
+void EntityClass::onSyntaxBlockAssigned(const decl::DeclarationBlockSource& block)
 {
-    DeclarationBase<IEntityClass>::onSyntaxBlockAssigned(block);
+    DeclarationBase<decl::IDeclaration>::onSyntaxBlockAssigned(block);
 
     clear();
     emitChangedSignal();
@@ -112,13 +113,13 @@ EntityClass::Type EntityClass::getClassType()
         // Variable size entity
         return Type::StaticGeometry;
     }
-    
+
     if (!getAttributeValue("model").empty())
     {
         // Fixed size, has model path
         return Type::EntityClassModel;
     }
-    
+
     if (getDeclName() == "speaker")
     {
         return Type::Speaker;
@@ -339,7 +340,7 @@ bool EntityClass::isOfType(const std::string& className)
 {
     ensureParsed();
 
-	for (IEntityClass* currentClass = this;
+	for (scene::EntityClass* currentClass = this;
          currentClass != nullptr;
          currentClass = currentClass->getParent())
     {
@@ -401,7 +402,7 @@ std::string EntityClass::getAttributeType(const std::string& name)
     return _parent ? _parent->getAttributeType(name) : "";
 }
 
-std::string EntityClass::getAttributeDescription(const std::string& name) 
+std::string EntityClass::getAttributeDescription(const std::string& name)
 {
     ensureParsed();
 

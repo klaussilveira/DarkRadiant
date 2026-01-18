@@ -39,13 +39,13 @@ MapResourceManager::ExportEvent& MapResourceManager::signal_onResourceExported()
 	return _resourceExported;
 }
 
-const std::string& MapResourceManager::getName() const
+std::string MapResourceManager::getName() const
 {
 	static std::string _name(MODULE_MAPRESOURCEMANAGER);
 	return _name;
 }
 
-const StringSet& MapResourceManager::getDependencies() const
+StringSet MapResourceManager::getDependencies() const
 {
 	static StringSet _dependencies;
 
@@ -57,10 +57,6 @@ const StringSet& MapResourceManager::getDependencies() const
 	}
 
 	return _dependencies;
-}
-
-void MapResourceManager::initialiseModule(const IApplicationContext& ctx)
-{
 }
 
 // Define the MapResourceManager registerable module

@@ -13,7 +13,7 @@ using CurveTest = RadiantTest;
 
 inline Vector3 getFirstNurbsVertex(const scene::INodePtr& splineEntity)
 {
-    auto entity = Node_getEntity(splineEntity);
+    auto entity = splineEntity->tryGetEntity();
     auto fullValue = entity->getKeyValue("curve_Nurbs");
 
     Vector3 position;
@@ -63,7 +63,7 @@ TEST_F(CurveTest, SplineWithoutModelKeyIsSelectable)
 TEST_F(CurveTest, CreateCatmullRomCurve)
 {
     GlobalCommandSystem().executeCommand("CreateCurveCatmullRom");
-    auto entity = Node_getEntity(GlobalSelectionSystem().ultimateSelected());
+    auto entity = GlobalSelectionSystem().ultimateSelected()->tryGetEntity();
 
     EXPECT_EQ(entity->getKeyValue("classname"), "func_splinemover") << "wrong eclass";
     EXPECT_NE(entity->getKeyValue("curve_CatmullRomSpline"), "") << "catmull rom key is missing";
@@ -73,7 +73,7 @@ TEST_F(CurveTest, CreateCatmullRomCurve)
 TEST_F(CurveTest, CreateNurbsCurve)
 {
     GlobalCommandSystem().executeCommand("CreateCurveNURBS");
-    auto entity = Node_getEntity(GlobalSelectionSystem().ultimateSelected());
+    auto entity = GlobalSelectionSystem().ultimateSelected()->tryGetEntity();
 
     EXPECT_EQ(entity->getKeyValue("classname"), "func_splinemover") << "wrong eclass";
     EXPECT_NE(entity->getKeyValue("curve_Nurbs"), "") << "catmull rom key is missing";

@@ -124,7 +124,7 @@ TEST_F(MaterialsTest, MaterialRenaming)
 
     // The material reference needs to be renamed too
     EXPECT_EQ(material->getName(), "textures/test/anothername");
-    
+
     // Renamed material should still be marked as modified
     EXPECT_TRUE(material->isModified());
 
@@ -175,7 +175,7 @@ TEST_F(MaterialsTest, MaterialRenameSetsModifiedStatus)
 
     // Rename this material
     EXPECT_TRUE(materialManager.renameMaterial("textures/numbers/2", "textures/changedNumber/2"));
-    
+
     // Renamed material should be marked as modified
     EXPECT_TRUE(material->isModified());
 }
@@ -497,7 +497,7 @@ TEST_F(MaterialsTest, MaterialParserSortRequest)
     material = materialManager.getMaterial("textures/parsertest/sortPredefined_portalsky");
     EXPECT_TRUE(material->getParseFlags() & Material::PF_HasSortDefined);
     EXPECT_EQ(material->getSortRequest(), Material::SORT_PORTAL_SKY);
-    
+
     material = materialManager.getMaterial("textures/parsertest/sortPredefined_decal_macro");
     EXPECT_FALSE(material->getParseFlags() & Material::PF_HasSortDefined); // sort is not explicitly set
     EXPECT_EQ(material->getSortRequest(), Material::SORT_DECAL);
@@ -810,9 +810,9 @@ TEST_F(MaterialsTest, MaterialParserStageTransforms)
 
     combinedMatrix = Matrix4::getTranslation(Vector3(timeSecs, 0.5, 0));
 
-    auto shear = Matrix4::byColumns(1, 0.8, 0, 0, 
-                                    0.9, 1.0, 0, 0, 
-                                    0, 0, 1, 0, 
+    auto shear = Matrix4::byColumns(1, 0.8, 0, 0,
+                                    0.9, 1.0, 0, 0,
+                                    0, 0, 1, 0,
                                    -0.5*0.9, -0.5*0.8, 0, 1);
     combinedMatrix.premultiplyBy(shear);
 
@@ -1161,7 +1161,7 @@ TEST_F(MaterialsTest, MaterialParserDecalInfo)
 
     EXPECT_EQ(material->getDecalInfo().stayMilliSeconds, 14300);
     EXPECT_EQ(material->getDecalInfo().fadeMilliSeconds, 1500);
-    
+
     EXPECT_NEAR(material->getDecalInfo().startColour.x(), 0.9, TestEpsilon);
     EXPECT_NEAR(material->getDecalInfo().startColour.y(), 0.8, TestEpsilon);
     EXPECT_NEAR(material->getDecalInfo().startColour.z(), 0.7, TestEpsilon);
@@ -1287,7 +1287,7 @@ TEST_F(MaterialsTest, MaterialParserStageFlags)
         { "textures/parsertest/stageflags/maskBlue", IShaderLayer::FLAG_MASK_BLUE },
         { "textures/parsertest/stageflags/maskAlpha", IShaderLayer::FLAG_MASK_ALPHA },
         { "textures/parsertest/stageflags/maskDepth", IShaderLayer::FLAG_MASK_DEPTH },
-        { "textures/parsertest/stageflags/maskEverything", 
+        { "textures/parsertest/stageflags/maskEverything",
             (IShaderLayer::FLAG_MASK_RED | IShaderLayer::FLAG_MASK_GREEN |
              IShaderLayer::FLAG_MASK_BLUE | IShaderLayer::FLAG_MASK_ALPHA | IShaderLayer::FLAG_MASK_DEPTH) },
         { "textures/parsertest/stageflags/maskColor",
@@ -1305,11 +1305,11 @@ TEST_F(MaterialsTest, MaterialParserStageVertexColours)
 {
     auto material = GlobalMaterialManager().getMaterial("textures/parsertest/vertexcolours/none");
     EXPECT_EQ(material->getLayer(0)->getVertexColourMode(), IShaderLayer::VERTEX_COLOUR_NONE);
-    
+
     material = GlobalMaterialManager().getMaterial("textures/parsertest/vertexcolours/vertexcolour");
     EXPECT_EQ(material->getLayer(1)->getVertexColourMode(), IShaderLayer::VERTEX_COLOUR_INVERSE_MULTIPLY);
     EXPECT_EQ(material->getLayer(0)->getVertexColourMode(), IShaderLayer::VERTEX_COLOUR_MULTIPLY);
-    
+
     material = GlobalMaterialManager().getMaterial("textures/parsertest/vertexcolours/colourcomponents");
 
     // Stage 1: Red
@@ -1437,7 +1437,7 @@ TEST_F(MaterialsTest, MaterialParserStageAlphaTest)
     auto material = GlobalMaterialManager().getMaterial("textures/parsertest/transform/notransform");
     EXPECT_FALSE(material->getLayer(0)->hasAlphaTest());
     EXPECT_EQ(material->getLayer(0)->getAlphaTest(), 0.0f);
-    
+
     material = GlobalMaterialManager().getMaterial("textures/parsertest/alphaTest");
 
     auto layer = material->getLayer(0);
@@ -1451,7 +1451,7 @@ TEST_F(MaterialsTest, MaterialParserStageCondition)
 {
     auto material = GlobalMaterialManager().getMaterial("textures/parsertest/transform/notransform");
     EXPECT_FALSE(material->getLayer(0)->getConditionExpression());
-    
+
     material = GlobalMaterialManager().getMaterial("textures/parsertest/condition");
 
     auto layer = material->getLayer(0);
@@ -1536,7 +1536,7 @@ TEST_F(MaterialsTest, MaterialFrobStageDetection)
     EXPECT_TRUE(shaders::FrobStageSetup::IsPresent(material));
     EXPECT_TRUE(shaders::FrobStageSetup::HasAdditiveDiffuseStage(material));
     EXPECT_TRUE(shaders::FrobStageSetup::HasWhiteBlendStage(material));
-    
+
     material = GlobalMaterialManager().getMaterial("textures/parsertest/frobstage_present2");
     EXPECT_TRUE(shaders::FrobStageSetup::IsPresent(material));
     EXPECT_TRUE(shaders::FrobStageSetup::HasAdditiveDiffuseStage(material));
@@ -1641,7 +1641,7 @@ TEST_F(MaterialsTest, MaterialFilenamePrecedence)
     EXPECT_TRUE(material) << "Could not find the material textures/precedencecheck";
 
     // The material in the PK4 should be processed first, the one in the filesystem just produces a warning
-    EXPECT_EQ(material->getDescription(), "Defined in precedence.mtr") 
+    EXPECT_EQ(material->getDescription(), "Defined in precedence.mtr")
         << "Description does not match what is defined in the PK4 .mtr";
 }
 
@@ -1820,7 +1820,7 @@ TEST_F(MaterialsTest, UpdateFromValidSourceTextEmitsSignal)
 {
     auto material = GlobalMaterialManager().getMaterial("textures/exporttest/empty");
     EXPECT_TRUE(material) << "Could not find the material textures/exporttest/empty";
-    
+
     auto changedSignalCount = 0;
 
     material->sig_materialChanged().connect(
@@ -1982,9 +1982,9 @@ TEST_F(MaterialsTest, DescriptionClearedBeforeParsing)
     EXPECT_TRUE(decl) << "The decl should have been created by the material manager";
 
     // Assigning a syntax block should trigger a reparse next time the description is requested
-    auto newSyntax = decl->getBlockSyntax();
+    auto newSyntax = decl->getDeclSource();
     newSyntax.contents = "\n\n"; // Just an empty decl block without description
-    decl->setBlockSyntax(newSyntax);
+    decl->setDeclSource(newSyntax);
 
     // Requesting the description should deliver an empty string now
     // The block itself doesn't declare a description, but the old one must have been cleared nonetheless
@@ -2020,11 +2020,11 @@ TEST_F(MaterialsTest, EditorImageUpdatedBeforeMaterialChangedSignalEmission)
     });
 
     // Assigning a syntax block should trigger a reparse next time the description is requested
-    auto newSyntax = decl->getBlockSyntax();
+    auto newSyntax = decl->getDeclSource();
     newSyntax.contents = R"(
     qer_editorimage	textures/numbers/0
 )";
-    decl->setBlockSyntax(newSyntax);
+    decl->setDeclSource(newSyntax);
 
     // Requesting the editor image in the handler should deliver the updated texture now
     EXPECT_TRUE(handlerFired) << "Handler has not been invoked at all";

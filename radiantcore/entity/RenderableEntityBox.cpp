@@ -5,10 +5,13 @@
 namespace entity
 {
 
-RenderableEntityBox::RenderableEntityBox(const EntityNode& entity, const AABB& bounds, const Vector3& worldPos) :
+RenderableEntityBox::RenderableEntityBox(
+    const EntityNode& entity, const AABB* bounds, const Vector3& worldPos
+):
     RenderableBox(bounds, worldPos),
     _entity(entity)
-{}
+{
+}
 
 Vector4 RenderableEntityBox::getVertexColour()
 {

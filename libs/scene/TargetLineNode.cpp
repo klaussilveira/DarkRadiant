@@ -28,10 +28,9 @@ scene::INode::Type TargetLineNode::getNodeType() const
     return Type::EntityConnection;
 }
 
-const AABB& TargetLineNode::localAABB() const
+AABB TargetLineNode::localAABB() const
 {
-    static AABB _aabb;
-    return _aabb;
+    return {};
 }
 
 void TargetLineNode::onInsertIntoScene(scene::IMapRootNode& root)

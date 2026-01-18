@@ -45,8 +45,8 @@ public:
     static TextureBrowserManager& Instance();
 
     // RegisterableModule
-    const std::string& getName() const override;
-    const StringSet& getDependencies() const override;
+    std::string getName() const override;
+    StringSet getDependencies() const override;
     void initialiseModule(const IApplicationContext& ctx) override;
     void shutdownModule() override;
 

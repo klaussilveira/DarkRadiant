@@ -3,6 +3,7 @@
 #include "ifavourites.h"
 #include "iregistry.h"
 #include "settings/SettingsManager.h"
+#include "xmlutil/Document.h"
 
 namespace test
 {

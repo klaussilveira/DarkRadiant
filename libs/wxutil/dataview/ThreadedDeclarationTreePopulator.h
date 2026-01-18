@@ -40,12 +40,12 @@ public:
         ThreadedDeclarationTreePopulator(type, columns, DEFAULT_DECL_ICON, DEFAULT_FOLDER_ICON)
     {}
 
-    ThreadedDeclarationTreePopulator(decl::Type type, const DeclarationTreeView::Columns& columns, 
+    ThreadedDeclarationTreePopulator(decl::Type type, const DeclarationTreeView::Columns& columns,
         const std::string& declIcon) :
         ThreadedDeclarationTreePopulator(type, columns, declIcon, DEFAULT_FOLDER_ICON)
     {}
 
-    ThreadedDeclarationTreePopulator(decl::Type type, const DeclarationTreeView::Columns& columns, 
+    ThreadedDeclarationTreePopulator(decl::Type type, const DeclarationTreeView::Columns& columns,
         const std::string& declIcon, const std::string& folderIcon) :
         ThreadedResourceTreePopulator(columns),
         _type(type),
@@ -72,7 +72,7 @@ public:
         {
             ThrowIfCancellationRequested();
 
-            if (decl->getBlockSyntax().fileInfo.visibility == vfs::Visibility::HIDDEN)
+            if (decl->getDeclSource().fileInfo.visibility == vfs::Visibility::HIDDEN)
             {
                 return; // skip hidden declarations
             }
@@ -202,7 +202,7 @@ protected:
      * @leafName: The name part after the rightmost slash
      * @isFolder: Whether this row is a folder (the folder icon will be assigned)
      */
-    void AssignValuesToRow(TreeModel::Row& row, const std::string& fullPath, 
+    void AssignValuesToRow(TreeModel::Row& row, const std::string& fullPath,
         const std::string& declName, const std::string& leafName, bool isFolder)
     {
         ThrowIfCancellationRequested();
@@ -230,7 +230,7 @@ protected:
         return _favourites.count(declName) > 0;
     }
 
-    TreeModel::Row InsertFolder(const TreeModel::Ptr& model, const std::string& path, 
+    TreeModel::Row InsertFolder(const TreeModel::Ptr& model, const std::string& path,
         const std::string& leafName, const wxDataViewItem& parentItem)
     {
         // Append a node to the tree view for this child
@@ -241,7 +241,7 @@ protected:
         return row;
     }
 
-    void InsertDecl(const TreeModel::Ptr& model, const std::string& path, const std::string& declName, 
+    void InsertDecl(const TreeModel::Ptr& model, const std::string& path, const std::string& declName,
         const std::string& leafName, const wxDataViewItem& parentItem)
     {
         auto row = model->AddItemUnderParent(parentItem);

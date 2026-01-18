@@ -21,9 +21,8 @@ public:
 	IMD5AnimPtr getAnim(const std::string& vfsPath);
 
 	// RegisterableModule implementation
-	const std::string& getName() const;
-	const StringSet& getDependencies() const;
-	void initialiseModule(const IApplicationContext& ctx);
+	std::string getName() const;
+	StringSet getDependencies() const;
 	void shutdownModule();
 };
 typedef std::shared_ptr<MD5AnimationCache> MD5AnimationCachePtr;

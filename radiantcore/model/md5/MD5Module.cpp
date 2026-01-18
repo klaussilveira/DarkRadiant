@@ -8,18 +8,17 @@
 namespace md5
 {
 
-class MD5Module :
-	public RegisterableModule
+class MD5Module: public RegisterableModule
 {
 public:
 	// RegisterableModule implementation
-	const std::string& getName() const
+	std::string getName() const
 	{
 		static std::string _name("MD5Module");
 		return _name;
 	}
 
-	const StringSet& getDependencies() const
+	StringSet getDependencies() const
 	{
 		static StringSet _dependencies;
 

@@ -32,7 +32,7 @@ TEST_F(ModelSkinTest, FindSkins)
     auto ivyOnesided = GlobalModelSkinCache().findSkin("ivy_onesided");
     EXPECT_EQ(ivyOnesided->getDeclName(), "ivy_onesided");
     EXPECT_EQ(ivyOnesided->getDeclFilePath(), "skins/selection_test.skin");
-    EXPECT_EQ(ivyOnesided->getRemap("textures/darkmod/decals/vegetation/ivy_mixed_pieces"), 
+    EXPECT_EQ(ivyOnesided->getRemap("textures/darkmod/decals/vegetation/ivy_mixed_pieces"),
         "textures/darkmod/decals/vegetation/ivy_mixed_pieces_onesided");
 }
 
@@ -46,7 +46,7 @@ TEST_F(ModelSkinTest, FindSkinsIsCaseInsensitive)
     EXPECT_EQ(tileSkin->getRemap("textures/atest/a"), "textures/numbers/10");
 }
 
-inline bool containsRemap(const std::vector<decl::ISkin::Remapping>& remaps, 
+inline bool containsRemap(const std::vector<decl::ISkin::Remapping>& remaps,
     const std::string& original, const std::string& replacement)
 {
     for (const auto& remap : remaps)
@@ -98,7 +98,7 @@ TEST_F(ModelSkinTest, GetRemapUsingWildcard)
     auto skin = GlobalModelSkinCache().findSkin("invisible");
 
     // Check the skin contains what need in this test
-    EXPECT_NE(skin->getBlockSyntax().contents.find("*   textures/common/nodraw"), std::string::npos);
+    EXPECT_NE(skin->getDeclSource().contents.find("*   textures/common/nodraw"), std::string::npos);
 
     EXPECT_EQ(skin->getRemap("textures/atest/a"), "textures/common/nodraw") << "Skin should always return nodraw";
     EXPECT_EQ(skin->getRemap("any_other_texture"), "textures/common/nodraw") << "Skin should always return nodraw";
@@ -146,10 +146,10 @@ TEST_F(ModelSkinTest, AddModel)
 {
     // Skin with 2 models
     auto skin = GlobalModelSkinCache().findSkin("separated_tile_skin");
-        
+
     EXPECT_EQ(skin->getModels().size(), 2) << "Unit test skin setup wrong";
     EXPECT_FALSE(skin->isModified()) << "Skin should be unmodified at start";
-    auto previousDeclBlock = skin->getBlockSyntax().contents;
+    auto previousDeclBlock = skin->getDeclSource().contents;
 
     std::size_t signalCount = 0;
     skin->signal_DeclarationChanged().connect([&] { ++signalCount; });
@@ -163,7 +163,7 @@ TEST_F(ModelSkinTest, AddModel)
     EXPECT_EQ(skin->getModels().count(modelToAdd), 1) << "Model has not been added";
     EXPECT_TRUE(skin->isModified()) << "Skin should be modified now";
     EXPECT_EQ(signalCount, 1) << "Signal has not been emitted";
-    EXPECT_NE(skin->getBlockSyntax().contents.find(modelToAdd), std::string::npos) << "Source should contain " << modelToAdd;
+    EXPECT_NE(skin->getDeclSource().contents.find(modelToAdd), std::string::npos) << "Source should contain " << modelToAdd;
 }
 
 TEST_F(ModelSkinTest, AddRedundantModel)
@@ -428,12 +428,12 @@ TEST_F(ModelSkinTest, CopySkin)
     auto skin = skinManager.copySkin("separated_tile_skin", "skin/copytest");
     EXPECT_TRUE(skin) << "No skin copy has been created";
     EXPECT_EQ(skin->getDeclName(), "skin/copytest") << "Wrong name assigned";
-    EXPECT_EQ(skin->getBlockSyntax().contents, originalSkin->getBlockSyntax().contents) << "Contents not copied";
+    EXPECT_EQ(skin->getDeclSource().contents, originalSkin->getDeclSource().contents) << "Contents not copied";
     EXPECT_TRUE(skin->isModified()) << "Copied skin should be set to modified";
     EXPECT_TRUE(skinManager.skinCanBeModified(skin->getDeclName()));
-    EXPECT_EQ(skin->getBlockSyntax().fileInfo.name, "");
-    EXPECT_EQ(skin->getBlockSyntax().fileInfo.topDir, "");
-    EXPECT_EQ(skin->getBlockSyntax().getModName(), GlobalGameManager().currentGame()->getName())
+    EXPECT_EQ(skin->getDeclSource().fileInfo.name, "");
+    EXPECT_EQ(skin->getDeclSource().fileInfo.topDir, "");
+    EXPECT_EQ(skin->getDeclSource().getModName(), GlobalGameManager().currentGame()->getName())
         << "Copy should have the current game name set, since we don't have a mod in the unit tests";
 
     // Check signal emission
@@ -532,7 +532,7 @@ TEST_F(ModelSkinTest, ReloadDeclsRefreshesModelsUsingSignal)
     model               models/ase/tiles.ase
     textures/atest/a    textures/common/noclip
 )";
-    skin->setBlockSyntax(syntax);
+    skin->setDeclSource(syntax);
 
     // Create an artificial skins-reloaded event
     GlobalDeclarationManager().signal_DeclsReloaded(decl::Type::Skin).emit();
@@ -642,9 +642,9 @@ TEST_F(ModelSkinTest, SkinIsListedAfterSkinChange)
         << "Skin should have disappeared from the matching skin list";
 
     // Modify the skin again, adding it back
-    auto syntax = originalSkin->getBlockSyntax();
+    auto syntax = originalSkin->getDeclSource();
     syntax.contents = "\n\nmodel \"" + associatedModel + "\"\n\n" + syntax.contents;
-    originalSkin->setBlockSyntax(syntax);
+    originalSkin->setDeclSource(syntax);
 
     skinsForModel = GlobalModelSkinCache().getSkinsForModel(associatedModel);
     EXPECT_NE(std::find(skinsForModel.begin(), skinsForModel.end(), skinToModify), skinsForModel.end())
@@ -969,9 +969,9 @@ TEST_F(ModelSkinTest, SkinChangeDetectionOnReloadDecls)
 
     // Change the def contents, which should trigger a modelDefChanged signal on the entity
     auto modelDef = GlobalDeclarationManager().findDeclaration(decl::Type::ModelDef, "some_base_modeldef_with_skin");
-    auto syntax = modelDef->getBlockSyntax();
+    auto syntax = modelDef->getDeclSource();
     string::replace_first(syntax.contents, caulkSkin, visportalSkin);
-    modelDef->setBlockSyntax(syntax);
+    modelDef->setDeclSource(syntax);
 
     expectEntityHasSkinnedModel(entity, visportalSkin, visportalSet);
 }
@@ -992,9 +992,9 @@ TEST_F(ModelSkinTest, SkinChangeInDefOverriddenWithSkinProperty)
     // Change the def contents, which should trigger a modelDefChanged signal on the entity
     // => shouldn't do anything, since the entity is overriding it
     auto modelDef = GlobalDeclarationManager().findDeclaration(decl::Type::ModelDef, "some_base_modeldef_with_skin");
-    auto syntax = modelDef->getBlockSyntax();
+    auto syntax = modelDef->getDeclSource();
     string::replace_first(syntax.contents, visportalSkin, aasSolidSkin);
-    modelDef->setBlockSyntax(syntax);
+    modelDef->setDeclSource(syntax);
 
     // Still visportal skinned
     expectEntityHasSkinnedModel(entity, visportalSkin, visportalSet);

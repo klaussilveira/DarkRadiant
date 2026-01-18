@@ -10,7 +10,7 @@
 namespace ui
 {
 
-namespace statusbar 
+namespace statusbar
 {
 
 class StatusBarManager :
@@ -49,7 +49,7 @@ class StatusBarManager :
 	PositionMap _positions;
 
 	// only used during startup
-	wxFrame* _tempParent; 
+	wxFrame* _tempParent;
 
 	// The main status bar
 	wxPanel* _statusBar;
@@ -90,7 +90,7 @@ public:
 	 * @pos: the position to insert. Use POS_FRONT or POS_BACK to put the element
 	 *       at the front or back of the status bar container.
  	 */
-	void addTextElement(const std::string& name, const std::string& icon, int pos, 
+	void addTextElement(const std::string& name, const std::string& icon, int pos,
 						const std::string& description) override;
 
 	/**
@@ -100,8 +100,8 @@ public:
     void setText(const std::string& name, const std::string& text, bool immediateUpdate) override;
 
     // RegisterableModule
-    const std::string& getName() const override;
-    const StringSet& getDependencies() const override;
+    std::string getName() const override;
+    StringSet getDependencies() const override;
     void initialiseModule(const IApplicationContext& ctx) override;
 
 protected:

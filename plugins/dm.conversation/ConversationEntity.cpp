@@ -18,7 +18,7 @@ namespace conversation
 ConversationEntity::ConversationEntity(const scene::INodePtr& node) :
 	_entityNode(node)
 {
-	Entity* entity = Node_getEntity(node);
+	Entity* entity = node->tryGetEntity();
 	assert(entity != nullptr);
 
 	// Use an conversationKeyExtractor to populate the ConversationMap from the keys
@@ -158,7 +158,7 @@ void ConversationEntity::clearEntity(Entity* entity)
 void ConversationEntity::writeToEntity()
 {
 	// Try to convert the weak_ptr reference to a shared_ptr
-	Entity* entity = Node_getEntity(_entityNode.lock());
+	Entity* entity = _entityNode.lock()->tryGetEntity();
 	assert(entity != nullptr);
 
 	// greebo: Remove all conversation-related spawnargs first

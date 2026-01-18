@@ -63,7 +63,7 @@ void MRU::saveRecentFiles()
 
 void MRU::constructPreferences()
 {
-	IPreferencePage& page = GlobalPreferenceSystem().getPage(_("Map Files"));
+	IPreferencePage& page = GlobalPreferenceSystem().getPage(preferences::FILES_PAGE);
 
 	page.appendEntry(_("Number of most recently used files"), RKEY_MRU_LENGTH);
 	page.appendCheckBox(_("Open last map on startup"), RKEY_LOAD_LAST_MAP);
@@ -129,13 +129,13 @@ void MRU::loadMRUMap(const cmd::ArgumentList& args)
 	});
 }
 
-const std::string& MRU::getName() const
+std::string MRU::getName() const
 {
 	static std::string _name(MODULE_MRU_MANAGER);
 	return _name;
 }
 
-const StringSet& MRU::getDependencies() const
+StringSet MRU::getDependencies() const
 {
 	static StringSet _dependencies;
 

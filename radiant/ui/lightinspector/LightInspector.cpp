@@ -212,7 +212,7 @@ void LightInspector::update()
         // Required visit method
         void visit(const scene::INodePtr& node) const
         {
-            Entity* ent = Node_getEntity(node);
+            Entity* ent = node->tryGetEntity();
             if (ent && ent->getEntityClass()->isLight())
             {
                 // Add light to list

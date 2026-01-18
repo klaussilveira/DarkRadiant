@@ -1,11 +1,11 @@
 #include "Entity.h"
 
-#include "ieclass.h"
+#include "scene/EntityClass.h"
 #include "debugging/debugging.h"
 #include "string/predicate.h"
 #include <functional>
 
-Entity::Entity(const IEntityClassPtr& eclass) :
+Entity::Entity(const scene::EntityClass::Ptr& eclass) :
 	_eclass(eclass),
 	_undo(_keyValues, std::bind(&Entity::importState, this, std::placeholders::_1),
         std::function<void()>(), "EntityKeyValues"),
@@ -130,7 +130,7 @@ void Entity::disconnectUndoSystem(IUndoSystem& undoSystem)
 	}
 }
 
-IEntityClassPtr Entity::getEntityClass() const
+scene::EntityClass::Ptr Entity::getEntityClass() const
 {
 	return _eclass;
 }

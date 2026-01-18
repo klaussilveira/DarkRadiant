@@ -3,15 +3,10 @@
 #include "i18n.h"
 #include "iundo.h"
 #include "ui/imainframe.h"
-#include "iscenegraph.h"
 
 #include "gamelib.h"
-#include "registry/registry.h"
-#include "string/string.h"
 #include "wxutil/dialog/Dialog.h"
 #include "wxutil/EntryAbortedException.h"
-
-#include <iostream>
 
 #include <wx/notebook.h>
 #include <wx/panel.h>
@@ -98,6 +93,7 @@ void DifficultyDialog::populateWindow()
     buttonSizer->Add(okButton);
 
     GetSizer()->Add(buttonSizer, 0, wxALIGN_RIGHT | wxALL, 12);
+    GetSizer()->SetSizeHints(this);
 
     Layout();
     Fit();

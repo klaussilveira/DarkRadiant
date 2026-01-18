@@ -12,7 +12,7 @@ namespace decl
 
 class DeclarationManager;
 
-using ParseResult = std::map<Type, std::vector<DeclarationBlockSyntax>>;
+using ParseResult = std::map<Type, std::vector<DeclarationBlockSource>>;
 
 // Threaded parser processing all files in the configured decl folder
 // Submits all parsed declarations to the IDeclarationManager when finished
@@ -47,7 +47,7 @@ protected:
     void onFinishParsing() override;
 
 private:
-    Type determineBlockType(const DeclarationBlockSyntax& block);
+    Type determineBlockType(const DeclarationBlockSource& block);
 };
 
 }

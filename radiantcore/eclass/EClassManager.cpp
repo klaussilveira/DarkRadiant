@@ -15,33 +15,33 @@ namespace eclass
 {
 
 // Get a named entity class, creating if necessary
-IEntityClassPtr EClassManager::findOrInsert(const std::string& name, bool has_brushes)
+scene::EntityClass::Ptr EClassManager::findOrInsert(const std::string& name, bool has_brushes)
 {
-    return std::static_pointer_cast<IEntityClass>(
+    return std::static_pointer_cast<scene::EntityClass>(
         GlobalDeclarationManager().findOrCreateDeclaration(decl::Type::EntityDef, name)
     );
 }
 
-IEntityClassPtr EClassManager::findClass(const std::string& className)
+scene::EntityClass::Ptr EClassManager::findClass(const std::string& className)
 {
-    return std::static_pointer_cast<IEntityClass>(
+    return std::static_pointer_cast<scene::EntityClass>(
         GlobalDeclarationManager().findDeclaration(decl::Type::EntityDef, className)
     );
 }
 
 void EClassManager::forEachEntityClass(EntityClassVisitor& visitor)
 {
-    forEachEntityClass([&](const IEntityClassPtr& eclass)
+    forEachEntityClass([&](const scene::EntityClass::Ptr& eclass)
     {
         visitor.visit(eclass);
     });
 }
 
-void EClassManager::forEachEntityClass(const std::function<void(const IEntityClassPtr&)>& functor)
+void EClassManager::forEachEntityClass(const std::function<void(const scene::EntityClass::Ptr&)>& functor)
 {
     GlobalDeclarationManager().foreachDeclaration(decl::Type::EntityDef, [&](const decl::IDeclaration::Ptr& decl)
     {
-        functor(std::static_pointer_cast<IEntityClass>(decl));
+        functor(std::static_pointer_cast<scene::EntityClass>(decl));
     });
 }
 
@@ -66,13 +66,13 @@ void EClassManager::reloadDefs()
 }
 
 // RegisterableModule implementation
-const std::string& EClassManager::getName() const
+std::string EClassManager::getName() const
 {
 	static std::string _name(MODULE_ECLASSMANAGER);
 	return _name;
 }
 
-const StringSet& EClassManager::getDependencies() const
+StringSet EClassManager::getDependencies() const
 {
     static StringSet _dependencies
     {
@@ -87,11 +87,17 @@ const StringSet& EClassManager::getDependencies() const
 
 void EClassManager::initialiseModule(const IApplicationContext& ctx)
 {
-    GlobalDeclarationManager().registerDeclType("entityDef", std::make_shared<decl::DeclarationCreator<EntityClass>>(decl::Type::EntityDef));
-    GlobalDeclarationManager().registerDeclType("model", std::make_shared<decl::DeclarationCreator<Doom3ModelDef>>(decl::Type::ModelDef));
+    GlobalDeclarationManager().registerDeclType(
+        "entityDef",
+        std::make_shared<decl::DeclarationCreator<scene::EntityClass>>(decl::Type::EntityDef)
+    );
+    GlobalDeclarationManager().registerDeclType(
+        "model",
+        std::make_shared<decl::DeclarationCreator<Doom3ModelDef>>(decl::Type::ModelDef)
+    );
     GlobalDeclarationManager().registerDeclFolder(decl::Type::EntityDef, "def/", ".def");
 
-	GlobalCommandSystem().addCommand("ReloadDefs", std::bind(&EClassManager::reloadDefsCmd, this, std::placeholders::_1));
+    GlobalCommandSystem().addCommand("ReloadDefs", std::bind(&EClassManager::reloadDefsCmd, this, std::placeholders::_1));
 
     _eclassColoursChanged = GlobalEclassColourManager().sig_overrideColourChanged().connect(
         sigc::mem_fun(this, &EClassManager::onEclassOverrideColourChanged));
@@ -108,7 +114,7 @@ void EClassManager::onEclassOverrideColourChanged(const std::string& eclass, boo
 {
     // An override colour in the IColourManager instance has changed
     // Do we have an affected eclass with that name?
-    auto foundEclass = std::static_pointer_cast<EntityClass>(findClass(eclass));
+    auto foundEclass = std::static_pointer_cast<scene::EntityClass>(findClass(eclass));
 
     if (!foundEclass)
     {

@@ -7,7 +7,6 @@
 #include "imodule.h"
 #include "backend/OpenGLStateManager.h"
 #include "backend/OpenGLShader.h"
-#include "backend/OpenGLStateLess.h"
 #include "backend/TextRenderer.h"
 #include "backend/SceneRenderer.h"
 #include "backend/FenceSyncProvider.h"
@@ -21,10 +20,7 @@ namespace render
 class GLProgramFactory;
 typedef std::shared_ptr<GLProgramFactory> GLProgramFactoryPtr;
 
-/**
- * \brief
- * Implementation of RenderSystem.
- */
+/// Implementation of RenderSystem.
 class OpenGLRenderSystem final
 : public RenderSystem,
   public OpenGLStateManager
@@ -129,8 +125,8 @@ public:
     void setMergeModeEnabled(bool enabled) override;
 
 	// RegisterableModule implementation
-    const std::string& getName() const override;
-    const StringSet& getDependencies() const override;
+    std::string getName() const override;
+    StringSet getDependencies() const override;
     void initialiseModule(const IApplicationContext& ctx) override;
     void shutdownModule() override;
 

@@ -27,11 +27,11 @@ public:
 
 protected:
     // Predicate to be implemented by subclasses. Returns true if the eclass should be listed.
-    virtual bool ClassShouldBeListed(const IEntityClassPtr& eclass) = 0;
+    virtual bool ClassShouldBeListed(const scene::EntityClass::Ptr& eclass) = 0;
 
     void PopulateModel(const wxutil::TreeModel::Ptr& model) override
     {
-        GlobalEntityClassManager().forEachEntityClass([&](const IEntityClassPtr& eclass)
+        GlobalEntityClassManager().forEachEntityClass([&](const scene::EntityClass::Ptr& eclass)
         {
             ThrowIfCancellationRequested();
 

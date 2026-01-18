@@ -26,7 +26,6 @@ add_library(radiantcore MODULE
             decl/DeclarationFolderParser.cpp
             decl/DeclarationManager.cpp
             decl/FavouritesManager.cpp
-            eclass/EntityClass.cpp
             eclass/EClassColourManager.cpp
             eclass/EClassManager.cpp
             entity/AngleKey.cpp
@@ -48,7 +47,6 @@ add_library(radiantcore MODULE
             entity/speaker/SpeakerRenderables.cpp
             filetypes/FileTypeRegistry.cpp
             filters/BasicFilterSystem.cpp
-            filters/XMLFilter.cpp
             filters/XmlFilterEventAdapter.cpp
             fonts/FontLoader.cpp
             fonts/FontManager.cpp
@@ -286,13 +284,11 @@ add_library(radiantcore MODULE
             shaders/ExpressionSlots.cpp
             shaders/MapExpression.cpp
             shaders/MaterialSourceGenerator.cpp
-            shaders/ShaderExpression.cpp
             shaders/ShaderLibrary.cpp
             shaders/ShaderTemplate.cpp
             shaders/TableDefinition.cpp
             shaders/TextureMatrix.cpp
             shaders/textures/GLTextureManager.cpp
-            shaders/textures/TextureManipulator.cpp
             skins/Doom3ModelSkin.cpp
             skins/Doom3SkinCache.cpp
             undo/UndoSystem.cpp
@@ -308,9 +304,12 @@ target_include_directories(radiantcore PRIVATE .)
 target_link_libraries(radiantcore PUBLIC
                       math xmlutil scene wxutil module
                       ${JPEG_LIBRARIES} ${PNG_LIBRARIES} ${ZLIB_LIBRARIES})
+set_target_properties(
+    radiantcore PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${DR_STAGING_MODULESDIR}"
+)
 
 # Enable precompiled header for radiantcore
 if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.16.0")
-target_precompile_headers(radiantcore PRIVATE
-                          "$<$<COMPILE_LANGUAGE:CXX>:precompiled.h>")
+    target_precompile_headers(radiantcore PRIVATE
+                            "$<$<COMPILE_LANGUAGE:CXX>:precompiled.h>")
 endif()

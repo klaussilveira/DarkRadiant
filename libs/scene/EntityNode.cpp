@@ -12,7 +12,7 @@
 
 #include "EntitySettings.h"
 
-EntityNode::EntityNode(const IEntityClassPtr& eclass) :
+EntityNode::EntityNode(const scene::EntityClass::Ptr& eclass) :
 	TargetableNode(_spawnArgs, *this),
 	_eclass(eclass),
 	_spawnArgs(_eclass),

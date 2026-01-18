@@ -102,7 +102,7 @@ void PatchNode::updateSelectableControls()
 	}
 }
 
-const AABB& PatchNode::localAABB() const {
+AABB PatchNode::localAABB() const {
 	return m_patch.localAABB();
 }
 

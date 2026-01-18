@@ -20,10 +20,10 @@
 #include "selection/algorithm/Group.h"
 #include "eclass.h"
 
-namespace selection 
+namespace selection
 {
 
-namespace algorithm 
+namespace algorithm
 {
 
 constexpr const char* const GKEY_BIND_KEY("/defaults/bindKey");
@@ -34,7 +34,7 @@ constexpr const char* const DEFAULT_ANGLE = "90"; // north
 
 void setEntityKeyValue(const scene::INodePtr& node, const std::string& key, const std::string& value)
 {
-	Entity* entity = Node_getEntity(node);
+	Entity* entity = node->tryGetEntity();
 
 	if (entity)
 	{
@@ -60,7 +60,7 @@ void setEntityKeyValue(const scene::INodePtr& node, const std::string& key, cons
 
 		if (!parent) return;
 
-		Entity* parentEnt = Node_getEntity(parent);
+		Entity* parentEnt = parent->tryGetEntity();
 
 		if (parentEnt)
 		{
@@ -89,7 +89,7 @@ void setEntityClassname(const std::string& classname)
 	GlobalSelectionSystem().foreachSelected([&](const scene::INodePtr& node)
 	{
 		// Check if we have an entity
-		Entity* entity = Node_getEntity(node);
+		Entity* entity = node->tryGetEntity();
 
 		if (entity != NULL && Node_isSelected(node))
 		{
@@ -142,7 +142,7 @@ void setEntityKeyValue(const std::string& key, const std::string& value)
 		setEntityClassname(value);
 		return;
 	}
-	
+
 	// Regular key change, set value on all selected entities
 	GlobalSelectionSystem().foreachSelected([&](const scene::INodePtr& node)
 	{
@@ -171,8 +171,8 @@ void bindEntities()
 	{
 		UndoableCommand command("bindEntities");
 
-		Entity* first = Node_getEntity(GlobalSelectionSystem().ultimateSelected());
-		Entity* second = Node_getEntity(GlobalSelectionSystem().penultimateSelected());
+		Entity* first = GlobalSelectionSystem().ultimateSelected()->tryGetEntity();
+		Entity* second = GlobalSelectionSystem().penultimateSelected()->tryGetEntity();
 
 		if (first != NULL && second != NULL)
 		{
@@ -204,8 +204,8 @@ void connectSelectedEntities()
 	if (GlobalSelectionSystem().countSelected() == 2)
 	{
 		// Obtain both entities
-		Entity* e1 = Node_getEntity(GlobalSelectionSystem().penultimateSelected()); // source
-		Entity* e2 = Node_getEntity(GlobalSelectionSystem().ultimateSelected()); // target
+		Entity* e1 = GlobalSelectionSystem().penultimateSelected()->tryGetEntity(); // source
+		Entity* e2 = GlobalSelectionSystem().ultimateSelected()->tryGetEntity(); // target
 
 		// Check entities are valid
 		if (e1 == nullptr || e2 == nullptr)
@@ -215,7 +215,7 @@ void connectSelectedEntities()
 		}
 
 		// Check entities are distinct
-		if (e1 == e2) 
+		if (e1 == e2)
 		{
 			rError() << "connectSelectedEntities: the selected entities must be different" << std::endl;
 			return;
@@ -279,7 +279,7 @@ void selectItemsByModel(const std::string& model)
 void deselectItemsByModel(const std::string& model)
 {
     if (!GlobalSceneGraph().root()) return;
-    
+
     scene::EntitySelector deselector([&](const Entity& entity)
     {
         return entityReferencesModel(entity, model);
@@ -338,7 +338,7 @@ void placePlayerStart(const cmd::ArgumentList& args)
         playerStartNode = GlobalEntityModule().createEntity(eclass);
         scene::addNodeToContainer(playerStartNode, GlobalSceneGraph().root());
 
-        playerStartEntity = Node_getEntity(playerStartNode);
+        playerStartEntity = playerStartNode->tryGetEntity();
 
         // Set a default angle
         playerStartEntity->setKeyValue(ANGLE_KEY_NAME, DEFAULT_ANGLE);

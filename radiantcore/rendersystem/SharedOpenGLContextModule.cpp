@@ -1,7 +1,6 @@
 #include "SharedOpenGLContextModule.h"
 
 #include <stdexcept>
-#include "itextstream.h"
 
 #include "module/StaticModule.h"
 
@@ -48,20 +47,10 @@ sigc::signal<void>& SharedOpenGLContextModule::signal_sharedContextDestroyed()
 }
 
 // RegisterableModule implementation
-const std::string& SharedOpenGLContextModule::getName() const
+std::string SharedOpenGLContextModule::getName() const
 {
 	static std::string _name(MODULE_SHARED_GL_CONTEXT);
 	return _name;
-}
-
-const StringSet& SharedOpenGLContextModule::getDependencies() const
-{
-	static StringSet _dependencies;
-	return _dependencies;
-}
-
-void SharedOpenGLContextModule::initialiseModule(const IApplicationContext& ctx)
-{
 }
 
 void SharedOpenGLContextModule::shutdownModule()

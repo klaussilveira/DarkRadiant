@@ -258,7 +258,7 @@ void CShader::clearMaterialFlag(Flags flag)
 
 bool CShader::IsDefault() const
 {
-	return _isInternal || _template->getBlockSyntax().fileInfo.name.empty();
+	return _isInternal || _template->getDeclSource().fileInfo.name.empty();
 }
 
 // get the cull type
@@ -357,7 +357,7 @@ Material::Coverage CShader::getCoverage() const
 // get shader file name (ie the file where this one is defined)
 const char* CShader::getShaderFileName() const
 {
-	return _template->getBlockSyntax().fileInfo.name.c_str();
+	return _template->getDeclSource().fileInfo.name.c_str();
 }
 
 void CShader::setShaderFileName(const std::string& fullPath)
@@ -370,7 +370,7 @@ void CShader::setShaderFileName(const std::string& fullPath)
 
 const vfs::FileInfo& CShader::getShaderFileInfo() const
 {
-    return _template->getBlockSyntax().fileInfo;
+    return _template->getDeclSource().fileInfo;
 }
 
 std::string CShader::getDefinition()
@@ -624,7 +624,7 @@ void CShader::commitModifications()
     if (_template == _originalTemplate) return;
 
     // Replace the contents with our working copy
-    _originalTemplate->setBlockSyntax(_template->getBlockSyntax());
+    _originalTemplate->setDeclSource(_template->getDeclSource());
 
     // Overwrite the working template reference, the material is now unmodified again
     _template = _originalTemplate;
@@ -695,16 +695,16 @@ Material::ParseResult CShader::updateFromSourceText(const std::string& sourceTex
     auto newTemplate= std::make_shared<ShaderTemplate>(getName());
 
     // Only replace the contents of the block syntax, leave the rest unchanged
-    auto syntax = _template->getBlockSyntax();
+    auto syntax = _template->getDeclSource();
     syntax.contents = sourceText;
-    newTemplate->setBlockSyntax(syntax);
+    newTemplate->setDeclSource(syntax);
 
     const auto& error = newTemplate->getParseErrors();
 
     if (error.empty())
     {
         // Parse seems to be successful, assign the text to the actual template
-        _template->setBlockSyntax(syntax);
+        _template->setDeclSource(syntax);
     }
 
     return ParseResult{ error.empty(), error };

@@ -36,7 +36,7 @@ TEST_F(SoundManagerTest, GetExistingSoundShader)
     EXPECT_EQ(fileList.at(0), "sound/nonexistent.ogg");
     EXPECT_EQ(fileList.at(1), "sound/nonexistent2.ogg");
 
-    EXPECT_NE(existing->getBlockSyntax().contents.find("maxDistance 30"), std::string::npos)
+    EXPECT_NE(existing->getDeclSource().contents.find("maxDistance 30"), std::string::npos)
         << "Didn't find the expected contents";
 }
 
@@ -63,9 +63,9 @@ TEST_F(SoundManagerTest, GetNonExistingSoundShader)
     // This shader is defined nowhere
     auto nonexisting = GlobalSoundManager().getSoundShader("nonexisting_shader_1242");
     EXPECT_TRUE(nonexisting) << "SoundManager should always return a non-empty reference";
-    EXPECT_EQ(nonexisting->getBlockSyntax().fileInfo.visibility, vfs::Visibility::HIDDEN)
+    EXPECT_EQ(nonexisting->getDeclSource().fileInfo.visibility, vfs::Visibility::HIDDEN)
         << "Non-existing shader's VFS visibility should be hidden";
-    EXPECT_TRUE(nonexisting->getBlockSyntax().contents.empty())
+    EXPECT_TRUE(nonexisting->getDeclSource().contents.empty())
         << "Non-existing shader's content should be empty";
 }
 
@@ -90,6 +90,19 @@ TEST_F(SoundManagerTest, GetSoundFileDurationWithoutExtension)
     // This should find jorge.ogg before it falls back to jorge.wav
     auto duration = GlobalSoundManager().getSoundFileDuration("sound/test/jorge");
     EXPECT_NEAR(duration, oggDuration, 0.001) << "The OGG file should have been found, not the wav file";
+}
+
+TEST_F(SoundManagerTest, SoundDeclSupportsVisibility)
+{
+    // Normal decl
+    auto normal = GlobalSoundManager().getSoundShader("test/jorge");
+    ASSERT_TRUE(normal);
+    EXPECT_EQ(normal->getVisibility(), vfs::Visibility::NORMAL);
+
+    // Hidden decl
+    auto hidden = GlobalSoundManager().getSoundShader("test/hidden_sound");
+    ASSERT_TRUE(hidden);
+    EXPECT_EQ(hidden->getVisibility(), vfs::Visibility::HIDDEN);
 }
 
 }

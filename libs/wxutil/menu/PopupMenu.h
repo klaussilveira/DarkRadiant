@@ -4,12 +4,9 @@
 
 #include <functional>
 #include <memory>
-#include "util/Noncopyable.h"
 #include <vector>
 
 #include <wx/menu.h>
-
-#include "MenuItem.h"
 
 namespace wxutil
 {
@@ -18,30 +15,21 @@ namespace wxutil
  * A free pop-up menu populated with items and displayed on demand. Useful for
  * right-click context menus.
  */
-class PopupMenu :
-	public wxMenu,
-	public ui::IMenu
+class PopupMenu: public wxMenu, public ui::IMenu
 {
-private:
 	// List of menu items
 	typedef std::vector<ui::IMenuItemPtr> MenuItemList;
 	MenuItemList _menuItems;
-
-private:
 
 	// Mouse click callback (if required)
 	void _onItemClick(wxCommandEvent& ev);
 
 public:
 
-	/**
-	 * Default constructor.
-	 */
+	/// Default constructor.
 	PopupMenu();
 
-	/**
-	 * Destructor.
-	 */
+	/// Destructor.
 	virtual ~PopupMenu();
 
 	/**

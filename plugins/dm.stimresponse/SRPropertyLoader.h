@@ -31,7 +31,7 @@ public:
 
 	void visitKeyValue(const std::string& key, const std::string& value);
 
-	// operator() for IEntityClass::forEachEntityClass
+	// operator() for scene::EntityClass::forEachEntityClass
 	void operator() (const EntityClassAttribute& attribute, bool);
 
 private:

@@ -141,6 +141,8 @@
                 <border>6</border>
                 <option>0</option>
                 <object class="wxButton" name="ConvEditorAddActorButton">
+                  <style>wxBU_EXACTFIT</style>
+                  <tooltip>Add a new actor</tooltip>
                   <label></label>
                   <default>0</default>
                   <auth_needed>0</auth_needed>
@@ -153,6 +155,8 @@
                 <border>6</border>
                 <option>0</option>
                 <object class="wxButton" name="ConvEditorDeleteActorButton">
+                  <style>wxBU_EXACTFIT</style>
+                  <tooltip>Delete the selected actor</tooltip>
                   <label></label>
                   <default>0</default>
                   <auth_needed>0</auth_needed>
@@ -165,11 +169,13 @@
                 <border>6</border>
                 <option>0</option>
                 <object class="wxButton" name="ConvEditorValidateActorsButton">
-                  <label>Validate all</label>
+                  <style>wxBU_EXACTFIT</style>
+                  <tooltip>Validate all actors</tooltip>
+                  <label></label>
                   <default>0</default>
                   <auth_needed>0</auth_needed>
                   <markup>0</markup>
-                  <bitmap/>
+                  <bitmap>../bitmaps/validate_actors.png</bitmap>
                 </object>
               </object>
             </object>
@@ -213,6 +219,8 @@
                 <border>6</border>
                 <option>0</option>
                 <object class="wxButton" name="ConvEditorAddCommandButton">
+                  <style>wxBU_EXACTFIT</style>
+                  <tooltip>Add a new command</tooltip>
                   <label></label>
                   <default>0</default>
                   <auth_needed>0</auth_needed>
@@ -225,6 +233,8 @@
                 <border>6</border>
                 <option>0</option>
                 <object class="wxButton" name="ConvEditorEditCommandButton">
+                  <style>wxBU_EXACTFIT</style>
+                  <tooltip>Edit the selected command</tooltip>
                   <label></label>
                   <default>0</default>
                   <auth_needed>0</auth_needed>
@@ -237,6 +247,8 @@
                 <border>6</border>
                 <option>0</option>
                 <object class="wxButton" name="ConvEditorMoveUpCommandButton">
+                  <style>wxBU_EXACTFIT</style>
+                  <tooltip>Move selected command up</tooltip>
                   <label></label>
                   <default>0</default>
                   <auth_needed>0</auth_needed>
@@ -249,6 +261,8 @@
                 <border>6</border>
                 <option>0</option>
                 <object class="wxButton" name="ConvEditorMoveDownCommandButton">
+                  <style>wxBU_EXACTFIT</style>
+                  <tooltip>Move selected command down</tooltip>
                   <label></label>
                   <default>0</default>
                   <auth_needed>0</auth_needed>
@@ -261,6 +275,8 @@
                 <border>6</border>
                 <option>0</option>
                 <object class="wxButton" name="ConvEditorDeleteCommandButton">
+                  <style>wxBU_EXACTFIT</style>
+                  <tooltip>Delete the selected command</tooltip>
                   <label></label>
                   <default>0</default>
                   <auth_needed>0</auth_needed>

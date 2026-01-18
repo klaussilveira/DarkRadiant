@@ -167,7 +167,7 @@ scene::INodePtr Doom3MapReader::createEntity(const EntityKeyValues& keyValues)
 
     // Otherwise create the entity and add all of the properties
     std::string className = found->second;
-	IEntityClassPtr classPtr = GlobalEntityClassManager().findClass(className);
+	scene::EntityClass::Ptr classPtr = GlobalEntityClassManager().findClass(className);
 
 	if (classPtr == NULL)
 	{

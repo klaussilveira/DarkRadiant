@@ -8,6 +8,7 @@
 #include "string/string.h"
 #include "string/convert.h"
 #include "os/path.h"
+#include "math/Vector4.h"
 
 namespace test
 {

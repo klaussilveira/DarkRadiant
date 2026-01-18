@@ -1,43 +1,29 @@
 #include "FilterPopupMenu.h"
 
-#include "ui/ieventmanager.h"
+#include "ifilter.h"
 #include <wx/menu.h>
-
-#include "wxutil/menu/IconTextMenuItem.h"
 
 namespace wxutil
 {
 
-namespace
-{
-	const char* const MENU_ICON = "iconFilter16.png";
-}
-
 FilterPopupMenu::FilterPopupMenu()
 {
-	// Visit the filters in the FilterSystem to populate the menu
-	GlobalFilterSystem().forEachFilter(std::bind(&FilterPopupMenu::visitFilter, this, std::placeholders::_1));
+    // Visit the filters in the FilterSystem to populate the menu
+    GlobalFilterSystem().forEachFilter([=](const filters::SceneFilter& f) {
+        // Allocate an ID for this filter
+        const int menuItemID = _filterItems.size();
+        _filterItems.push_back(f.getName());
+
+        // Add a checkable menu item, initialised with the current filter state
+        auto* item = AppendCheckItem(menuItemID, f.getName());
+        item->Check(GlobalFilterSystem().getFilterState(f.getName()));
+        Bind(wxEVT_MENU, &FilterPopupMenu::menuItemToggled, this, menuItemID);
+    });
 }
 
-FilterPopupMenu::~FilterPopupMenu()
+void FilterPopupMenu::menuItemToggled(wxCommandEvent& ev)
 {
-	for (const auto& item : _filterItems)
-	{
-		GlobalEventManager().unregisterMenuItem(item.first, item.second);
-	}
-}
-
-void FilterPopupMenu::visitFilter(const std::string& filterName)
-{
-	auto* item = Append(new wxutil::IconTextMenuItem(filterName, MENU_ICON));
-	item->SetCheckable(true);
-
-	std::string eventName = GlobalFilterSystem().getFilterEventName(filterName);
-
-	GlobalEventManager().registerMenuItem(eventName, item);
-
-    // We remember the item mapping for deregistration on shutdown
-	_filterItems.emplace(eventName, item);
+    GlobalFilterSystem().setFilterState(_filterItems.at(ev.GetId()), ev.IsChecked());
 }
 
 } // namespace

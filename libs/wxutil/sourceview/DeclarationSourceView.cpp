@@ -65,7 +65,7 @@ std::string DeclarationSourceView::getDeclFileName()
 
 std::string DeclarationSourceView::getDefinition()
 {
-    return _decl ? _decl->getBlockSyntax().contents : "";
+    return _decl ? _decl->getDeclSource().contents : "";
 }
 
 void DeclarationSourceView::updateTitle()

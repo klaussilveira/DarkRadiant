@@ -5,7 +5,7 @@
 namespace ui
 {
 
-// Temporary skin implementation used to assign the given material 
+// Temporary skin implementation used to assign the given material
 class TestModelSkin final
 {
 private:
@@ -44,7 +44,7 @@ public:
     {
         _material = material;
 
-        decl::DeclarationBlockSyntax syntax;
+        decl::DeclarationBlockSource syntax;
 
         syntax.modName = "None";
         syntax.typeName = "skin";
@@ -53,7 +53,7 @@ public:
         syntax.contents = _material ?
             fmt::format("{0}\t{1}", TEST_MODEL_MATERIAL, _material->getName()) : "";
 
-        _skin->setBlockSyntax(syntax);
+        _skin->setDeclSource(syntax);
     }
 };
 

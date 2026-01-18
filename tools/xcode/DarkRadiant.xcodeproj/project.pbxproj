@@ -1881,7 +1881,7 @@
 		3AFF056A253AE222002B1472 /* GlyphSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AE6F35A239F5C4C008A1B2D /* GlyphSet.cpp */; };
 		3AFF056B253AE23A002B1472 /* XmlFilterEventAdapter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AFF03EB245489BF002B1472 /* XmlFilterEventAdapter.cpp */; };
 		3AFF056C253AE23A002B1472 /* BasicFilterSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AE6F34B239F507B008A1B2D /* BasicFilterSystem.cpp */; };
-		3AFF056D253AE23A002B1472 /* XMLFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AE6F34E239F507B008A1B2D /* XMLFilter.cpp */; };
+		3AFF056D253AE23A002B1472 /* SceneFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AE6F34E239F507B008A1B2D /* SceneFilter.cpp */; };
 		3AFF056E253AE250002B1472 /* FileTypeRegistry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AE6F347239F5033008A1B2D /* FileTypeRegistry.cpp */; };
 		3AFF056F253AE272002B1472 /* Curve.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AE6F2B4239F4CA1008A1B2D /* Curve.cpp */; };
 		3AFF0570253AE272002B1472 /* CurveCatmullRom.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3AE6F2B6239F4CA1008A1B2D /* CurveCatmullRom.cpp */; };
@@ -4146,8 +4146,8 @@
 		3AE6F34B239F507B008A1B2D /* BasicFilterSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BasicFilterSystem.cpp; path = ../../radiantcore/filters/BasicFilterSystem.cpp; sourceTree = SOURCE_ROOT; };
 		3AE6F34C239F507B008A1B2D /* BasicFilterSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BasicFilterSystem.h; path = ../../radiantcore/filters/BasicFilterSystem.h; sourceTree = SOURCE_ROOT; };
 		3AE6F34D239F507B008A1B2D /* InstanceUpdateWalker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InstanceUpdateWalker.h; path = ../../radiantcore/filters/InstanceUpdateWalker.h; sourceTree = SOURCE_ROOT; };
-		3AE6F34E239F507B008A1B2D /* XMLFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = XMLFilter.cpp; path = ../../radiantcore/filters/XMLFilter.cpp; sourceTree = SOURCE_ROOT; };
-		3AE6F34F239F507B008A1B2D /* XMLFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XMLFilter.h; path = ../../radiantcore/filters/XMLFilter.h; sourceTree = SOURCE_ROOT; };
+		3AE6F34E239F507B008A1B2D /* SceneFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SceneFilter.cpp; path = ../../radiantcore/filters/SceneFilter.cpp; sourceTree = SOURCE_ROOT; };
+		3AE6F34F239F507B008A1B2D /* SceneFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SceneFilter.h; path = ../../radiantcore/filters/SceneFilter.h; sourceTree = SOURCE_ROOT; };
 		3AE6F353239F5C4C008A1B2D /* FontInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FontInfo.h; path = ../../radiantcore/fonts/FontInfo.h; sourceTree = SOURCE_ROOT; };
 		3AE6F354239F5C4C008A1B2D /* FontLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FontLoader.cpp; path = ../../radiantcore/fonts/FontLoader.cpp; sourceTree = SOURCE_ROOT; };
 		3AE6F355239F5C4C008A1B2D /* FontLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FontLoader.h; path = ../../radiantcore/fonts/FontLoader.h; sourceTree = SOURCE_ROOT; };
@@ -6790,8 +6790,8 @@
 				3AE6F34B239F507B008A1B2D /* BasicFilterSystem.cpp */,
 				3AE6F34C239F507B008A1B2D /* BasicFilterSystem.h */,
 				3AE6F34D239F507B008A1B2D /* InstanceUpdateWalker.h */,
-				3AE6F34E239F507B008A1B2D /* XMLFilter.cpp */,
-				3AE6F34F239F507B008A1B2D /* XMLFilter.h */,
+				3AE6F34E239F507B008A1B2D /* SceneFilter.cpp */,
+				3AE6F34F239F507B008A1B2D /* SceneFilter.h */,
 			);
 			name = filters;
 			path = DarkRadiant;
@@ -10919,7 +10919,7 @@
 				3A38317C2859E6370049C4A1 /* RenderableBrushVertices.cpp in Sources */,
 				3AFF046F253AB96C002B1472 /* DeflatedInputStream.cpp in Sources */,
 				3AFF057F253AE2ED002B1472 /* TargetKeyCollection.cpp in Sources */,
-				3AFF056D253AE23A002B1472 /* XMLFilter.cpp in Sources */,
+				3AFF056D253AE23A002B1472 /* SceneFilter.cpp in Sources */,
 				3A38324828C34EE90049C4A1 /* RegularLight.cpp in Sources */,
 				3AFF04D6253ADD3E002B1472 /* ParticleNode.cpp in Sources */,
 				3A3832EB290B9FD70049C4A1 /* SceneSelectionTesters.cpp in Sources */,

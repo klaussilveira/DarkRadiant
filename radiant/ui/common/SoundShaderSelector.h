@@ -35,11 +35,15 @@ public:
         ScopedDebugTimer timer("ThreadedSoundShaderLoader::run()");
 
         wxutil::VFSTreePopulator populator(model);
-        
+
         // Visit all sound shaders and collect them for later insertion
         GlobalSoundManager().forEachShader([&](const ISoundShader::Ptr& shader)
         {
             ThrowIfCancellationRequested();
+
+            // Skip hidden shaders
+            if (shader->getVisibility() == vfs::Visibility::HIDDEN)
+                return;
 
             // Construct a "path" into the sound shader tree,
             // using the mod name as first folder level
@@ -54,7 +58,7 @@ public:
                 shader->getModName() + "/" + shaderNameForwardSlashes;
 
             // Sort the shader into the tree and set the values
-            populator.addPath(fullPath, [&](wxutil::TreeModel::Row& row, 
+            populator.addPath(fullPath, [&](wxutil::TreeModel::Row& row,
                 const std::string& path, const std::string& leafName, bool isFolder)
             {
                 AssignValuesToRow(row, path, isFolder ? path : shader->getDeclName(), leafName, isFolder);

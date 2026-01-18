@@ -15,7 +15,7 @@ private:
 	std::string _fixupCode;
 
 public:
-	void visit(const IEntityClassPtr& eclass)
+	void visit(const scene::EntityClass::Ptr& eclass)
 	{
 		const std::string attr = eclass->getAttributeValue("editor_replacement");
 		if (attr.empty())

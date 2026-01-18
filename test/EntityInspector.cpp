@@ -310,22 +310,22 @@ TEST_F(EntityInspectorTest, AssimilateKeyValues)
     expectNotListed(keyValueStore, "unique_to_1");
 
     // Set one of the two canBeBlownOut keys to "1", the value on entity 2 is still "0"
-    Node_getEntity(entity1)->setKeyValue("canBeBlownOut", "1");
+    entity1->tryGetEntity()->setKeyValue("canBeBlownOut", "1");
     keyValueStore.rescanSelection();
     expectNonUnique(keyValueStore, "canBeBlownOut");
 
     // Set the remaining value to "1", now all three should be the same
-    Node_getEntity(entity2)->setKeyValue("canBeBlownOut", "1");
+    entity2->tryGetEntity()->setKeyValue("canBeBlownOut", "1");
     keyValueStore.rescanSelection();
     expectUnique(keyValueStore, "canBeBlownOut", "1");
     expectNotListed(keyValueStore, "unique_to_1");
 
     // unique_to_1 hasn't been present on entity 2 and 3 yet
-    Node_getEntity(entity2)->setKeyValue("unique_to_1", "unique_value");
+    entity2->tryGetEntity()->setKeyValue("unique_to_1", "unique_value");
     keyValueStore.rescanSelection();
     expectNotListed(keyValueStore, "unique_to_1");
 
-    Node_getEntity(entity3)->setKeyValue("unique_to_1", "unique_value");
+    entity3->tryGetEntity()->setKeyValue("unique_to_1", "unique_value");
     keyValueStore.rescanSelection();
     expectUnique(keyValueStore, "unique_to_1", "unique_value"); // should be listed now
 }
@@ -343,7 +343,7 @@ TEST_F(EntityInspectorTest, AssignDifferingKeyValues)
     expectUnique(keyValueStore, "light_center", "0 0 0");
 
     // Changing the value should make it appear as non-unique
-    Node_getEntity(entity3)->setKeyValue("light_center", "0 0 1");
+    entity3->tryGetEntity()->setKeyValue("light_center", "0 0 1");
     keyValueStore.rescanSelection();
     expectNonUnique(keyValueStore, "light_center");
 }
@@ -359,7 +359,7 @@ TEST_F(EntityInspectorTest, ChangeUniqueKeyValue)
     expectUnique(keyValueStore, "light_center", "0 0 0");
 
     // Change the light_center value
-    Node_getEntity(entity1)->setKeyValue("light_center", "0 0 1");
+    entity1->tryGetEntity()->setKeyValue("light_center", "0 0 1");
     keyValueStore.rescanSelection();
 
     expectUnique(keyValueStore, "light_center", "0 0 1");
@@ -376,7 +376,7 @@ TEST_F(EntityInspectorTest, RemoveUniqueKeyValue)
     expectUnique(keyValueStore, "light_center", "0 0 0");
 
     // Remove the light_center key from entity 2, it should disappear
-    Node_getEntity(entity1)->setKeyValue("light_center", "");
+    entity1->tryGetEntity()->setKeyValue("light_center", "");
     keyValueStore.rescanSelection();
     expectNotListed(keyValueStore, "light_center");
 }
@@ -392,7 +392,7 @@ TEST_F(EntityInspectorTest, AddKeyValueToSingleSelectedEntity)
     assumeLightTorchflame1Spawnargs(keyValueStore);
 
     // Add a new key, it should appear
-    Node_getEntity(entity1)->setKeyValue("custom_key", "do it");
+    entity1->tryGetEntity()->setKeyValue("custom_key", "do it");
     keyValueStore.rescanSelection();
     expectUnique(keyValueStore, "custom_key", "do it");
 }
@@ -410,7 +410,7 @@ TEST_F(EntityInspectorTest, RemoveOneSharedKeyValue)
     expectUnique(keyValueStore, "light_center", "0 0 0");
 
     // Remove the light_center key from entity 2, it should disappear
-    Node_getEntity(entity2)->setKeyValue("light_center", "");
+    entity2->tryGetEntity()->setKeyValue("light_center", "");
     keyValueStore.rescanSelection();
     expectNotListed(keyValueStore, "light_center");
 }
@@ -423,14 +423,14 @@ TEST_F(EntityInspectorTest, ReAddOneSharedKeyValue)
     auto entity1 = selectEntity("light_torchflame_1");
     auto entity2 = selectEntity("light_torchflame_2");
     auto entity3 = selectEntity("light_torchflame_3");
-    Node_getEntity(entity2)->setKeyValue("light_center", "");
+    entity2->tryGetEntity()->setKeyValue("light_center", "");
     keyValueStore.rescanSelection();
 
     // Since entity 2 doesn't have the ligh_center key, it should not be listed
     expectNotListed(keyValueStore, "light_center");
 
-    auto sharedValue = Node_getEntity(entity1)->getKeyValue("light_center");
-    Node_getEntity(entity2)->setKeyValue("light_center", sharedValue);
+    auto sharedValue = entity1->tryGetEntity()->getKeyValue("light_center");
+    entity2->tryGetEntity()->setKeyValue("light_center", sharedValue);
     keyValueStore.rescanSelection();
 
     // It should be listed again
@@ -474,17 +474,17 @@ TEST_F(EntityInspectorTest, DeselectOneLight)
     keyValueStore.rescanSelection();
 
     // Check a few assumptions on the involved spawnwargs
-    auto s_shader = Node_getEntity(speaker1)->getKeyValue("s_shader");
-    auto s_maxdistance = Node_getEntity(speaker1)->getKeyValue("s_maxdistance");
-    auto s_mindistance = Node_getEntity(speaker1)->getKeyValue("s_mindistance");
+    auto s_shader = speaker1->tryGetEntity()->getKeyValue("s_shader");
+    auto s_maxdistance = speaker1->tryGetEntity()->getKeyValue("s_maxdistance");
+    auto s_mindistance = speaker1->tryGetEntity()->getKeyValue("s_mindistance");
 
-    EXPECT_EQ(Node_getEntity(speaker2)->getKeyValue("s_shader"), s_shader) << "s_shader should be the same";
-    EXPECT_EQ(Node_getEntity(speaker2)->getKeyValue("s_maxdistance"), s_maxdistance) << "s_maxdistance should be the same";
-    EXPECT_EQ(Node_getEntity(speaker2)->getKeyValue("s_mindistance"), s_mindistance) << "s_mindistance should be the same";
+    EXPECT_EQ(speaker2->tryGetEntity()->getKeyValue("s_shader"), s_shader) << "s_shader should be the same";
+    EXPECT_EQ(speaker2->tryGetEntity()->getKeyValue("s_maxdistance"), s_maxdistance) << "s_maxdistance should be the same";
+    EXPECT_EQ(speaker2->tryGetEntity()->getKeyValue("s_mindistance"), s_mindistance) << "s_mindistance should be the same";
 
-    EXPECT_TRUE(Node_getEntity(light1)->getKeyValue("s_shader").empty()) << "Light shouldn't have the s_shader key";
-    EXPECT_TRUE(Node_getEntity(light1)->getKeyValue("s_maxdistance").empty()) << "Light shouldn't have the s_maxdistance key";
-    EXPECT_TRUE(Node_getEntity(light1)->getKeyValue("s_mindistance").empty()) << "Light shouldn't have the s_mindistance key";
+    EXPECT_TRUE(light1->tryGetEntity()->getKeyValue("s_shader").empty()) << "Light shouldn't have the s_shader key";
+    EXPECT_TRUE(light1->tryGetEntity()->getKeyValue("s_maxdistance").empty()) << "Light shouldn't have the s_maxdistance key";
+    EXPECT_TRUE(light1->tryGetEntity()->getKeyValue("s_mindistance").empty()) << "Light shouldn't have the s_mindistance key";
 
     // These are shown with non-unique values
     expectNonUnique(keyValueStore, "classname");
@@ -517,8 +517,8 @@ TEST_F(EntityInspectorTest, SelectEntitiesPlusWorldspawnPrimitive)
     keyValueStore.rescanSelection();
 
     // Prerequisites of worldspawn
-    EXPECT_EQ(Node_getEntity(worldspawn)->getKeyValue("name"), "") << "Worldspawn shouldn't have a name";
-    EXPECT_EQ(Node_getEntity(worldspawn)->getKeyValue("origin"), "") << "Worldspawn shouldn't have an origin";
+    EXPECT_EQ(worldspawn->tryGetEntity()->getKeyValue("name"), "") << "Worldspawn shouldn't have a name";
+    EXPECT_EQ(worldspawn->tryGetEntity()->getKeyValue("origin"), "") << "Worldspawn shouldn't have an origin";
 
     // These are shown with non-unique values
     expectNonUnique(keyValueStore, "classname");
@@ -583,7 +583,7 @@ TEST_F(EntityInspectorTest, UndoRedoKeyValueChange)
     GlobalCommandSystem().executeCommand("OpenMap", cmd::Argument("maps/entityinspector.map"));
 
     auto entity1Node = selectEntity("light_torchflame_1");
-    auto entity1 = Node_getEntity(entity1Node);
+    auto entity1 = entity1Node->tryGetEntity();
     keyValueStore.rescanSelection();
 
     // All of the entity's spawnargs should be present and showing their value
@@ -626,7 +626,7 @@ TEST_F(EntityInspectorTest, UndoRedoKeyValueAdditionRemoval)
     GlobalCommandSystem().executeCommand("OpenMap", cmd::Argument("maps/entityinspector.map"));
 
     auto entity1Node = selectEntity("light_torchflame_1");
-    auto entity1 = Node_getEntity(entity1Node);
+    auto entity1 = entity1Node->tryGetEntity();
     keyValueStore.rescanSelection();
 
     // All of the entity's spawnargs should be present and showing their value
@@ -913,7 +913,7 @@ TEST_F(EntityInspectorTest, MoveFuncStaticAndWorldPrimitives)
     expectNotListed(keyValueStore, "origin");
     EXPECT_EQ(keyValueStore.store.size(), 1) << "Only classname should show up after selection";
 
-    auto previousOrigin = Node_getEntity(func_static)->getKeyValue("origin");
+    auto previousOrigin = func_static->tryGetEntity()->getKeyValue("origin");
 
     auto transformable = scene::node_cast<ITransformable>(func_static);
     if (transformable)
@@ -923,7 +923,7 @@ TEST_F(EntityInspectorTest, MoveFuncStaticAndWorldPrimitives)
         transformable->freezeTransform();
     }
 
-    EXPECT_NE(Node_getEntity(func_static)->getKeyValue("origin"), previousOrigin) << "Origin should have changed";
+    EXPECT_NE(func_static->tryGetEntity()->getKeyValue("origin"), previousOrigin) << "Origin should have changed";
 
     keyValueStore.rescanSelection();
 

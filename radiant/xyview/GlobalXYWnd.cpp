@@ -447,13 +447,13 @@ Vector3 XYWndManager::getFocusPosition()
     return position;
 }
 
-const std::string& XYWndManager::getName() const
+std::string XYWndManager::getName() const
 {
 	static std::string _name(MODULE_ORTHOVIEWMANAGER);
 	return _name;
 }
 
-const StringSet& XYWndManager::getDependencies() const
+StringSet XYWndManager::getDependencies() const
 {
     static StringSet _dependencies
     {

@@ -1,6 +1,5 @@
 #include "VersionControlManager.h"
 
-#include "itextstream.h"
 #include "module/StaticModule.h"
 
 namespace vcs
@@ -28,20 +27,10 @@ IVersionControlModule::Ptr VersionControlManager::getModuleForPrefix(const std::
     return existing != _registeredModules.end() ? existing->second : IVersionControlModule::Ptr();
 }
 
-const std::string& VersionControlManager::getName() const
+std::string VersionControlManager::getName() const
 {
     static std::string _name(vcs::MODULE_VERSION_CONTROL_MANAGER);
     return _name;
-}
-
-const StringSet& VersionControlManager::getDependencies() const
-{
-    static StringSet _dependencies;
-    return _dependencies;
-}
-
-void VersionControlManager::initialiseModule(const IApplicationContext& ctx)
-{
 }
 
 module::StaticModuleRegistration<VersionControlManager> versionControlManagerModule;

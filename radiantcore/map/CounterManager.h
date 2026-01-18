@@ -25,7 +25,7 @@ public:
 
 	void increment() override;
 	void decrement() override;
-	
+
 	std::size_t get() const override;
 };
 typedef std::shared_ptr<Counter> CounterPtr;
@@ -50,9 +50,7 @@ public:
 
 	void onCounterChanged();
 
-	const std::string& getName() const override;
-	const StringSet& getDependencies() const override;
-	void initialiseModule(const IApplicationContext& ctx) override;
+	std::string getName() const override;
 };
 
 } // namespace map

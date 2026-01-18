@@ -11,18 +11,12 @@ namespace radiant
 
 class MessageBus;
 
-class Radiant :
-	public IRadiant
+class Radiant: public IRadiant
 {
-private:
 	IApplicationContext& _context;
-
 	std::unique_ptr<applog::LogFile> _logFile;
-
 	std::unique_ptr<module::ModuleRegistry> _moduleRegistry;
-
 	std::unique_ptr<MessageBus> _messageBus;
-
 	std::unique_ptr<language::LanguageManager> _languageManager;
 
 public:
@@ -30,9 +24,7 @@ public:
 
 	~Radiant();
 
-	const std::string& getName() const override;
-	const StringSet& getDependencies() const override;
-	void initialiseModule(const IApplicationContext& ctx) override;
+	std::string getName() const override;
 
 	applog::ILogWriter& getLogWriter() override;
 	module::ModuleRegistry& getModuleRegistry() override;

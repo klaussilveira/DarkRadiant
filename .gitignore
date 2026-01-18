@@ -51,6 +51,7 @@ testsuite.ilk
 
 # VS Code
 .vscode
+.cache
 
 # VS
 /winbuild

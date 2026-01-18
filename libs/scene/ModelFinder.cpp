@@ -12,7 +12,7 @@ ModelFinder::ModelFinder() :
 
 void ModelFinder::visit(const scene::INodePtr& node) const
 {
-	Entity* entity = Node_getEntity(node);
+	Entity* entity = node->tryGetEntity();
 
 	if (entity != nullptr && entity->isModel())
 	{

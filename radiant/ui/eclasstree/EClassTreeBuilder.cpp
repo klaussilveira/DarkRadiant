@@ -1,7 +1,5 @@
 #include "EClassTreeBuilder.h"
 
-#include "EClassTree.h"
-
 #include "wxutil/dataview/VFSTreePopulator.h"
 #include "wxutil/dataview/TreeModel.h"
 
@@ -28,7 +26,7 @@ void EClassTreeBuilder::PopulateModel(const wxutil::TreeModel::Ptr& model)
 
     ThrowIfCancellationRequested();
 
-    GlobalEntityClassManager().forEachEntityClass([&](const IEntityClassPtr& eclass)
+    GlobalEntityClassManager().forEachEntityClass([&](const scene::EntityClass::Ptr& eclass)
     {
         ThrowIfCancellationRequested();
 
@@ -52,7 +50,7 @@ void EClassTreeBuilder::PopulateModel(const wxutil::TreeModel::Ptr& model)
     ThrowIfCancellationRequested();
 }
 
-std::string EClassTreeBuilder::GetInheritancePathRecursively(IEntityClass& eclass)
+std::string EClassTreeBuilder::GetInheritancePathRecursively(scene::EntityClass& eclass)
 {
     std::string returnValue;
 

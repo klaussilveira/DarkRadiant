@@ -59,31 +59,8 @@ public:
     }
 };
 
-/// Less-than comparison for MeshVertex
-inline bool operator<(const MeshVertex& first,
-                      const MeshVertex& other)
-{
-    if (first.texcoord != other.texcoord)
-    {
-        return first.texcoord < other.texcoord;
-    }
-
-    if (first.normal != other.normal)
-    {
-        return first.normal < other.normal;
-    }
-
-    if (first.vertex != other.vertex)
-    {
-        return first.vertex < other.vertex;
-    }
-
-    return false;
-}
-
 /// Equality comparison for MeshVertex
-inline bool operator==(const MeshVertex& first,
-                       const MeshVertex& other)
+inline bool operator==(const MeshVertex& first, const MeshVertex& other)
 {
     return first.texcoord == other.texcoord
         && first.normal == other.normal
@@ -91,8 +68,7 @@ inline bool operator==(const MeshVertex& first,
 }
 
 /// Inequality comparison for MeshVertex
-inline bool operator!=(const MeshVertex& first,
-                       const MeshVertex& other)
+inline bool operator!=(const MeshVertex& first, const MeshVertex& other)
 {
     return !(first == other);
 }

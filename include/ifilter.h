@@ -2,73 +2,11 @@
 
 #include "imodule.h"
 #include "inode.h"
+#include "scene/filters/SceneFilter.h"
 
-#include <memory>
-#include <vector>
 #include <cassert>
 
 #include <sigc++/signal.h>
-
-/**
- * This structure defines a simple filtercriterion as used by the Filtersystem
- */
-class FilterRule
-{
-public:
-	enum Type
-	{
-		TYPE_TEXTURE,
-		TYPE_ENTITYCLASS,
-		TYPE_OBJECT,
-		TYPE_ENTITYKEYVALUE,
-	};
-
-	// The rule type
-	Type type;
-
-	// The entity key, only applies for type "entitykeyvalue"
-	std::string entityKey;
-
-	// the match expression regex
-	std::string match;
-
-	// true for action="show", false for action="hide"
-	bool show;
-
-private:
-	// Private Constructor, use the named constructors below
-	FilterRule(const Type type_, const std::string& match_, bool show_) :
-		type(type_),
-		match(match_),
-		show(show_)
-	{}
-
-	// Alternative private constructor for the entityKeyValue type
-	FilterRule(const Type type_, const std::string& entityKey_, const std::string& match_, bool show_) :
-		type(type_),
-		entityKey(entityKey_),
-		match(match_),
-		show(show_)
-	{}
-
-public:
-	// Named constructors
-
-	// Regular constructor for the non-entitykeyvalue types
-	static FilterRule Create(const Type type, const std::string& match, bool show)
-	{
-		assert(type != TYPE_ENTITYKEYVALUE); 
-
-		return FilterRule(type, match, show);
-	}
-
-	// Constructor for the entity key value type
-	static FilterRule CreateEntityKeyValueRule(const std::string& key, const std::string& match, bool show)
-	{
-		return FilterRule(TYPE_ENTITYKEYVALUE, key, match, show);
-	}
-};
-typedef std::vector<FilterRule> FilterRules;
 
 const char* const MODULE_FILTERSYSTEM = "FilterSystem";
 
@@ -82,144 +20,176 @@ const char* const SELECT_OBJECTS_BY_FILTER_CMD = "SelectObjectsByFilter";
 const char* const DESELECT_OBJECTS_BY_FILTER_CMD = "DeselectObjectsByFilter";
 
 /**
- * \brief
- * Interface for the FilterSystem
+ * @brief Interface for the FilterSystem
  *
  * The filter system provides a mechanism by which certain objects or materials
  * can be hidden from rendered views.
+ *
+ * The filter system operates an internal stack of system states, allowing the
+ * current set of enabled filters to be saved and restored.
  */
-class IFilterSystem :
-	public RegisterableModule
+class IFilterSystem: public RegisterableModule
 {
 public:
 
-	// Signal emitted when the state of filters has changed,
-	// filters have been added or removed, or when rules have been altered
-	virtual sigc::signal<void> filterConfigChangedSignal() const = 0;
+    /**
+     * @brief Signal emitted when the state of filters has changed, filters have
+     * been added or removed, or when rules have been altered.
+     */
+    virtual sigc::signal<void> filterConfigChangedSignal() const = 0;
 
-	// Signal emitted when filters are added, removed or renamed
-	virtual sigc::signal<void> filterCollectionChangedSignal() const = 0;
+    /**
+     * @brief Signal emitted when filters are added, removed, or renamed.
+     */
+    virtual sigc::signal<void> filterCollectionChangedSignal() const = 0;
 
-	/**
-	 * greebo: Updates all the "Filtered" status of all Instances
-	 *         in the scenegraph based on the current filter settings.
-	 */
-	virtual void update() = 0;
+    /**
+     * @brief Updates the "Filtered" status of all instances in the scenegraph
+     * based on the current filter settings.
+     */
+    virtual void update() = 0;
 
-	/**
-	 * greebo: Lets the filtersystem update the specified subgraph only,
-	 * which includes the given node and all children.
-	 */
-	virtual void updateSubgraph(const scene::INodePtr& root) = 0;
+    /**
+     * @brief Updates the specified subgraph, including the given node and all
+     * its children, based on the current filter settings.
+     *
+     * @param root The root node of the subgraph to update.
+     */
+    virtual void updateSubgraph(const scene::INodePtr& root) = 0;
 
-	/**
-	 * Visit the available filters, passing each filter's text name to the visitor.
-	 *
-	 * @param visitor
-	 * Function object called with the filter name as argument.
-	 */
-	virtual void forEachFilter(const std::function<void(const std::string & name)>& func) = 0;
+    /**
+     * @brief Visits all available filters and passes each filter's text name to
+     * the provided visitor function.
+     *
+     * @param func A function object called with the filter name as an argument.
+     */
+    virtual void forEachFilter(const std::function<void(const SceneFilter&)>& func) = 0;
 
-	/** Set the state of the named filter.
-	 *
-	 * @param filter
-	 * The filter to toggle.
-	 *
-	 * @param state
-	 * true if the filter should be active, false otherwise.
-	 */
-	virtual void setFilterState(const std::string& filter, bool state) = 0;
+    /**
+     * @brief Sets the state of the specified filter.
+     *
+     * @param filter The name of the filter to toggle.
+     * @param state True to activate the filter, false to deactivate it.
+     */
+    virtual void setFilterState(const std::string& filter, bool state) = 0;
 
-	/** greebo: Returns the state of the given filter.
-	 *
-	 * @returns: true or false, depending on the filter state.
-	 */
-	virtual bool getFilterState(const std::string& filter) = 0;
+    /**
+     * @brief Retrieves the state of the specified filter.
+     *
+     * @param filter The name of the filter to query.
+     * @return True if the filter is active, false otherwise.
+     */
+    virtual bool getFilterState(const std::string& filter) const = 0;
 
-	/**
-	 * Activates or deactivates all known filters.
-	 */
-	virtual void setAllFilterStates(bool state) = 0;
+    /**
+     * @brief Duplicate the current filtersystem state and push it onto the
+     * stack.
+     *
+     * The filtersystem state consists of the currently active filters.
+     */
+    virtual void pushState() = 0;
 
-	/** greebo: Returns the event name of the given filter. This is needed
-	 * 			to create the toggle event to menus/etc.
-	 */
-	virtual std::string getFilterEventName(const std::string& filter) = 0;
+    /// Pops the last filtersystem state from the stack and restores it.
+    virtual void popState() = 0;
 
-	/** Test if a given item should be visible or not, based on the currently-
-	 * active filters.
-	 *
-	 * @param item
-	 * The filter type to query
-	 *
-	 * @param name
-	 * String name of the item to query.
-	 *
-	 * @returns
-	 * true if the item is visible, false otherwise.
-	 */
-	virtual bool isVisible(const FilterRule::Type type, const std::string& name) = 0;
+    /**
+     * @brief Retrieves the event name associated with the specified filter.
+     *
+     * @param filter The name of the filter.
+     * @return The event name of the filter.
+     */
+    virtual std::string getFilterEventName(const std::string& filter) = 0;
 
-	/**
-	 * Test if a given entity should be visible or not, based on the currently active filters.
-	 *
-	 * @param type
-	 * The filter type to query
-	 *
-	 * @param entity
-	 * The Entity to test
-	 *
-	 * @returns
-	 * true if the entity is visible, false otherwise.
-	 */
-	virtual bool isEntityVisible(const FilterRule::Type type, const Entity& entity) = 0;
+    /**
+     * @brief Tests whether a given item should be visible based on the
+     * currently active filters.
+     *
+     * @param type The filter type to query.
+     * @param name The string name of the item to query.
+     * @return True if the item is visible, false otherwise.
+     */
+    virtual bool isVisible(const FilterType type, const std::string& name) = 0;
 
-	// =====  API for Filter management and editing =====
+    /**
+     * @brief Tests whether a given entity should be visible based on the
+     * currently active filters.
+     *
+     * @param entity The entity to test.
+     * @return True if the entity is visible, false otherwise.
+     */
+    virtual bool isEntityVisible(const Entity& entity) const = 0;
 
-	/**
-	 * greebo: Returns TRUE if the filter is read-only and can't be deleted.
-	 */
-	virtual bool filterIsReadOnly(const std::string& filter) = 0;
+    // ===== API for Filter Management and Editing =====
 
-	/**
-	 * greebo: Adds a new filter to the system with the given ruleset. The new filter
-	 * is not set to read-only.
-	 *
-	 * @returns: TRUE on success, FALSE if the filter name already exists.
-	 */
-	virtual bool addFilter(const std::string& filterName, const FilterRules& ruleSet) = 0;
+    /**
+     * @brief Adds a new filter to the system with the specified ruleset.
+     * The new filter is not set to read-only.
+     *
+     * @param filterName The name of the new filter.
+     * @param ruleSet The ruleset to associate with the new filter.
+     * @return True on success, false if the filter name already exists.
+     */
+    virtual bool addFilter(const std::string& filterName, const FilterRules& ruleSet) = 0;
 
-	/**
-	 * greebo: Removes the filter, returns TRUE on success.
-	 */
-	virtual bool removeFilter(const std::string& filter) = 0;
+    /**
+     * @brief Removes the specified filter.
+     *
+     * @param filter The name of the filter to remove.
+     * @return True on success, false otherwise.
+     */
+    virtual bool removeFilter(const std::string& filter) = 0;
 
-	/**
-	 * greebo: Renames the specified filter. This also takes care of renaming the corresponding command in the
-	 * EventManager class.
-	 *
-	 * @returns: TRUE on success, FALSE if the filter hasn't been found or is read-only.
-	 */
-	virtual bool renameFilter(const std::string& oldFilterName, const std::string& newFilterName) = 0;
+    /**
+     * @brief Renames the specified filter. This also updates the corresponding command
+     * in the EventManager class.
+     *
+     * @param oldFilterName The current name of the filter.
+     * @param newFilterName The new name for the filter.
+     * @return True on success, false if the filter is not found or is read-only.
+     */
+    virtual bool renameFilter(const std::string& oldFilterName, const std::string& newFilterName) = 0;
 
-	/**
-	 * greebo: Returns the ruleset of this filter, order is important.
-	 */
-	virtual FilterRules getRuleSet(const std::string& filter) = 0;
+    /**
+     * @brief Retrieves the ruleset associated with the specified filter. The
+     * order of rules is important.
+     *
+     * @param filter The name of the filter.
+     * @return The ruleset of the filter.
+     */
+    virtual FilterRules getRuleSet(const std::string& filter) = 0;
 
-	/**
-	 * greebo: Applies the given criteria set to the named filter, replacing the existing set.
-	 * This applies to non-read-only filters only.
-	 *
-	 * @returns: TRUE on success, FALSE if filter not found or read-only.
-	 */
-	virtual bool setFilterRules(const std::string& filter, const FilterRules& ruleSet) = 0;
+    /**
+     * @brief Replaces the existing ruleset of the specified filter with the
+     * given criteria set. This applies only to non-read-only filters.
+     *
+     * @param filter The name of the filter.
+     * @param ruleSet The new ruleset to apply.
+     * @return True on success, false if the filter is not found or is read-only.
+     */
+    virtual bool setFilterRules(const std::string& filter, const FilterRules& ruleSet) = 0;
+};
+
+/// RAII class to push and pop filter state
+class ScopedFilterState
+{
+    IFilterSystem& _filterSystem;
+
+public:
+    ScopedFilterState(IFilterSystem& filterSystem): _filterSystem(filterSystem)
+    {
+        _filterSystem.pushState();
+    }
+
+    ~ScopedFilterState()
+    {
+        _filterSystem.popState();
+    }
 };
 
 }
 
 inline filters::IFilterSystem& GlobalFilterSystem()
 {
-	static module::InstanceReference<filters::IFilterSystem> _reference(MODULE_FILTERSYSTEM);
-	return _reference;
+    static module::InstanceReference<filters::IFilterSystem> _reference(MODULE_FILTERSYSTEM);
+    return _reference;
 }

@@ -55,7 +55,7 @@ namespace
     struct DefColumns :
         public wxutil::TreeModel::ColumnRecord
     {
-        DefColumns() : 
+        DefColumns() :
 			name(add(wxutil::TreeModel::Column::String))
 		{}
 
@@ -107,7 +107,7 @@ ParticleEditor::ParticleEditor() :
 	_preview.reset(new wxutil::ParticlePreview(previewPanel));
 
 	previewPanel->GetSizer()->Add(_preview->getWidget(), 1, wxEXPAND);
-	
+
     // Set the default size of the window
 	FitToScreen(0.6f, 0.6f);
 
@@ -159,7 +159,7 @@ void ParticleEditor::setupParticleDefList()
 
     // Apply full-text search to the column
 	_defView->AddSearchColumn(DEF_COLS().name);
-    
+
     populateParticleDefList();
 
     // Connect up the selection changed callback
@@ -243,8 +243,8 @@ void ParticleEditor::setupSettingsPages()
 {
     // Depth Hack
 	wxSpinCtrlDouble* depthHack = convertToSpinCtrlDouble("ParticleEditorDepthHack", 0, 999, 0.1, 2);
-	
-	depthHack->Connect(wxEVT_SPINCTRLDOUBLE, 
+
+	depthHack->Connect(wxEVT_SPINCTRLDOUBLE,
 		wxSpinDoubleEventHandler(ParticleEditor::_onDepthHackChanged), NULL, this);
 
     // SHADER
@@ -318,7 +318,7 @@ void ParticleEditor::setupSettingsPages()
 	convertToSpinCtrlDouble("ParticleEditorStageUpwardBias", 0, 999, 0.1, 2);
 	convertToSpinCtrlDouble("ParticleEditorStageAimedTime", 0, 60, 0.1, 2);
 	convertToSpinCtrlDouble("ParticleEditorStageInitialAngle", 0, 359, 0.1, 2);
-	
+
     connectSpinner("ParticleEditorStageConeAngle", &ParticleEditor::_onDirectionControlsChanged);
     connectSpinner("ParticleEditorStageUpwardBias", &ParticleEditor::_onDirectionControlsChanged);
 
@@ -490,7 +490,7 @@ void ParticleEditor::_onDirectionControlsChanged(wxCommandEvent& ev)
 		stage->getDirectionType() == IStageDef::DIRECTION_CONE);
 	findNamedObject<wxSlider>(this, "ParticleEditorStageConeAngleSlider")->Enable(
 		stage->getDirectionType() == IStageDef::DIRECTION_CONE);
-	
+
 	findNamedObject<wxStaticText>(this, "ParticleEditorStageUpwardBiasLabel")->Enable(
 		stage->getDirectionType() == IStageDef::DIRECTION_OUTWARD);
 	findNamedObject<wxWindow>(this, "ParticleEditorStageUpwardBias")->Enable(
@@ -619,11 +619,11 @@ void ParticleEditor::updatePathWidgetSensitivity()
 
 	findNamedObject<wxWindow>(this, "ParticleEditorStageAxialSpeed")->Enable(useAnySpinner);
 	findNamedObject<wxWindow>(this, "ParticleEditorStageAxialSpeedSlider")->Enable(useAnySpinner);
-	
+
     findNamedObject<wxWindow>(this, "ParticleEditorStageSphereRadiusLabel")->Enable(useAnySpinner && useFlies);
     findNamedObject<wxWindow>(this, "ParticleEditorStageSphereRadius")->Enable(useAnySpinner && useFlies);
 	findNamedObject<wxWindow>(this, "ParticleEditorStageSphereRadiusSlider")->Enable(useAnySpinner && useFlies);
-	
+
     findNamedObject<wxWindow>(this, "ParticleEditorStageCylSizeXLabel")->Enable(useAnySpinner && !useFlies);
     findNamedObject<wxWindow>(this, "ParticleEditorStageCylSizeYLabel")->Enable(useAnySpinner && !useFlies);
     findNamedObject<wxWindow>(this, "ParticleEditorStageCylSizeZLabel")->Enable(useAnySpinner && !useFlies);
@@ -670,7 +670,7 @@ void ParticleEditor::connectSpinner(const std::string& name, MemberMethod func)
 		updateSpinCtrl = [=] (double value)
 		{
 			spin->SetValue(value);
-		}; 
+		};
 	}
 	else if (dynamic_cast<wxSpinCtrlDouble*>(spinctrl) != NULL)
 	{
@@ -698,13 +698,13 @@ void ParticleEditor::connectSpinner(const std::string& name, MemberMethod func)
 		updateSpinCtrl = [=] (double value)
 		{
 			spin->SetValue(value / sliderFactor);
-		}; 
+		};
 	}
 
 	if (slider != NULL)
 	{
 		slider->Bind(wxEVT_SCROLL_CHANGED, [=] (wxScrollEvent& ev)
-		{ 
+		{
 			(this->*func)(ev);
 
 			// Update spinctrl when slider changes
@@ -713,7 +713,7 @@ void ParticleEditor::connectSpinner(const std::string& name, MemberMethod func)
 		});
 
 		slider->Bind(wxEVT_SCROLL_THUMBTRACK, [=] (wxScrollEvent& ev)
-		{ 
+		{
 			(this->*func)(ev);
 
 			// Update spinctrl when slider changes
@@ -739,7 +739,7 @@ void ParticleEditor::activateEditPanels()
 {
 	findNamedObject<wxStaticText>(this, "ParticleEditorStageLabel")->Enable(true);
     findNamedObject<wxStaticText>(this, "ParticleEditorStageSettingsLabel")->Enable(true);
-    
+
     activateSettingsEditPanels();
 }
 
@@ -1016,7 +1016,7 @@ void ParticleEditor::updateWidgetsFromParticle()
     auto origDef = GlobalParticlesManager().getDefByName(origName);
 
     fs::path outFile = GlobalGameManager().getModPath();
-    outFile /= origDef->getBlockSyntax().fileInfo.fullPath();
+    outFile /= origDef->getDeclSource().fileInfo.fullPath();
 
 	findNamedObject<wxStaticText>(this, "ParticleEditorSaveNote")->SetLabelMarkup(
 		fmt::format(_("Note: changes will be written to the file <i>{0}</i>"), outFile.string()));
@@ -1061,7 +1061,7 @@ void ParticleEditor::setSpinCtrlValue(const std::string& name, double value)
 {
 	wxWindow* spin = findNamedObject<wxWindow>(this, name);
 	wxSlider* slider = tryGetNamedObject<wxSlider>(this, name + "Slider");
-	
+
 	if (dynamic_cast<wxSpinCtrl*>(spin) != NULL)
 	{
 		static_cast<wxSpinCtrl*>(spin)->SetValue(static_cast<int>(value));
@@ -1172,7 +1172,7 @@ void ParticleEditor::updateWidgetsFromStage()
 	findNamedObject<wxWindow>(this, "ParticleEditorStageUpwardBias")->Enable(stage->getDirectionType() == IStageDef::DIRECTION_OUTWARD);
     findNamedObject<wxWindow>(this, "ParticleEditorStageUpwardBiasSlider")->Enable(stage->getDirectionType() == IStageDef::DIRECTION_OUTWARD);
 	findNamedObject<wxWindow>(this, "ParticleEditorStageUpwardBiasLabel")->Enable(stage->getDirectionType() == IStageDef::DIRECTION_OUTWARD);
-	
+
     // Orientation Type
     switch (stage->getOrientationType())
     {
@@ -1249,7 +1249,7 @@ void ParticleEditor::updateWidgetsFromStage()
 
 		setSpinCtrlValue("ParticleEditorStageRadialSpeed", stage->getCustomPathParm(3));
 		setSpinCtrlValue("ParticleEditorStageAxialSpeed", stage->getCustomPathParm(4));
-		
+
 		setSpinCtrlValue("ParticleEditorStageCylSizeX", stage->getCustomPathParm(0));
 		setSpinCtrlValue("ParticleEditorStageCylSizeY", stage->getCustomPathParm(1));
 		setSpinCtrlValue("ParticleEditorStageCylSizeZ", stage->getCustomPathParm(2));

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <memory>
-#include "math/Vector3.h"
 
 class MeshVertex;
 class Shader;

@@ -429,7 +429,7 @@ TEST_F(MapMergeTest, MergeActionsForMissingEntities)
     // light_3
     auto action = findAction<AddEntityAction>(operation, [](const std::shared_ptr<AddEntityAction>& action)
     {
-        auto sourceEntity = Node_getEntity(action->getSourceNodeToAdd());
+        auto sourceEntity = action->getSourceNodeToAdd()->tryGetEntity();
         return sourceEntity->getKeyValue("name") == "light_3";
     });
 
@@ -447,7 +447,7 @@ TEST_F(MapMergeTest, MergeActionsForMissingEntities)
     // func_static_2
     action = findAction<AddEntityAction>(operation, [](const std::shared_ptr<AddEntityAction>& action)
     {
-        auto sourceEntity = Node_getEntity(action->getSourceNodeToAdd());
+        auto sourceEntity = action->getSourceNodeToAdd()->tryGetEntity();
         return sourceEntity->getKeyValue("name") == "func_static_2";
     });
 
@@ -473,7 +473,7 @@ TEST_F(MapMergeTest, MergeActionsForRemovedEntities)
 
     auto action = findAction<RemoveEntityAction>(operation, [](const std::shared_ptr<RemoveEntityAction>& action)
     {
-        auto entity = Node_getEntity(action->getNodeToRemove());
+        auto entity = action->getNodeToRemove()->tryGetEntity();
         return entity->getKeyValue("name") == "info_player_start_1";
     });
 
@@ -496,7 +496,7 @@ TEST_F(MapMergeTest, MergeActionsForAddedKeyValues)
 
     auto action = findAction<AddEntityKeyValueAction>(operation, [](const std::shared_ptr<AddEntityKeyValueAction>& action)
     {
-        auto entity = Node_getEntity(action->getEntityNode());
+        auto entity = action->getEntityNode()->tryGetEntity();
         return entity->getKeyValue("name") == "light_1" && action->getKey() == "dist_check_period" && action->getValue() == "40";
     });
 
@@ -504,12 +504,12 @@ TEST_F(MapMergeTest, MergeActionsForAddedKeyValues)
 
     // Check pre-requisites and apply the action
     auto entityNode = algorithm::getEntityByName(result->getBaseRootNode(), "light_1");
-    EXPECT_EQ(Node_getEntity(entityNode)->getKeyValue("dist_check_period"), "");
+    EXPECT_EQ(entityNode->tryGetEntity()->getKeyValue("dist_check_period"), "");
 
     action->applyChanges();
 
     entityNode = algorithm::getEntityByName(result->getBaseRootNode(), "light_1");
-    EXPECT_EQ(Node_getEntity(entityNode)->getKeyValue("dist_check_period"), "40");
+    EXPECT_EQ(entityNode->tryGetEntity()->getKeyValue("dist_check_period"), "40");
 }
 
 TEST_F(MapMergeTest, MergeActionsForRemovedKeyValues)
@@ -519,7 +519,7 @@ TEST_F(MapMergeTest, MergeActionsForRemovedKeyValues)
 
     auto action = findAction<RemoveEntityKeyValueAction>(operation, [](const std::shared_ptr<RemoveEntityKeyValueAction>& action)
     {
-        auto entity = Node_getEntity(action->getEntityNode());
+        auto entity = action->getEntityNode()->tryGetEntity();
         return entity->getKeyValue("name") == "light_1" && action->getKey() == "break" && action->getValue().empty();
     });
 
@@ -527,12 +527,12 @@ TEST_F(MapMergeTest, MergeActionsForRemovedKeyValues)
 
     // Check pre-requisites and apply the action
     auto entityNode = algorithm::getEntityByName(result->getBaseRootNode(), "light_1");
-    EXPECT_EQ(Node_getEntity(entityNode)->getKeyValue("break"), "1");
+    EXPECT_EQ(entityNode->tryGetEntity()->getKeyValue("break"), "1");
 
     action->applyChanges();
 
     entityNode = algorithm::getEntityByName(result->getBaseRootNode(), "light_1");
-    EXPECT_EQ(Node_getEntity(entityNode)->getKeyValue("break"), "");
+    EXPECT_EQ(entityNode->tryGetEntity()->getKeyValue("break"), "");
 }
 
 TEST_F(MapMergeTest, MergeActionsForChangedKeyValues)
@@ -542,7 +542,7 @@ TEST_F(MapMergeTest, MergeActionsForChangedKeyValues)
 
     auto action = findAction<ChangeEntityKeyValueAction>(operation, [](const std::shared_ptr<ChangeEntityKeyValueAction>& action)
     {
-        auto entity = Node_getEntity(action->getEntityNode());
+        auto entity = action->getEntityNode()->tryGetEntity();
         return entity->getKeyValue("name") == "light_1" && action->getKey() == "ai_see" && action->getValue() == "1";
     });
 
@@ -550,16 +550,16 @@ TEST_F(MapMergeTest, MergeActionsForChangedKeyValues)
 
     // Check pre-requisites and apply the action
     auto entityNode = algorithm::getEntityByName(result->getBaseRootNode(), "light_1");
-    EXPECT_EQ(Node_getEntity(entityNode)->getKeyValue("ai_see"), "0");
+    EXPECT_EQ(entityNode->tryGetEntity()->getKeyValue("ai_see"), "0");
 
     action->applyChanges();
 
     entityNode = algorithm::getEntityByName(result->getBaseRootNode(), "light_1");
-    EXPECT_EQ(Node_getEntity(entityNode)->getKeyValue("ai_see"), "1");
+    EXPECT_EQ(entityNode->tryGetEntity()->getKeyValue("ai_see"), "1");
 
     action = findAction<ChangeEntityKeyValueAction>(operation, [](const std::shared_ptr<ChangeEntityKeyValueAction>& action)
     {
-        auto entity = Node_getEntity(action->getEntityNode());
+        auto entity = action->getEntityNode()->tryGetEntity();
         return entity->getKeyValue("name") == "light_2" && action->getKey() == "origin" && action->getValue() == "280 160 0";
     });
 
@@ -567,12 +567,12 @@ TEST_F(MapMergeTest, MergeActionsForChangedKeyValues)
 
     // Check pre-requisites and apply the action
     entityNode = algorithm::getEntityByName(result->getBaseRootNode(), "light_2");
-    EXPECT_NE(Node_getEntity(entityNode)->getKeyValue("origin"), "280 160 0");
+    EXPECT_NE(entityNode->tryGetEntity()->getKeyValue("origin"), "280 160 0");
 
     action->applyChanges();
 
     entityNode = algorithm::getEntityByName(result->getBaseRootNode(), "light_2");
-    EXPECT_EQ(Node_getEntity(entityNode)->getKeyValue("origin"), "280 160 0");
+    EXPECT_EQ(entityNode->tryGetEntity()->getKeyValue("origin"), "280 160 0");
 }
 
 inline std::size_t getChildPrimitiveCount(const scene::INodePtr& node)
@@ -598,7 +598,7 @@ TEST_F(MapMergeTest, MergeActionsForChangedPrimitives)
 
     auto addAction = findAction<AddChildAction>(operation, [](const std::shared_ptr<AddChildAction>& action)
     {
-        auto entity = Node_getEntity(action->getParent());
+        auto entity = action->getParent()->tryGetEntity();
         return entity->getKeyValue("name") == "func_static_30" && action->getSourceNodeToAdd()->getNodeType() == scene::INode::Type::Brush;
     });
 
@@ -607,12 +607,12 @@ TEST_F(MapMergeTest, MergeActionsForChangedPrimitives)
     // func_static_1 has 2 additions and 1 removal (== 1 addition, 1 replacement)
     auto addActionCount = countActions<AddChildAction>(operation, [](const std::shared_ptr<AddChildAction>& action)
     {
-        auto entity = Node_getEntity(action->getParent());
+        auto entity = action->getParent()->tryGetEntity();
         return entity->getKeyValue("name") == "func_static_1";
     });
     auto removeActionCount = countActions<RemoveChildAction>(operation, [](const std::shared_ptr<RemoveChildAction>& action)
     {
-        auto entity = Node_getEntity(action->getNodeToRemove()->getParent());
+        auto entity = action->getNodeToRemove()->getParent()->tryGetEntity();
         return entity->getKeyValue("name") == "func_static_1";
     });
 
@@ -621,12 +621,12 @@ TEST_F(MapMergeTest, MergeActionsForChangedPrimitives)
 
     addActionCount = countActions<AddChildAction>(operation, [](const std::shared_ptr<AddChildAction>& action)
     {
-        auto entity = Node_getEntity(action->getParent());
+        auto entity = action->getParent()->tryGetEntity();
         return entity->isWorldspawn();
     });
     removeActionCount = countActions<RemoveChildAction>(operation, [](const std::shared_ptr<RemoveChildAction>& action)
     {
-        auto entity = Node_getEntity(action->getNodeToRemove()->getParent());
+        auto entity = action->getNodeToRemove()->getParent()->tryGetEntity();
         return entity->isWorldspawn();
     });
 
@@ -673,7 +673,7 @@ TEST_F(MapMergeTest, DeactivatedAddEntityAction)
 
     auto action = findAction<AddEntityAction>(operation, [](const std::shared_ptr<AddEntityAction>& action)
     {
-        auto sourceEntity = Node_getEntity(action->getSourceNodeToAdd());
+        auto sourceEntity = action->getSourceNodeToAdd()->tryGetEntity();
         return sourceEntity->getKeyValue("name") == "light_3";
     });
 
@@ -695,7 +695,7 @@ TEST_F(MapMergeTest, DeactivatedRemoveEntityAction)
 
     auto action = findAction<RemoveEntityAction>(operation, [](const std::shared_ptr<RemoveEntityAction>& action)
     {
-        auto entity = Node_getEntity(action->getNodeToRemove());
+        auto entity = action->getNodeToRemove()->tryGetEntity();
         return entity->getKeyValue("name") == "info_player_start_1";
     });
 
@@ -717,19 +717,19 @@ TEST_F(MapMergeTest, DeactivatedAddEntityKeyValueAction)
 
     auto action = findAction<AddEntityKeyValueAction>(operation, [](const std::shared_ptr<AddEntityKeyValueAction>& action)
     {
-        auto entity = Node_getEntity(action->getEntityNode());
+        auto entity = action->getEntityNode()->tryGetEntity();
         return entity->getKeyValue("name") == "light_1" && action->getKey() == "dist_check_period" && action->getValue() == "40";
     });
 
     // Check pre-requisites and apply the action
     auto entityNode = algorithm::getEntityByName(result->getBaseRootNode(), "light_1");
-    EXPECT_EQ(Node_getEntity(entityNode)->getKeyValue("dist_check_period"), "");
+    EXPECT_EQ(entityNode->tryGetEntity()->getKeyValue("dist_check_period"), "");
 
     action->deactivate();
     action->applyChanges();
 
     entityNode = algorithm::getEntityByName(result->getBaseRootNode(), "light_1");
-    EXPECT_EQ(Node_getEntity(entityNode)->getKeyValue("dist_check_period"), ""); // must still be unchanged
+    EXPECT_EQ(entityNode->tryGetEntity()->getKeyValue("dist_check_period"), ""); // must still be unchanged
 }
 
 TEST_F(MapMergeTest, DeactivatedRemoveEntityKeyValueAction)
@@ -739,19 +739,19 @@ TEST_F(MapMergeTest, DeactivatedRemoveEntityKeyValueAction)
 
     auto action = findAction<RemoveEntityKeyValueAction>(operation, [](const std::shared_ptr<RemoveEntityKeyValueAction>& action)
     {
-        auto entity = Node_getEntity(action->getEntityNode());
+        auto entity = action->getEntityNode()->tryGetEntity();
         return entity->getKeyValue("name") == "light_1" && action->getKey() == "break" && action->getValue().empty();
     });
 
     // Check pre-requisites and apply the action
     auto entityNode = algorithm::getEntityByName(result->getBaseRootNode(), "light_1");
-    EXPECT_EQ(Node_getEntity(entityNode)->getKeyValue("break"), "1");
+    EXPECT_EQ(entityNode->tryGetEntity()->getKeyValue("break"), "1");
 
     action->deactivate();
     action->applyChanges();
 
     entityNode = algorithm::getEntityByName(result->getBaseRootNode(), "light_1");
-    EXPECT_EQ(Node_getEntity(entityNode)->getKeyValue("break"), "1"); // must be unchanged
+    EXPECT_EQ(entityNode->tryGetEntity()->getKeyValue("break"), "1"); // must be unchanged
 }
 
 TEST_F(MapMergeTest, DeactivatedChangeEntityKeyValueAction)
@@ -761,19 +761,19 @@ TEST_F(MapMergeTest, DeactivatedChangeEntityKeyValueAction)
 
     auto action = findAction<ChangeEntityKeyValueAction>(operation, [](const std::shared_ptr<ChangeEntityKeyValueAction>& action)
     {
-        auto entity = Node_getEntity(action->getEntityNode());
+        auto entity = action->getEntityNode()->tryGetEntity();
         return entity->getKeyValue("name") == "light_1" && action->getKey() == "ai_see" && action->getValue() == "1";
     });
 
     // Check pre-requisites and apply the action
     auto entityNode = algorithm::getEntityByName(result->getBaseRootNode(), "light_1");
-    EXPECT_EQ(Node_getEntity(entityNode)->getKeyValue("ai_see"), "0");
+    EXPECT_EQ(entityNode->tryGetEntity()->getKeyValue("ai_see"), "0");
 
     action->deactivate();
     action->applyChanges();
 
     entityNode = algorithm::getEntityByName(result->getBaseRootNode(), "light_1");
-    EXPECT_EQ(Node_getEntity(entityNode)->getKeyValue("ai_see"), "0");
+    EXPECT_EQ(entityNode->tryGetEntity()->getKeyValue("ai_see"), "0");
 }
 
 TEST_F(MapMergeTest, DeactivatedChangePrimitiveActions)
@@ -787,7 +787,7 @@ TEST_F(MapMergeTest, DeactivatedChangePrimitiveActions)
         auto addChildAction = std::dynamic_pointer_cast<AddChildAction>(action);
 
         if (addChildAction && Node_isEntity(addChildAction->getParent()) &&
-            Node_getEntity(addChildAction->getParent())->getKeyValue("name") == "func_static_1")
+            addChildAction->getParent()->tryGetEntity()->getKeyValue("name") == "func_static_1")
         {
             addChildAction->deactivate();
         }
@@ -795,7 +795,7 @@ TEST_F(MapMergeTest, DeactivatedChangePrimitiveActions)
         auto removeChildAction = std::dynamic_pointer_cast<RemoveChildAction>(action);
 
         if (removeChildAction && Node_isEntity(removeChildAction->getNodeToRemove()->getParent()) &&
-            Node_getEntity(removeChildAction->getNodeToRemove()->getParent())->getKeyValue("name") == "func_static_1")
+            removeChildAction->getNodeToRemove()->getParent()->tryGetEntity()->getKeyValue("name") == "func_static_1")
         {
             removeChildAction->deactivate();
         }
@@ -1604,9 +1604,9 @@ void verifyTargetChanges1(const scene::IMapRootNodePtr& targetRoot)
     EXPECT_TRUE(algorithm::findFirstBrushWithMaterial(algorithm::findWorldspawn(targetRoot), "textures/numbers/17")); // brush_17 been added to worldspawn
     auto func_static_7 = algorithm::getEntityByName(targetRoot, "func_static_7");
     EXPECT_TRUE(algorithm::findFirstBrushWithMaterial(func_static_7, "textures/numbers/9")); // brush_7 in func_static_7 retextured to brush 9
-    EXPECT_EQ(Node_getEntity(algorithm::getEntityByName(targetRoot, "expandable"))->getKeyValue("target_spawnarg"), "target_value");
-    EXPECT_EQ(Node_getEntity(algorithm::getEntityByName(targetRoot, "expandable"))->getKeyValue("extra2"), "");
-    EXPECT_EQ(Node_getEntity(algorithm::getEntityByName(targetRoot, "expandable"))->getKeyValue("origin"), "-100 350 32");
+    EXPECT_EQ(algorithm::getEntityByName(targetRoot, "expandable")->tryGetEntity()->getKeyValue("target_spawnarg"), "target_value");
+    EXPECT_EQ(algorithm::getEntityByName(targetRoot, "expandable")->tryGetEntity()->getKeyValue("extra2"), "");
+    EXPECT_EQ(algorithm::getEntityByName(targetRoot, "expandable")->tryGetEntity()->getKeyValue("origin"), "-100 350 32");
     EXPECT_FALSE(algorithm::findFirstBrushWithMaterial(algorithm::findWorldspawn(targetRoot), "textures/numbers/4")); // both brush_4 have been deleted from worldspawn
     EXPECT_FALSE(algorithm::findFirstBrushWithMaterial(algorithm::findWorldspawn(targetRoot), "textures/numbers/3")); // func_static_3 had two brush_3 added (were part of worldspawn before)
 
@@ -1631,7 +1631,7 @@ TEST_F(ThreeWayMergeTest, NonconflictingEntityAddition)
     // light_2 must be added to target
     auto action = findAction<AddEntityAction>(operation, [](const std::shared_ptr<AddEntityAction>& action)
     {
-        auto sourceEntity = Node_getEntity(action->getSourceNodeToAdd());
+        auto sourceEntity = action->getSourceNodeToAdd()->tryGetEntity();
         return sourceEntity->getKeyValue("name") == "light_2";
     });
 
@@ -1682,7 +1682,7 @@ TEST_F(ThreeWayMergeTest, NonConflictingFuncStaticMove)
     verifyTargetChanges1(operation->getTargetRoot());
 
     auto entity_to_be_moved = algorithm::getEntityByName(operation->getTargetRoot(), "entity_to_be_moved");
-    EXPECT_EQ(Node_getEntity(entity_to_be_moved)->getKeyValue("origin"), "386 -192 32") << "The entity has an unexpected origin";
+    EXPECT_EQ(entity_to_be_moved->tryGetEntity()->getKeyValue("origin"), "386 -192 32") << "The entity has an unexpected origin";
 
     // Check the removals
     auto brushRemovalCount = countActions<RemoveChildAction>(operation, [](const std::shared_ptr<RemoveChildAction>& action)
@@ -1716,7 +1716,7 @@ TEST_F(ThreeWayMergeTest, NonConflictingFuncStaticMove)
     entity_to_be_moved = algorithm::getEntityByName(operation->getTargetRoot(), "entity_to_be_moved");
 
     EXPECT_EQ(algorithm::getChildCount(entity_to_be_moved), 2) << "entity_to_be_moved should have two child primitives after the merge";
-    EXPECT_EQ(Node_getEntity(entity_to_be_moved)->getKeyValue("origin"), "386 -256 32") << "The entity should have a new origin key value";
+    EXPECT_EQ(entity_to_be_moved->tryGetEntity()->getKeyValue("origin"), "386 -256 32") << "The entity should have a new origin key value";
     EXPECT_TRUE(algorithm::findFirstBrushWithMaterial(entity_to_be_moved, "textures/numbers/18")); // one brush with texture 18
     EXPECT_TRUE(algorithm::findFirstPatchWithMaterial(entity_to_be_moved, "textures/numbers/18")); // one patch with texture 18
 
@@ -1841,18 +1841,18 @@ TEST_F(ThreeWayMergeTest, NonconflictingSpawnargManipulation)
     EXPECT_TRUE(removeAction) << "No merge action found for removing the spawnarg";
 
     // Check pre-requisites and apply the action
-    EXPECT_NE(Node_getEntity(expandable)->getKeyValue("source_spawnarg"), "source_value");
-    EXPECT_NE(Node_getEntity(expandable)->getKeyValue("extra1"), "");
-    EXPECT_NE(Node_getEntity(expandable)->getKeyValue("extra3"), "value3_changed");
+    EXPECT_NE(expandable->tryGetEntity()->getKeyValue("source_spawnarg"), "source_value");
+    EXPECT_NE(expandable->tryGetEntity()->getKeyValue("extra1"), "");
+    EXPECT_NE(expandable->tryGetEntity()->getKeyValue("extra3"), "value3_changed");
 
     addAction->applyChanges();
-    EXPECT_EQ(Node_getEntity(expandable)->getKeyValue("source_spawnarg"), "source_value");
+    EXPECT_EQ(expandable->tryGetEntity()->getKeyValue("source_spawnarg"), "source_value");
 
     removeAction->applyChanges();
-    EXPECT_EQ(Node_getEntity(expandable)->getKeyValue("extra1"), "");
+    EXPECT_EQ(expandable->tryGetEntity()->getKeyValue("extra1"), "");
 
     modifyAction->applyChanges();
-    EXPECT_EQ(Node_getEntity(expandable)->getKeyValue("extra3"), "value3_changed");
+    EXPECT_EQ(expandable->tryGetEntity()->getKeyValue("extra3"), "value3_changed");
 
     verifyTargetChanges1(operation->getTargetRoot());
 }
@@ -1986,12 +1986,12 @@ TEST_F(ThreeWayMergeTest, MergeEntityNameCollisions)
     auto operation = ThreeWayMergeOperation::Create(baseResource->getRootNode(), sourceResource->getRootNode(), targetResource->getRootNode());
 
     // Sources node_4 and node_5 have already been renamed, get the new names
-    auto newNode4Name = Node_getEntity(sourceNode4)->getKeyValue("name");
-    auto newNode5Name = Node_getEntity(sourceNode5)->getKeyValue("name");
+    auto newNode4Name = sourceNode4->tryGetEntity()->getKeyValue("name");
+    auto newNode5Name = sourceNode5->tryGetEntity()->getKeyValue("name");
     EXPECT_NE(newNode4Name, "node_4");
     EXPECT_NE(newNode5Name, "node_5");
 
-    EXPECT_EQ(Node_getEntity(sourceNodeBetween4And5)->getKeyValue("name"), "node_between_4_and_5"); // this on is unchanged
+    EXPECT_EQ(sourceNodeBetween4And5->tryGetEntity()->getKeyValue("name"), "node_between_4_and_5"); // this on is unchanged
 
     // The expected result is that the three nodes added in the source have their names
     // changed to not conflict with the target map and keep their links intact after import.
@@ -2017,7 +2017,7 @@ TEST_F(ThreeWayMergeTest, MergeEntityNameCollisions)
     auto keyValueConflict = findAction<EntityKeyValueConflictResolutionAction>(operation,
         [](const std::shared_ptr<EntityKeyValueConflictResolutionAction>& action)
     {
-        return Node_getEntity(action->getConflictingSourceEntity())->getKeyValue("name") == "node_3";
+        return action->getConflictingSourceEntity()->tryGetEntity()->getKeyValue("name") == "node_3";
     });
     EXPECT_TRUE(keyValueConflict);
     EXPECT_EQ(keyValueConflict->getConflictType(), ConflictType::SettingKeyToDifferentValue);
@@ -2046,14 +2046,14 @@ TEST_F(ThreeWayMergeTest, MergeEntityNameCollisions)
 
     // Since we didn't resolve the action accepting the source change, the target0 key should still be at "node_4"
     auto node_3 = algorithm::getEntityByName(operation->getTargetRoot(), "node_3");
-    EXPECT_EQ(Node_getEntity(node_3)->getKeyValue("target0"), "node_4");
+    EXPECT_EQ(node_3->tryGetEntity()->getKeyValue("target0"), "node_4");
 
     // Actively resolve the conflict and apply the change
     keyValueConflict->setResolution(ResolutionType::ApplySourceChange);
     keyValueConflict->applyChanges();
 
     node_3 = algorithm::getEntityByName(operation->getTargetRoot(), "node_3");
-    EXPECT_EQ(Node_getEntity(node_3)->getKeyValue("target0"), newNode4Name);
+    EXPECT_EQ(node_3->tryGetEntity()->getKeyValue("target0"), newNode4Name);
 }
 
 // The source map tries to remove an entity that has been modified in target (func_static_8)
@@ -2067,7 +2067,7 @@ TEST_F(ThreeWayMergeTest, RemovalOfModifiedEntity)
     auto entityConflict = findAction<EntityConflictResolutionAction>(operation,
         [](const std::shared_ptr<EntityConflictResolutionAction>& action)
     {
-        return Node_getEntity(action->getConflictingTargetEntity())->getKeyValue("name") == "func_static_8";
+        return action->getConflictingTargetEntity()->tryGetEntity()->getKeyValue("name") == "func_static_8";
     });
     EXPECT_TRUE(entityConflict) << "Didn't find the conflicting with subject func_static_8";
     EXPECT_EQ(entityConflict->getConflictType(), ConflictType::RemovalOfModifiedEntity);
@@ -2096,7 +2096,7 @@ TEST_F(ThreeWayMergeTest, ModificationOfRemovedEntity)
         [](const std::shared_ptr<EntityConflictResolutionAction>& action)
     {
         return action->getConflictingSourceEntity() && action->getConflictingTargetEntity() == nullptr &&
-            Node_getEntity(action->getConflictingSourceEntity())->getKeyValue("name") == "light_1";
+            action->getConflictingSourceEntity()->tryGetEntity()->getKeyValue("name") == "light_1";
     });
     EXPECT_TRUE(entityConflict) << "Didn't find the conflicting with subject light_1";
     EXPECT_EQ(entityConflict->getConflictType(), ConflictType::ModificationOfRemovedEntity);
@@ -2119,13 +2119,13 @@ TEST_F(ThreeWayMergeTest, SettingKeyValueToConflictingValues)
     auto operation = setupThreeWayMergeOperation("maps/threeway_merge_base.mapx", "maps/threeway_merge_target_2.mapx", "maps/threeway_merge_source_2.mapx");
 
     auto entity = algorithm::getEntityByName(operation->getTargetRoot(), "func_static_6");
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("origin"), "224 200 32");
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("origin"), "224 200 32");
 
     auto valueConflict = findAction<EntityKeyValueConflictResolutionAction>(operation,
         [](const std::shared_ptr<EntityKeyValueConflictResolutionAction>& action)
     {
-        return Node_getEntity(action->getConflictingSourceEntity())->getKeyValue("name") == "func_static_6" &&
-               Node_getEntity(action->getConflictingTargetEntity())->getKeyValue("name") == "func_static_6";
+        return action->getConflictingSourceEntity()->tryGetEntity()->getKeyValue("name") == "func_static_6" &&
+               action->getConflictingTargetEntity()->tryGetEntity()->getKeyValue("name") == "func_static_6";
     });
     EXPECT_TRUE(valueConflict) << "Didn't find the conflicting with subject func_static_6";
     EXPECT_EQ(valueConflict->getConflictType(), ConflictType::SettingKeyToDifferentValue);
@@ -2143,14 +2143,14 @@ TEST_F(ThreeWayMergeTest, SettingKeyValueToConflictingValues)
     operation->applyActions();
 
     // The key value is still the same
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("origin"), "224 200 32");
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("origin"), "224 200 32");
 
     // Now accept the change explicitly
     valueConflict->setResolution(ResolutionType::ApplySourceChange);
     valueConflict->applyChanges();
 
     // The changed value has now been imported
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("origin"), "224 180 32");
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("origin"), "224 180 32");
 }
 
 // Source: expandable entity has its spwnarg "extra3" modified to "value3_changed"
@@ -2160,14 +2160,14 @@ TEST_F(ThreeWayMergeTest, ModificationOfRemovedKeyValue)
     auto operation = setupThreeWayMergeOperation("maps/threeway_merge_base.mapx", "maps/threeway_merge_target_2.mapx", "maps/threeway_merge_source_2.mapx");
 
     auto entity = algorithm::getEntityByName(operation->getTargetRoot(), "expandable");
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("extra3"), "");
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("extra3"), "");
 
     auto valueConflict = findAction<EntityKeyValueConflictResolutionAction>(operation,
         [](const std::shared_ptr<EntityKeyValueConflictResolutionAction>& action)
     {
         return action->getConflictType() == ConflictType::ModificationOfRemovedKeyValue &&
-            Node_getEntity(action->getConflictingSourceEntity())->getKeyValue("name") == "expandable" &&
-            Node_getEntity(action->getConflictingTargetEntity())->getKeyValue("name") == "expandable";
+            action->getConflictingSourceEntity()->tryGetEntity()->getKeyValue("name") == "expandable" &&
+            action->getConflictingTargetEntity()->tryGetEntity()->getKeyValue("name") == "expandable";
     });
     EXPECT_TRUE(valueConflict) << "Didn't find the conflicting with subject expandable";
     EXPECT_EQ(valueConflict->getConflictType(), ConflictType::ModificationOfRemovedKeyValue);
@@ -2185,14 +2185,14 @@ TEST_F(ThreeWayMergeTest, ModificationOfRemovedKeyValue)
     operation->applyActions();
 
     // The key value is still gone
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("extra3"), "");
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("extra3"), "");
 
     // Now accept the change explicitly
     valueConflict->setResolution(ResolutionType::ApplySourceChange);
     valueConflict->applyChanges();
 
     // The changed value has now been imported
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("extra3"), "value3_changed");
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("extra3"), "value3_changed");
 }
 
 // Source: expandable entity has its spwnarg "extra2" removed
@@ -2202,14 +2202,14 @@ TEST_F(ThreeWayMergeTest, RemovalOfModifiedKeyValue)
     auto operation = setupThreeWayMergeOperation("maps/threeway_merge_base.mapx", "maps/threeway_merge_target_2.mapx", "maps/threeway_merge_source_2.mapx");
 
     auto entity = algorithm::getEntityByName(operation->getTargetRoot(), "expandable");
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("extra2"), "value2_changed");
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("extra2"), "value2_changed");
 
     auto valueConflict = findAction<EntityKeyValueConflictResolutionAction>(operation,
         [](const std::shared_ptr<EntityKeyValueConflictResolutionAction>& action)
     {
         return action->getConflictType() == ConflictType::RemovalOfModifiedKeyValue &&
-            Node_getEntity(action->getConflictingSourceEntity())->getKeyValue("name") == "expandable" &&
-            Node_getEntity(action->getConflictingTargetEntity())->getKeyValue("name") == "expandable";
+            action->getConflictingSourceEntity()->tryGetEntity()->getKeyValue("name") == "expandable" &&
+            action->getConflictingTargetEntity()->tryGetEntity()->getKeyValue("name") == "expandable";
     });
     EXPECT_TRUE(valueConflict) << "Didn't find the conflicting with subject expandable";
     EXPECT_EQ(valueConflict->getConflictType(), ConflictType::RemovalOfModifiedKeyValue);
@@ -2227,14 +2227,14 @@ TEST_F(ThreeWayMergeTest, RemovalOfModifiedKeyValue)
     operation->applyActions();
 
     // The key value is still the same
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("extra2"), "value2_changed");
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("extra2"), "value2_changed");
 
     // Now accept the change explicitly
     valueConflict->setResolution(ResolutionType::ApplySourceChange);
     valueConflict->applyChanges();
 
     // The changed value has now been removed
-    EXPECT_EQ(Node_getEntity(entity)->getKeyValue("extra2"), "");
+    EXPECT_EQ(entity->tryGetEntity()->getKeyValue("extra2"), "");
 }
 
 inline std::unique_ptr<ThreeWaySelectionGroupMerger> setupThreeWayGroupMerger(const std::string& baseMap,

@@ -22,10 +22,10 @@ public:
     virtual IAasFilePtr loadFromStream(std::istream& stream) override;
 
     // RegisterableModule implementation
-	virtual const std::string& getName() const override;
-	virtual const StringSet& getDependencies() const override;
-	virtual void initialiseModule(const IApplicationContext& ctx) override;
-	virtual void shutdownModule() override;
+	std::string getName() const override;
+	StringSet getDependencies() const override;
+	void initialiseModule(const IApplicationContext& ctx) override;
+	void shutdownModule() override;
 
 private:
     // Parses the file header, throws exception on failure

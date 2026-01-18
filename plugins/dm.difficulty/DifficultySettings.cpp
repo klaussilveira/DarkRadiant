@@ -231,7 +231,7 @@ bool DifficultySettings::isOverridden(const SettingPtr& setting)
 std::string DifficultySettings::getParentClass(const std::string& className)
 {
     // Get the parent eclass
-    IEntityClassPtr eclass = GlobalEntityClassManager().findClass(className);
+    scene::EntityClass::Ptr eclass = GlobalEntityClassManager().findClass(className);
     if (!eclass)
         return ""; // Invalid!
 
@@ -280,7 +280,7 @@ wxDataViewItem DifficultySettings::findOrInsertClassname(const std::string& clas
 wxDataViewItem DifficultySettings::insertClassName(const std::string& className, const wxDataViewItem& parent)
 {
     wxutil::TreeModel::Row row = parent.IsOk() ? _store->AddItemUnderParent(parent) : _store->AddItem();
-    
+
     wxDataViewItemAttr black;
 	black.SetColour(wxColor(0,0,0));
 
@@ -299,11 +299,11 @@ std::string DifficultySettings::getInheritanceKey(const std::string& className)
 {
     if (className.empty()) return "";
 
-    IEntityClassPtr eclass = GlobalEntityClassManager().findClass(className);
+    scene::EntityClass::Ptr eclass = GlobalEntityClassManager().findClass(className);
 
     // Get the inheritance chain of this class
     std::list<std::string> inheritanceChain;
-    for (IEntityClass* currentClass = eclass.get();
+    for (scene::EntityClass* currentClass = eclass.get();
          currentClass != NULL;
          currentClass = currentClass->getParent())
     {
@@ -335,7 +335,7 @@ SettingPtr DifficultySettings::createSetting(const std::string& className)
     return setting;
 }
 
-void DifficultySettings::parseFromEntityDef(const IEntityClassPtr& def)
+void DifficultySettings::parseFromEntityDef(const scene::EntityClass::Ptr& def)
 {
     // Construct the prefix for the desired difficulty level
     std::string diffPrefix = "diff_" + string::to_string(_level) + "_";

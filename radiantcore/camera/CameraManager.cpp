@@ -7,13 +7,13 @@
 namespace camera
 {
 
-const std::string& CameraManager::getName() const
+std::string CameraManager::getName() const
 {
 	static std::string _name(MODULE_CAMERA_MANAGER);
 	return _name;
 }
 
-const StringSet& CameraManager::getDependencies() const
+StringSet CameraManager::getDependencies() const
 {
 	static StringSet _dependencies { MODULE_COMMANDSYSTEM };
 	return _dependencies;

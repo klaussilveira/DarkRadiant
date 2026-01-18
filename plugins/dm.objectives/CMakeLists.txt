@@ -42,6 +42,9 @@ add_library(dm_objectives MODULE
             SpecifierType.cpp)
 target_compile_options(dm_objectives PUBLIC ${SIGC_CFLAGS})
 target_link_libraries(dm_objectives PUBLIC wxutil)
+set_target_properties(
+    dm_objectives PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${DR_STAGING_PLUGINSDIR}"
+)
 
 # Enable precompiled header for dm_objectives
 if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.16.0")

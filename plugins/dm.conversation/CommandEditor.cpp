@@ -1,7 +1,6 @@
 #include "CommandEditor.h"
 
 #include "i18n.h"
-#include "string/string.h"
 #include "string/convert.h"
 
 #include <fmt/format.h>

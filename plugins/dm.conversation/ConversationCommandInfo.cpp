@@ -9,7 +9,7 @@ namespace conversation {
 // initialise the static member variable
 int ConversationCommandInfo::_highestId = 0;
 
-void ConversationCommandInfo::parseFromEntityClass(const IEntityClassPtr& eclass)
+void ConversationCommandInfo::parseFromEntityClass(const scene::EntityClass::Ptr& eclass)
 {
 	assert(eclass != NULL); // don't accept NULL pointers
 

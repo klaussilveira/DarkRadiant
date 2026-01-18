@@ -90,7 +90,7 @@ void FaceNode::commitTransformation()
     _face.freezeTransform();
 }
 
-const AABB& FaceNode::localAABB() const
+AABB FaceNode::localAABB() const
 {
     _bounds = AABB();
 
@@ -131,7 +131,7 @@ void FaceNode::render(SelectionMode mode)
     glBlendFunc(GL_CONSTANT_ALPHA_EXT, GL_ONE_MINUS_CONSTANT_ALPHA_EXT);
 
     auto surfaceColour = getSurfaceColour(mode);
-    glColor4fv(surfaceColour);
+    glColor4fv(surfaceColour.data());
 
     glBegin(GL_TRIANGLE_FAN);
 

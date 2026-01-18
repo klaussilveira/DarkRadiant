@@ -27,7 +27,7 @@ caulk = GlobalDeclarationManager.findDeclaration(Declaration.Type.Material, "tex
 print("Name: " + caulk.getDeclName())
 print("Type: " + str(caulk.getDeclType()))
 print("Defined in: " + str(caulk.getDeclFilePath()))
-print("Definition: " + caulk.getBlockSyntax().contents)
+print("Definition: " + caulk.getDeclSource().contents)
 
 GlobalDeclarationManager.foreachDeclaration(Declaration.Type.ModelDef, visitor)
 
@@ -39,10 +39,10 @@ if not fx.isNull():
     print("Name: " + fx.getDeclName())
     print("Type: " + str(fx.getDeclType()))
     print("Defined in: " + str(fx.getDeclFilePath()))
-    print("Definition: " + fx.getBlockSyntax().contents)
+    print("Definition: " + fx.getDeclSource().contents)
 
     print("Number of actions: " + str(fx.getNumActions()))
-    
+
     action = fx.getAction(1)
     print("Action with Index 1 (this is the second):")
     print("Action #1 has Type: " + str(action.getActionType()))
@@ -84,9 +84,9 @@ if not fx.isNull():
 # Create a new material
 myOwnMaterial = GlobalDeclarationManager.findOrCreateDeclaration(Declaration.Type.Material, "textures/myown_material")
 
-syntax = myOwnMaterial.getBlockSyntax()
+syntax = myOwnMaterial.getDeclSource()
 syntax.contents = "diffusemap _white"
-myOwnMaterial.setBlockSyntax(syntax)
+myOwnMaterial.setDeclSource(syntax)
 
 # Save the material to a new file
 myOwnMaterial.setDeclFilePath("materials/", "script_test.mtr")
@@ -434,7 +434,7 @@ print("Layers:")
 printLayers()
 
 print("Test create")
-print(GlobalLayerManager.createLayer("One"))	
+print(GlobalLayerManager.createLayer("One"))
 print(GlobalLayerManager.createLayer("Two"))
 print(GlobalLayerManager.createLayer("Forty-two", 42))
 print(GlobalLayerManager.createLayer("TwoAgain", 2))

@@ -18,7 +18,7 @@ public:
 	// NodeVisitor implementation
 	bool pre(const scene::INodePtr& node) override
 	{
-		Entity* entity = Node_getEntity(node);
+		Entity* entity = node->tryGetEntity();
 
 		// Check for an entity
 		if (entity != nullptr)
@@ -45,7 +45,7 @@ class OriginRemover :
 public:
 	bool pre(const scene::INodePtr& node) override
 	{
-		Entity* entity = Node_getEntity(node);
+		Entity* entity = node->tryGetEntity();
 
 		// Check for an entity
 		if (entity != nullptr)

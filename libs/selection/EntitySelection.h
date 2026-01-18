@@ -45,7 +45,7 @@ private:
     public:
         SpawnargTracker(CollectiveSpawnargs& spawnargCollection, const scene::INodePtr& node) :
             _spawnargCollection(spawnargCollection),
-            _entity(Node_getEntity(node)),
+            _entity(node->tryGetEntity()),
             _node(node),
             _destroySilently(false)
         {
@@ -144,11 +144,11 @@ public:
     }
 
     // Returns non-empty reference if all selected entities share the same eclass
-    IEntityClassPtr getSingleSharedEntityClass()
+    scene::EntityClass::Ptr getSingleSharedEntityClass()
     {
         try
         {
-            IEntityClassPtr result;
+            scene::EntityClass::Ptr result;
 
             foreachEntity([&](const EntityNodePtr& entityNode)
             {

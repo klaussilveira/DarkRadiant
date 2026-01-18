@@ -2,14 +2,14 @@
 
 #include <map>
 #include <string>
-#include "ieclass.h"
+#include "scene/EntityClass.h"
 
 namespace
 {
 	const char* const GKEY_RESPONSE_EFFECT_PREFIX = "/stimResponseSystem/responseEffectPrefix";
 }
 
-typedef std::map<std::string, IEntityClassPtr> ResponseEffectTypeMap;
+typedef std::map<std::string, scene::EntityClass::Ptr> ResponseEffectTypeMap;
 
 class ResponseEffectTypes
 {
@@ -30,7 +30,7 @@ public:
 
 	/** greebo: Returns the entityclass pointer for the given name.
 	 */
-	IEntityClassPtr getEClassForName(const std::string& name);
+	scene::EntityClass::Ptr getEClassForName(const std::string& name);
 
 	/** greebo: Returns a reference to the internally stored EffectTypeMap
 	 */

@@ -1,5 +1,7 @@
 #include "TestOrthoViewManager.h"
 
+#include "math/Vector3.h"
+
 namespace test
 {
 
@@ -41,21 +43,10 @@ OrthoOrientation TestOrthoViewManager::getActiveViewType() const
 void TestOrthoViewManager::setActiveViewType(OrthoOrientation viewType)
 {}
 
-const std::string& TestOrthoViewManager::getName() const
+std::string TestOrthoViewManager::getName() const
 {
     static std::string _name(MODULE_ORTHOVIEWMANAGER);
     return _name;
-}
-
-const StringSet& TestOrthoViewManager::getDependencies() const
-{
-    static StringSet _dependencies;
-    return _dependencies;
-}
-
-void TestOrthoViewManager::initialiseModule(const IApplicationContext& ctx)
-{
-    // do nothing
 }
 
 }

@@ -109,7 +109,7 @@ protected:
 private:
     void loadSettings();
     void saveSettings();
-    
+
     // Asks user to save each unmodified material.
     // Returns true if it is safe to go ahead and close the dialog
     bool okToCloseDialog();
@@ -217,7 +217,7 @@ private:
     void onMaterialChanged();
     void convertTextCtrlToMapExpressionEntry(const std::string& ctrlName);
 
-    decl::DeclarationBlockSyntax getBlockSyntaxFromSourceView();
+    decl::DeclarationBlockSource getBlockSyntaxFromSourceView();
 
     // Shortcut
     template<typename ObjectClass>

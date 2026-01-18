@@ -77,14 +77,14 @@ class StaticGeometryNode :
 
 private:
 	// Constructor
-	StaticGeometryNode(const IEntityClassPtr& eclass);
+	StaticGeometryNode(const scene::EntityClass::Ptr& eclass);
 	// Private copy constructor, is invoked by clone()
 	StaticGeometryNode(const StaticGeometryNode& other);
 
 public:
     using Ptr = std::shared_ptr<StaticGeometryNode>;
 
-	static StaticGeometryNode::Ptr Create(const IEntityClassPtr& eclass);
+	static StaticGeometryNode::Ptr Create(const scene::EntityClass::Ptr& eclass);
 
 	virtual ~StaticGeometryNode();
 
@@ -96,7 +96,7 @@ public:
 	virtual void convertCurveType() override;
 
 	// Bounded implementation
-	virtual const AABB& localAABB() const override;
+	AABB localAABB() const override;
 
 	/** greebo: Tests the contained Doom3Group for selection.
 	 *

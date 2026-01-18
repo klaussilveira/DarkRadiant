@@ -5,7 +5,7 @@
 #include "itextstream.h"
 #include "ShaderTemplate.h"
 
-namespace shaders 
+namespace shaders
 {
 
 std::shared_ptr<ShaderTemplate> ShaderLibrary::getTemplate(const std::string& name)
@@ -63,11 +63,11 @@ void ShaderLibrary::copyDefinition(const std::string& nameOfOriginal, const std:
     auto decl = GlobalDeclarationManager().findOrCreateDeclaration(decl::Type::Material, nameOfCopy);
 
     // Replace the syntax block of the target with the one of the original
-    auto syntax = originalDecl->getBlockSyntax();
+    auto syntax = originalDecl->getDeclSource();
     syntax.name = nameOfCopy;
     syntax.fileInfo = vfs::FileInfo{ "", "", vfs::Visibility::HIDDEN };
 
-    decl->setBlockSyntax(syntax);
+    decl->setDeclSource(syntax);
 }
 
 bool ShaderLibrary::renameDefinition(const std::string& oldName, const std::string& newName)
@@ -127,7 +127,7 @@ void ShaderLibrary::foreachShaderName(const ShaderNameCallback& callback)
 {
     GlobalDeclarationManager().foreachDeclaration(decl::Type::Material, [&](const decl::IDeclaration::Ptr& decl)
     {
-        if (decl->getBlockSyntax().fileInfo.visibility == vfs::Visibility::NORMAL)
+        if (decl->getDeclSource().fileInfo.visibility == vfs::Visibility::NORMAL)
         {
             callback(decl->getDeclName());
         }

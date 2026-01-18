@@ -76,8 +76,6 @@ GlyphSetPtr GlyphSet::createFromDatFile(const std::string& vfsPath,
 	// Construct a glyph set using the loaded info
 	GlyphSetPtr glyphSet(new GlyphSet(*buf, fontname, language, resolution));
 
-	rMessage() << "FontLoader: "  << vfsPath << " loaded successfully." << std::endl;
-
 	return glyphSet;
 }
 

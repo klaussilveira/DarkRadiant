@@ -3,9 +3,12 @@ add_library(scene
             ChildPrimitives.cpp
             InstanceWalkers.cpp
             Entity.cpp
+            EntityClass.cpp
             EntityKeyValue.cpp
             EntityNode.cpp
             EntitySettings.cpp
+            filters/SceneFilter.cpp
+            filters/FilterGroup.cpp
             KeyValueObserver.cpp
             LayerUsageBreakdown.cpp
             ModelFinder.cpp
@@ -23,6 +26,8 @@ add_library(scene
             SelectableNode.cpp
             SelectionIndex.cpp
             ShaderParms.cpp
+            shaders/ShaderExpression.cpp
+            textures/TextureManipulator.cpp
             TargetableNode.cpp
             TargetKey.cpp
             TargetKeyCollection.cpp
@@ -31,4 +36,4 @@ add_library(scene
             TraversableNodeSet.cpp
             Traverse.cpp)
 target_compile_options(scene PUBLIC ${SIGC_CFLAGS})
-target_link_libraries(scene PUBLIC ${SIGC_LIBRARIES} math)
+target_link_libraries(scene PUBLIC ${SIGC_LIBRARIES} math xmlutil ${GLEW_LIBRARIES})
