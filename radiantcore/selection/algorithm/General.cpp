@@ -1041,6 +1041,13 @@ void registerCommands()
 
     GlobalCommandSystem().addCommand(scene::SELECT_NODE_BY_INDEX_CMD, scene::selectNodeByIndexCmd,
                                      {cmd::ARGTYPE_INT, cmd::ARGTYPE_INT});
+
+    GlobalCommandSystem().addCommand("ScatterObjects", scatterObjectsCmd,
+        {
+            cmd::ARGTYPE_INT, cmd::ARGTYPE_INT, cmd::ARGTYPE_DOUBLE,
+            cmd::ARGTYPE_INT, cmd::ARGTYPE_DOUBLE, cmd::ARGTYPE_INT,
+            cmd::ARGTYPE_INT, cmd::ARGTYPE_DOUBLE, cmd::ARGTYPE_INT
+        });
 }
 
 	} // namespace algorithm

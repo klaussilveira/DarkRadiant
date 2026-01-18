@@ -2,6 +2,8 @@
 
 #include <functional>
 #include <cmath>
+#include <random>
+#include <unordered_map>
 
 #include "i18n.h"
 #include <string>
@@ -19,6 +21,8 @@
 #include "icurve.h"
 #include "ientity.h"
 #include "iarray.h"
+#include "ibrush.h"
+#include "icameraview.h"
 
 #include "scenelib.h"
 #include "selectionlib.h"
@@ -26,6 +30,7 @@
 #include "scene/Clone.h"
 #include "scene/EntityNode.h"
 #include "map/algorithm/Import.h"
+#include "scene/EntityNode.h"
 #include "scene/BasicRootNode.h"
 #include "debugging/debugging.h"
 #include "selection/TransformationVisitors.h"
@@ -33,6 +38,7 @@
 #include "command/ExecutionFailure.h"
 #include "parser/Tokeniser.h"
 #include "string/convert.h"
+#include "brush/FaceInstance.h"
 
 #include "string/case_conv.h"
 
@@ -1033,6 +1039,537 @@ void mirrorSelectionZ(const cmd::ArgumentList& args)
 
 	UndoableCommand undo("mirrorSelected -axis z");
 	mirrorSelection(2);
+}
+
+struct ScatterPoint
+{
+	Vector3 position;
+	Vector3 normal;
+};
+
+struct FaceGeometry
+{
+	std::vector<Vector3> vertices;
+	Vector3 normal;
+	double area;
+};
+
+// Calculate the area of a triangle
+double triangleArea(const Vector3 &p0, const Vector3 &p1, const Vector3 &p2) {
+  Vector3 v1 = p1 - p0;
+  Vector3 v2 = p2 - p0;
+  return v1.cross(v2).getLength() * 0.5;
+}
+
+// Calculate the total area of a polygon
+double polygonArea(const std::vector<Vector3> &vertices) {
+  if (vertices.size() < 3)
+    return 0.0;
+
+  double totalArea = 0.0;
+  for (size_t i = 1; i < vertices.size() - 1; ++i) {
+    totalArea += triangleArea(vertices[0], vertices[i], vertices[i + 1]);
+  }
+  return totalArea;
+}
+
+// Sample a random point on a triangle using barycentric coordinates
+Vector3 sampleTriangle(const Vector3 &p0, const Vector3 &p1, const Vector3 &p2,
+                       std::mt19937 &gen) {
+  std::uniform_real_distribution<double> dist(0.0, 1.0);
+  double r1 = dist(gen);
+  double r2 = dist(gen);
+
+  // Ensure point is inside triangle
+  if (r1 + r2 > 1.0) {
+    r1 = 1.0 - r1;
+    r2 = 1.0 - r2;
+  }
+
+  return p0 + (p1 - p0) * r1 + (p2 - p0) * r2;
+}
+
+// Sample a random point on a polygon
+Vector3 samplePolygon(const std::vector<Vector3> &vertices, std::mt19937 &gen) {
+  if (vertices.size() < 3)
+    return vertices.empty() ? Vector3(0, 0, 0) : vertices[0];
+
+  // Calculate areas of all triangles
+  std::vector<double> areas;
+  double totalArea = 0.0;
+
+  for (size_t i = 1; i < vertices.size() - 1; ++i) {
+    double area = triangleArea(vertices[0], vertices[i], vertices[i + 1]);
+    areas.push_back(area);
+    totalArea += area;
+  }
+
+  if (totalArea <= 0.0)
+    return vertices[0];
+
+  // Select a triangle weighted by area
+  std::uniform_real_distribution<double> dist(0.0, totalArea);
+  double r = dist(gen);
+
+  double cumulative = 0.0;
+  size_t selectedTriangle = 0;
+  for (size_t i = 0; i < areas.size(); ++i) {
+    cumulative += areas[i];
+    if (r <= cumulative) {
+      selectedTriangle = i;
+      break;
+    }
+  }
+
+  // Sample from the selected triangle
+  return sampleTriangle(vertices[0], vertices[selectedTriangle + 1],
+                        vertices[selectedTriangle + 2], gen);
+}
+
+// Poisson Disk sampling on a set of faces
+std::vector<ScatterPoint>
+poissonDiskSample(const std::vector<FaceGeometry> &faces, double minDistance,
+                  int maxPoints, std::mt19937 &gen) {
+  std::vector<ScatterPoint> result;
+  const int maxAttempts = 30;
+
+  // Calculate total area
+  double totalArea = 0.0;
+  for (const auto &face : faces) {
+    totalArea += face.area;
+  }
+
+  if (totalArea <= 0.0)
+    return result;
+
+  // Simple spatial grid for fast neighbor lookup
+  double cellSize = minDistance / std::sqrt(2.0);
+  std::unordered_map<int64_t, std::vector<size_t>> grid;
+
+  auto getCellKey = [cellSize](const Vector3 &p) -> int64_t {
+    int x = static_cast<int>(std::floor(p.x() / cellSize));
+    int y = static_cast<int>(std::floor(p.y() / cellSize));
+    int z = static_cast<int>(std::floor(p.z() / cellSize));
+    // Simple hash combining
+    return (static_cast<int64_t>(x) * 73856093) ^
+           (static_cast<int64_t>(y) * 19349663) ^
+           (static_cast<int64_t>(z) * 83492791);
+  };
+
+  auto isTooClose = [&](const Vector3 &p) -> bool {
+    int cx = static_cast<int>(std::floor(p.x() / cellSize));
+    int cy = static_cast<int>(std::floor(p.y() / cellSize));
+    int cz = static_cast<int>(std::floor(p.z() / cellSize));
+
+    // Check neighboring cells
+    for (int dx = -2; dx <= 2; ++dx) {
+      for (int dy = -2; dy <= 2; ++dy) {
+        for (int dz = -2; dz <= 2; ++dz) {
+          int64_t key = (static_cast<int64_t>(cx + dx) * 73856093) ^
+                        (static_cast<int64_t>(cy + dy) * 19349663) ^
+                        (static_cast<int64_t>(cz + dz) * 83492791);
+
+          auto it = grid.find(key);
+          if (it != grid.end()) {
+            for (size_t idx : it->second) {
+              if ((result[idx].position - p).getLengthSquared() <
+                  minDistance * minDistance) {
+                return true;
+              }
+            }
+          }
+        }
+      }
+    }
+    return false;
+  };
+
+  // Generate candidate points
+  std::uniform_real_distribution<double> areaDist(0.0, totalArea);
+
+  int attempts = 0;
+  int maxTotalAttempts = maxPoints * maxAttempts * 10;
+
+  while (static_cast<int>(result.size()) < maxPoints &&
+         attempts < maxTotalAttempts) {
+    ++attempts;
+
+    // Select a random face weighted by area
+    double r = areaDist(gen);
+    double cumulative = 0.0;
+    const FaceGeometry *selectedFace = &faces[0];
+
+    for (const auto &face : faces) {
+      cumulative += face.area;
+      if (r <= cumulative) {
+        selectedFace = &face;
+        break;
+      }
+    }
+
+    // Sample a point on the selected face
+    Vector3 point = samplePolygon(selectedFace->vertices, gen);
+
+    // Check if its not too close from other pointts
+    if (!isTooClose(point)) {
+      ScatterPoint sp;
+      sp.position = point;
+      sp.normal = selectedFace->normal;
+
+      // Add to grid
+      int64_t key = getCellKey(point);
+      grid[key].push_back(result.size());
+
+      result.push_back(sp);
+    }
+  }
+
+  return result;
+}
+
+// Random sampling on faces
+std::vector<ScatterPoint> randomSample(const std::vector<FaceGeometry> &faces,
+                                       int numPoints, std::mt19937 &gen) {
+  std::vector<ScatterPoint> result;
+
+  // Calculate total area
+  double totalArea = 0.0;
+  for (const auto &face : faces) {
+    totalArea += face.area;
+  }
+
+  if (totalArea <= 0.0)
+    return result;
+
+  std::uniform_real_distribution<double> areaDist(0.0, totalArea);
+
+  for (int i = 0; i < numPoints; ++i) {
+    // Select a random face weighted by area
+    double r = areaDist(gen);
+    double cumulative = 0.0;
+    const FaceGeometry *selectedFace = &faces[0];
+
+    for (const auto &face : faces) {
+      cumulative += face.area;
+      if (r <= cumulative) {
+        selectedFace = &face;
+        break;
+      }
+    }
+
+    // Sample a point on the selected face
+    ScatterPoint sp;
+    sp.position = samplePolygon(selectedFace->vertices, gen);
+    sp.normal = selectedFace->normal;
+    result.push_back(sp);
+  }
+
+  return result;
+}
+
+// Create rotation quaternion to align Z-up with a given normal
+Quaternion alignToNormal(const Vector3 &normal) {
+  Vector3 up(0, 0, 1);
+
+  // If normal is nearly parallel to up, no rotation needed
+  double dot = up.dot(normal);
+  if (dot > 0.9999) {
+    return Quaternion::Identity();
+  }
+
+  if (dot < -0.9999) {
+    return Quaternion::createForX(math::PI);
+  }
+
+  // Calculate rotation axis and angle
+  Vector3 axis = up.cross(normal);
+  axis.normalise();
+  double angle = acos(dot);
+
+  return Quaternion::createForAxisAngle(axis, angle);
+}
+
+void scatterObjects(ScatterDensityMethod densityMethod,
+                    ScatterDistribution distribution, float density, int amount,
+                    float minDistance, int seed,
+                    ScatterFaceDirection faceDirection, float rotationRange,
+                    bool alignToSurfaceNormal) {
+  // Check for the correct editing mode
+  if (GlobalMapModule().getEditMode() != IMap::EditMode::Normal) {
+    return;
+  }
+
+  auto mapRoot = GlobalMapModule().getRoot();
+  if (!mapRoot)
+    return;
+
+  Vector3 filterDirection;
+  bool useCameraFacing = false;
+  Vector3 cameraPosition;
+
+  switch (faceDirection) {
+  case ScatterFaceDirection::FacingCamera:
+    useCameraFacing = true;
+    cameraPosition = GlobalCameraManager().getActiveView().getCameraOrigin();
+    break;
+  case ScatterFaceDirection::PositiveX:
+    filterDirection = Vector3(1, 0, 0);
+    break;
+  case ScatterFaceDirection::NegativeX:
+    filterDirection = Vector3(-1, 0, 0);
+    break;
+  case ScatterFaceDirection::PositiveY:
+    filterDirection = Vector3(0, 1, 0);
+    break;
+  case ScatterFaceDirection::NegativeY:
+    filterDirection = Vector3(0, -1, 0);
+    break;
+  case ScatterFaceDirection::PositiveZ:
+    filterDirection = Vector3(0, 0, 1);
+    break;
+  case ScatterFaceDirection::NegativeZ:
+    filterDirection = Vector3(0, 0, -1);
+    break;
+  }
+
+  // Collect faces from selected brushes and models to scatter
+  std::vector<FaceGeometry> faces;
+  std::vector<scene::INodePtr> modelsToScatter;
+
+  // Calculate the minimum Z component of normal for upward-facing filter
+  GlobalSelectionSystem().foreachSelected([&](const scene::INodePtr &node) {
+    // Check if it's a brush - use it as a surface
+    if (Node_isBrush(node)) {
+      IBrush *brush = Node_getIBrush(node);
+      if (brush) {
+        // Get the brush's world transform
+        Matrix4 brushTransform = node->localToWorld();
+
+        // Iterate over all faces of the brush
+        for (std::size_t i = 0; i < brush->getNumFaces(); ++i) {
+          IFace &face = brush->getFace(i);
+          const IWinding &winding = face.getWinding();
+
+          if (winding.size() >= 3) {
+            // Get the face normal in world space
+            Vector3 localNormal = face.getPlane3().normal();
+            Vector3 worldNormal =
+                brushTransform.transformDirection(localNormal).getNormalised();
+
+            // Calculate face center for camera-facing check
+            Vector3 faceCenter(0, 0, 0);
+            for (std::size_t j = 0; j < winding.size(); ++j) {
+              faceCenter += brushTransform.transformPoint(winding[j].vertex);
+            }
+            faceCenter /= static_cast<double>(winding.size());
+
+            // Filter faces based on direction setting
+            bool passesFilter = false;
+            if (useCameraFacing) {
+              // Face must point toward camera (dot product of normal and
+              // direction to camera > 0)
+              Vector3 toCamera = (cameraPosition - faceCenter).getNormalised();
+              passesFilter = worldNormal.dot(toCamera) > 0.0;
+            } else {
+              // Face must point in the specified direction (within 90 degrees)
+              passesFilter = worldNormal.dot(filterDirection) > 0.0;
+            }
+
+            if (!passesFilter) {
+              continue;
+            }
+
+            FaceGeometry fg;
+            fg.normal = worldNormal;
+
+            // Transform vertices to world space
+            for (std::size_t j = 0; j < winding.size(); ++j) {
+              Vector3 worldVertex =
+                  brushTransform.transformPoint(winding[j].vertex);
+              fg.vertices.push_back(worldVertex);
+            }
+
+            fg.area = polygonArea(fg.vertices);
+            if (fg.area > 0.0) {
+              faces.push_back(fg);
+            }
+          }
+        }
+      }
+      return;
+    }
+
+    Entity *entity = Node_getEntity(node);
+    if (entity) {
+      if (entity->getKeyValue("classname") != "worldspawn") {
+        modelsToScatter.push_back(node);
+      }
+    }
+  });
+
+  if (faces.empty()) {
+    throw cmd::ExecutionFailure(
+        _("Cannot scatter: No brush surfaces found.\nSelect brushes to scatter "
+          "on, along with entity models."));
+  }
+
+  if (modelsToScatter.empty()) {
+    throw cmd::ExecutionFailure(
+        _("Cannot scatter: No models selected to scatter.\nSelect entity "
+          "models along with the target brushes."));
+  }
+
+  double totalArea = 0.0;
+  for (const auto &face : faces) {
+    totalArea += face.area;
+  }
+
+  // Determine how much to scatter
+  int numPoints;
+  if (densityMethod == ScatterDensityMethod::Amount) {
+    numPoints = amount;
+  } else {
+    numPoints = static_cast<int>(totalArea * density);
+    if (numPoints < 1)
+      numPoints = 1;
+  }
+
+  // Add a top boundary just in case
+  if (numPoints > 10000) {
+    numPoints = 10000;
+  }
+
+  // Initialize random generator with seed
+  std::mt19937 gen(seed);
+
+  // Generate scatter points
+  std::vector<ScatterPoint> scatterPoints;
+  if (distribution == ScatterDistribution::PoissonDisk) {
+    scatterPoints = poissonDiskSample(faces, minDistance, numPoints, gen);
+  } else {
+    scatterPoints = randomSample(faces, numPoints, gen);
+  }
+
+  if (scatterPoints.empty()) {
+    throw cmd::ExecutionFailure(
+        _("Cannot scatter: No valid scatter points generated.\nTry adjusting "
+          "density or minimum distance."));
+  }
+
+  UndoableCommand undo("scatterObjects");
+
+  // Random distributions for transform variation
+  std::uniform_real_distribution<float> rotationDist(0.0f, rotationRange);
+  std::uniform_int_distribution<size_t> modelDist(0,
+                                                  modelsToScatter.size() - 1);
+
+  // Cache source positions and height offsets before we start cloning
+  std::map<scene::INodePtr, Vector3> sourcePositions;
+  std::map<scene::INodePtr, double> sourceHeightOffsets;
+  for (const auto &sourceNode : modelsToScatter) {
+    AABB bounds = sourceNode->worldAABB();
+    sourcePositions[sourceNode] = bounds.getOrigin();
+    sourceHeightOffsets[sourceNode] = bounds.getExtents().z();
+  }
+
+  std::vector<scene::INodePtr> scatteredNodes;
+
+  for (const auto &sp : scatterPoints) {
+    GlobalSelectionSystem().setSelectedAll(false);
+
+    // Select a random model to clone
+    size_t modelIndex = modelDist(gen);
+    const scene::INodePtr &sourceNode = modelsToScatter[modelIndex];
+
+    // Get the source position and height offset
+    Vector3 sourcePosition = sourcePositions[sourceNode];
+    double heightOffset = sourceHeightOffsets[sourceNode];
+
+    // Clone it
+    SelectionCloner cloner;
+    Node_setSelected(sourceNode, true);
+    GlobalSceneGraph().root()->traverse(cloner);
+    Node_setSelected(sourceNode, false);
+
+    INamespacePtr clonedNamespace = GlobalNamespaceFactory().createNamespace();
+    clonedNamespace->connect(cloner.getCloneRoot());
+    map::algorithm::prepareNamesForImport(mapRoot, cloner.getCloneRoot());
+
+    cloner.moveClonedNodes(false);
+
+    const auto &clonedNodes = cloner.getClonedNodes();
+    if (!clonedNodes.empty()) {
+      const auto &[clonedNode, parentNode] = *clonedNodes.begin();
+
+      ITransformablePtr transformable =
+          scene::node_cast<ITransformable>(clonedNode);
+      if (transformable) {
+        // First align to surface normal, then add random Z rot
+        Quaternion rotation = Quaternion::Identity();
+
+        if (alignToSurfaceNormal) {
+          rotation = alignToNormal(sp.normal);
+        }
+
+        // Add random rotation around the surface normal
+        float localZRotation = degrees_to_radians(rotationDist(gen));
+        Quaternion localZRot = Quaternion::createForZ(localZRotation);
+        rotation = rotation.getMultipliedBy(localZRot);
+
+        // Calculate translation from source position to scatter point
+        Vector3 scatterPos = sp.position + (sp.normal * heightOffset);
+        Vector3 translation = scatterPos - sourcePosition;
+
+        // Apply translation
+        transformable->setType(TRANSFORM_PRIMITIVE);
+        transformable->setTranslation(translation);
+        transformable->freezeTransform();
+
+        // Apply rotation if not identity
+        if (rotation.x() != 0 || rotation.y() != 0 || rotation.z() != 0) {
+          transformable->setType(TRANSFORM_PRIMITIVE);
+          transformable->setRotation(rotation);
+          transformable->freezeTransform();
+        }
+      }
+
+      // Collect for selection at the end
+      scatteredNodes.push_back(clonedNode);
+    }
+  }
+
+  // Select all scattered nodes
+  GlobalSelectionSystem().setSelectedAll(false);
+  for (const auto &node : scatteredNodes) {
+    Node_setSelected(node, true);
+  }
+}
+
+void scatterObjectsCmd(const cmd::ArgumentList &args) {
+  if (args.size() != 9) {
+    rWarning()
+        << "Usage: ScatterObjects <densityMethod:int> <distribution:int> "
+           "<density:float> "
+        << "<amount:int> <minDistance:float> <seed:int> <faceDirection:int> "
+        << "<rotationRange:float> <alignToNormal:int>" << std::endl;
+    return;
+  }
+
+  ScatterDensityMethod densityMethod =
+      static_cast<ScatterDensityMethod>(args[0].getInt());
+  ScatterDistribution distribution =
+      static_cast<ScatterDistribution>(args[1].getInt());
+  float density = static_cast<float>(args[2].getDouble());
+  int amount = args[3].getInt();
+  float minDistance = static_cast<float>(args[4].getDouble());
+  int seed = args[5].getInt();
+  ScatterFaceDirection faceDirection =
+      static_cast<ScatterFaceDirection>(args[6].getInt());
+  float rotationRange = static_cast<float>(args[7].getDouble());
+  bool alignToNormal = args[8].getInt() != 0;
+
+  scatterObjects(densityMethod, distribution, density, amount, minDistance,
+                 seed, faceDirection, rotationRange, alignToNormal);
 }
 
 } // namespace algorithm

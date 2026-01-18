@@ -61,6 +61,7 @@
 #include "ui/layers/CreateLayerDialog.h"
 #include "ui/patch/PatchCreateDialog.h"
 #include "ui/patch/BulgePatchDialog.h"
+#include "ui/scatter/ScatterDialog.h"
 #include "ui/selectionset/SelectionSetToolmenu.h"
 #include "ui/brush/QuerySidesDialog.h"
 #include "ui/brush/FindBrush.h"
@@ -550,6 +551,10 @@ void UserInterfaceModule::registerUICommands()
 
     GlobalCommandSystem().addCommand("LoadPrefab", ui::loadPrefabDialog);
     GlobalCommandSystem().addCommand("OpenMapFromProject", ui::MapSelector::OpenMapFromProject);
+
+    // Scatter dialog for placing entities on surfaces
+    GlobalCommandSystem().addWithCheck("ScatterDialog", ScatterDialog::Show,
+        [] { return GlobalSelectionSystem().countSelected() > 0; });
 }
 
 // Static module registration

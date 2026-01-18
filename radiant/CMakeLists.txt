@@ -152,6 +152,7 @@ add_executable(darkradiant
                ui/prefdialog/PrefDialog.cpp
                ui/prefdialog/PreferenceItem.cpp
                ui/prefdialog/PrefPage.cpp
+               ui/scatter/ScatterDialog.cpp
                ui/script/ScriptMenu.cpp
                ui/script/ScriptWindow.cpp
                ui/selectionset/SelectionSetToolmenu.cpp

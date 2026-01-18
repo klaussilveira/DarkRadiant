@@ -3,6 +3,7 @@
 #include "icommandsystem.h"
 #include "iclipper.h"
 #include "iarray.h"
+#include "iscatter.h"
 #include "math/Vector3.h"
 
 using namespace ui;
@@ -162,6 +163,12 @@ void arrayCloneSelectedSpline(int count, bool alignToSpline);
  * Command adapter for arrayCloneSelectedSpline
  */
 void arrayCloneSelectedSplineCmd(const cmd::ArgumentList& args);
+
+/**
+ * Scatter objects on selected surfaces.
+ * Select brushes and entity models, then run this command.
+ */
+void scatterObjectsCmd(const cmd::ArgumentList& args);
 
 } // namespace algorithm
 
