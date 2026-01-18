@@ -64,6 +64,7 @@
 #include "ui/selectionset/SelectionSetToolmenu.h"
 #include "ui/brush/QuerySidesDialog.h"
 #include "ui/brush/FindBrush.h"
+#include "ui/array/ArrayDialog.h"
 #include "ui/mousetool/RegistrationHelper.h"
 #include "ui/mapselector/MapSelector.h"
 #include "ui/merge/MapMergeControl.h"
@@ -536,6 +537,9 @@ void UserInterfaceModule::registerUICommands()
 
     // Set up the CloneSelection command to react on key up events only
     GlobalEventManager().addCommand("CloneSelection", "CloneSelection", true); // react on keyUp
+
+    GlobalCommandSystem().addWithCheck("ArrayDialog", ArrayDialog::Show,
+        [] { return GlobalSelectionSystem().countSelected() > 0; });
 
     GlobalEventManager().addRegistryToggle("ToggleRotationPivot", "user/ui/rotationPivotIsOrigin");
     GlobalEventManager().addRegistryToggle("ToggleSnapRotationPivot", "user/ui/snapRotationPivotToGrid");

@@ -2,7 +2,10 @@
 
 #include "icommandsystem.h"
 #include "iclipper.h"
+#include "iarray.h"
 #include "math/Vector3.h"
+
+using namespace ui;
 
 namespace selection
 {
@@ -112,6 +115,53 @@ void rotateSelectionZ(const cmd::ArgumentList& args);
 void mirrorSelectionX(const cmd::ArgumentList& args);
 void mirrorSelectionY(const cmd::ArgumentList& args);
 void mirrorSelectionZ(const cmd::ArgumentList& args);
+
+/**
+ * Creates a linear array of clones of the current selection.
+ * Each clone is offset by the given translation vector and optionally rotated.
+ *
+ * @param count: Number of copies to create
+ * @param offsetMethod: How the offset is interpreted
+ * @param offset: Translation offset between each copy (interpretation depends on offsetMethod)
+ * @param rotation: Rotation in degrees (Euler XYZ) to apply to each copy
+ */
+void arrayCloneSelectedLine(int count, ArrayOffsetMethod offsetMethod, const Vector3& offset, const Vector3& rotation);
+
+/**
+ * Command adapter for arrayCloneSelectedLine
+ */
+void arrayCloneSelectedLineCmd(const cmd::ArgumentList& args);
+
+/**
+ * Creates a circular array of clones of the current selection.
+ * Copies are distributed around a circle centered at the selection's origin.
+ *
+ * @param count: Number of copies to create
+ * @param radius: Distance from center to each copy
+ * @param startAngle: Starting angle in degrees
+ * @param endAngle: Ending angle in degrees
+ * @param rotateToCenter: If true, each copy is rotated to face the center
+ */
+void arrayCloneSelectedCircle(int count, float radius, float startAngle, float endAngle, bool rotateToCenter);
+
+/**
+ * Command adapter for arrayCloneSelectedCircle
+ */
+void arrayCloneSelectedCircleCmd(const cmd::ArgumentList& args);
+
+/**
+ * Creates an array of clones distributed along a selected spline/curve entity.
+ * The selection must include exactly one curve entity and at least one other object to clone.
+ *
+ * @param count: Number of copies to create
+ * @param alignToSpline: If true, each copy is rotated to align with the spline direction
+ */
+void arrayCloneSelectedSpline(int count, bool alignToSpline);
+
+/**
+ * Command adapter for arrayCloneSelectedSpline
+ */
+void arrayCloneSelectedSplineCmd(const cmd::ArgumentList& args);
 
 } // namespace algorithm
 
