@@ -485,8 +485,8 @@ void arrayCloneSelectedCircle(int count, float radius, float startAngle, float e
 	Vector3 center = bounds.getOrigin();
 
 	// Convert angles to radians
-	float startRad = degrees_to_radians(startAngle);
-	float endRad = degrees_to_radians(endAngle);
+	float startRad = static_cast<float>(degrees_to_radians(startAngle));
+	float endRad = static_cast<float>(degrees_to_radians(endAngle));
 	float angleRange = endRad - startRad;
 
 	// Distribute copies evenly around the arc

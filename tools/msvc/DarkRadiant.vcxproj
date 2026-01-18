@@ -220,6 +220,7 @@
     <ClCompile Include="..\..\radiant\ui\aas\AasFileControl.cpp" />
     <ClCompile Include="..\..\radiant\ui\aas\AasVisualisationPanel.cpp" />
     <ClCompile Include="..\..\radiant\ui\aas\RenderableAasFile.cpp" />
+    <ClCompile Include="..\..\radiant\ui\array\ArrayDialog.cpp" />
     <ClCompile Include="..\..\radiant\ui\animationpreview\AnimationPreview.cpp" />
     <ClCompile Include="..\..\radiant\ui\animationpreview\MD5AnimationChooser.cpp" />
     <ClCompile Include="..\..\radiant\ui\animationpreview\MD5AnimationViewer.cpp" />
@@ -417,6 +418,7 @@
     <ClInclude Include="..\..\radiant\ui\aas\AasVisualisationControl.h" />
     <ClInclude Include="..\..\radiant\ui\aas\AasVisualisationPanel.h" />
     <ClInclude Include="..\..\radiant\ui\aas\RenderableAasFile.h" />
+    <ClInclude Include="..\..\radiant\ui\array\ArrayDialog.h" />
     <ClInclude Include="..\..\radiant\ui\animationpreview\AnimationPreview.h" />
     <ClInclude Include="..\..\radiant\ui\animationpreview\MD5AnimationChooser.h" />
     <ClInclude Include="..\..\radiant\ui\animationpreview\MD5AnimationViewer.h" />

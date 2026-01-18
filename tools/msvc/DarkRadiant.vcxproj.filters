@@ -194,6 +194,9 @@
     <Filter Include="src\ui\skin">
       <UniqueIdentifier>{fb0a245f-4bbd-42a0-a877-c3189952d1ac}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\ui\array">
+      <UniqueIdentifier>{43eee746-f4e6-481b-8fd5-a5fadfd55788}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\radiant\main.cpp">
@@ -723,6 +726,9 @@
     </ClCompile>
     <ClCompile Include="..\..\radiant\ui\einspector\Algorithm.cpp">
       <Filter>src\ui\einspector</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\radiant\ui\array\ArrayDialog.cpp">
+      <Filter>src\ui\array</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1451,6 +1457,9 @@
     </ClInclude>
     <ClInclude Include="..\..\radiant\ui\einspector\Algorithm.h">
       <Filter>src\ui\einspector</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\radiant\ui\array\ArrayDialog.h">
+      <Filter>src\ui\array</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
