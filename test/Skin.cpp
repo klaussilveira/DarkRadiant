@@ -524,7 +524,7 @@ TEST_F(ModelSkinTest, ReloadDeclsRefreshesModelsUsingSignal)
 
     // Inject a new block syntax into the existing skin declaration
     auto skin = GlobalModelSkinCache().findSkin("tile_skin");
-    decl::DeclarationBlockSyntax syntax;
+    decl::DeclarationBlockSource syntax;
 
     syntax.name = skin->getDeclName();
     syntax.typeName = "skin";

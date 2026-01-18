@@ -52,7 +52,7 @@ void DeclarationFolderParser::parse(std::istream& stream, const vfs::FileInfo& f
 
         const auto& blockNode = static_cast<const parser::DefBlockSyntax&>(*node);
 
-        // Convert the incoming block to a DeclarationBlockSyntax
+        // Convert the incoming block to a DeclarationBlockSource
         auto blockSyntax = createBlock(blockNode, fileInfo, modDir);
 
         // Move the block in the correct bucket

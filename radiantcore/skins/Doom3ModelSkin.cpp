@@ -85,6 +85,7 @@ void Skin::foreachMatchingModel(const std::function<void(const std::string&)>& f
 
 const std::vector<decl::ISkin::Remapping>& Skin::getAllRemappings()
 {
+    ensureParsed();
     return _current->remaps;
 }
 
