@@ -104,7 +104,7 @@ jobs:
         sudo apt-get update 
         sudo apt-get install -yq gettext pkg-config zlib1g-dev libjpeg-dev libxml2-dev libsigc++-2.0-dev
         sudo apt-get install -yq libgtest-dev libeigen3-dev libwxgtk3.2-dev libpng-dev
-        sudo apt-get install -yq libftgl-dev libglew-dev libalut-dev libvorbis-dev python3-dev libgit2-dev
+        sudo apt-get install -yq libftgl-dev libglew-dev libalut-dev libvorbis-dev python3-dev libgit2-dev libglib2.0-dev
 
     - name: Configure CMake
       # Use a bash shell so we can use the same syntax for environment variable
