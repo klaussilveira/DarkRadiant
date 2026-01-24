@@ -2,6 +2,8 @@ add_executable(darkradiant
                camera/CameraSettings.cpp
                camera/CamWnd.cpp
                camera/CameraWndManager.cpp
+               camera/tools/DecalShooterTool.cpp
+               camera/tools/FaceIntersectionFinder.cpp
                clipboard/ClipboardModule.cpp
                eventmanager/Accelerator.cpp
                eventmanager/EventManager.cpp
@@ -84,6 +86,7 @@ add_executable(darkradiant
                ui/layers/LayerControlPanel.cpp
                ui/layers/LayerOrthoContextMenuItem.cpp
                ui/lightinspector/LightInspector.cpp
+               ui/decalshooter/DecalShooterPanel.cpp
                ui/LongRunningOperationHandler.cpp
                ui/mainframe/AuiManager.cpp
                ui/mainframe/AuiFloatingFrame.cpp

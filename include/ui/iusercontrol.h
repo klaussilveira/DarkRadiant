@@ -82,6 +82,7 @@ struct UserControl
     constexpr static const char* MapMergePanel = "MapMergePanel";
     constexpr static const char* AasVisualisationPanel = "AasVisualisationPanel";
     constexpr static const char* OrthoBackgroundPanel = "OrthoBackgroundPanel";
+    constexpr static const char* DecalShooter = "DecalShooter";
 };
 
 }

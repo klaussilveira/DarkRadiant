@@ -79,6 +79,7 @@
 #include "entitylist/EntityListControl.h"
 #include "layers/LayerControl.h"
 #include "lightinspector/LightInspectorControl.h"
+#include "decalshooter/DecalShooterControl.h"
 #include "overlay/OrthoBackgroundControl.h"
 #include "patch/PatchInspectorControl.h"
 #include "surfaceinspector/SurfaceInspectorControl.h"
@@ -266,6 +267,7 @@ void UserInterfaceModule::initialiseModule(const IApplicationContext& ctx)
     registerControl(std::make_shared<AasVisualisationControl>());
     registerControl(std::make_shared<FindShaderControl>());
     registerControl(std::make_shared<OrthoBackgroundControl>());
+    registerControl(std::make_shared<DecalShooterControl>());
 
     GlobalMainFrame().signal_MainFrameConstructed().connect([&]()
     {
@@ -303,6 +305,9 @@ void UserInterfaceModule::initialiseModule(const IApplicationContext& ctx)
         );
         GlobalMainFrame().addControl(
             UserControl::OrthoBackgroundPanel, ControlSettings::floating(480, 350)
+        );
+        GlobalMainFrame().addControl(
+            UserControl::DecalShooter, ControlSettings::floating(300, 200)
         );
 
         _viewMenu = std::make_unique<ViewMenu>();

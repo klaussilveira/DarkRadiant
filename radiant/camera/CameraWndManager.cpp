@@ -16,6 +16,7 @@
 #include "tools/JumpToObjectTool.h"
 #include "tools/FreeMoveTool.h"
 #include "tools/PanViewTool.h"
+#include "tools/DecalShooterTool.h"
 
 #include <functional>
 
@@ -504,6 +505,7 @@ void CameraWndManager::initialiseModule(const IApplicationContext& ctx)
     toolGroup.registerMouseTool(std::make_shared<PasteShaderToBrushTool>());
     toolGroup.registerMouseTool(std::make_shared<PasteShaderNameTool>());
     toolGroup.registerMouseTool(std::make_shared<JumpToObjectTool>());
+    toolGroup.registerMouseTool(std::make_shared<DecalShooterTool>());
 
     GlobalUserInterface().registerControl(std::make_shared<CameraControl>(*this));
 
