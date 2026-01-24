@@ -1,12 +1,15 @@
 #pragma once
 
 #include <map>
+#include <memory>
 #include "iorthoview.h"
 #include "icommandsystem.h"
 #include "imousetoolmanager.h"
 #include "ui/iusercontrol.h"
 
 #include "OrthoView.h"
+
+namespace ui { class PolygonTool; }
 
 class wxMouseEvent;
 
@@ -38,6 +41,12 @@ class XYWndManager: public IOrthoViewManager, public IUserControlCreator
     bool _showWorkzone;
     bool _zoomCenteredOnMouseCursor;
 
+    // Polygon tool mode state
+    bool _polygonMode;
+
+    // Reference to the polygon tool for command access
+    std::shared_ptr<PolygonTool> _polygonTool;
+
     unsigned int _defaultBlockSize;
     int _fontSize;
     IGLFont::Style _fontStyle;
@@ -67,6 +76,13 @@ public:
     IGLFont::Style fontStyle() const;
     float maxZoomFactor() const;
     bool zoomCenteredOnMouseCursor() const;
+
+    // Polygon mode accessors
+    bool polygonMode() const;
+    void setPolygonMode(bool enabled);
+    void togglePolygonMode(const cmd::ArgumentList& args);
+    void finishPolygon(const cmd::ArgumentList& args);
+    void cancelPolygon(const cmd::ArgumentList& args);
 
     unsigned int defaultBlockSize() const;
 

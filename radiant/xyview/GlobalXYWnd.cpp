@@ -15,6 +15,7 @@
 
 #include "tools/BrushCreatorTool.h"
 #include "tools/ClipperTool.h"
+#include "tools/PolygonTool.h"
 #include "tools/ZoomTool.h"
 #include "tools/CameraAngleTool.h"
 #include "tools/CameraMoveTool.h"
@@ -71,7 +72,8 @@ wxWindow* XYWndManager::createWidget(wxWindow* parent)
 
 XYWndManager::XYWndManager() :
     _maxZoomFactor(1024),
-    _activeXYWndId(-1)
+    _activeXYWndId(-1),
+    _polygonMode(false)
 {}
 
 void XYWndManager::registerXYWnd(OrthoView* view)
@@ -118,6 +120,13 @@ void XYWndManager::registerCommands()
 	GlobalCommandSystem().addCommand("Zoom100", std::bind(&XYWndManager::zoom100, this, std::placeholders::_1));
 	GlobalCommandSystem().addCommand("RunBenchmark", std::bind(&XYWndManager::runBenchmark, this, std::placeholders::_1),
         { cmd::ARGTYPE_INT | cmd::ARGTYPE_OPTIONAL });
+	GlobalCommandSystem().addCommand("TogglePolygonMode", std::bind(&XYWndManager::togglePolygonMode, this, std::placeholders::_1));
+	// Register FinishPolygon with a check function so it only activates when polygon mode
+	// is enabled and there's an active polygon with enough points
+	GlobalCommandSystem().addWithCheck("FinishPolygon",
+		std::bind(&XYWndManager::finishPolygon, this, std::placeholders::_1),
+		[this]() { return _polygonMode && _polygonTool && _polygonTool->hasActivePolygon(); });
+	GlobalCommandSystem().addCommand("CancelPolygon", std::bind(&XYWndManager::cancelPolygon, this, std::placeholders::_1));
 
 	GlobalEventManager().addRegistryToggle("ToggleCrosshairs", RKEY_SHOW_CROSSHAIRS);
 	GlobalEventManager().addRegistryToggle("ToggleGrid", RKEY_SHOW_GRID);
@@ -244,6 +253,45 @@ float XYWndManager::maxZoomFactor() const
 bool XYWndManager::zoomCenteredOnMouseCursor() const
 {
     return _zoomCenteredOnMouseCursor;
+}
+
+bool XYWndManager::polygonMode() const
+{
+    return _polygonMode;
+}
+
+void XYWndManager::setPolygonMode(bool enabled)
+{
+    _polygonMode = enabled;
+
+    // Reset the polygon tool when disabling polygon mode
+    if (!enabled && _polygonTool)
+    {
+        _polygonTool->cancelPolygonDrawing();
+    }
+
+    updateAllViews();
+}
+
+void XYWndManager::togglePolygonMode(const cmd::ArgumentList& args)
+{
+    setPolygonMode(!_polygonMode);
+}
+
+void XYWndManager::finishPolygon(const cmd::ArgumentList& args)
+{
+    if (_polygonTool && _polygonMode)
+    {
+        _polygonTool->finishPolygonIfReady();
+    }
+}
+
+void XYWndManager::cancelPolygon(const cmd::ArgumentList& args)
+{
+    if (_polygonTool && _polygonMode)
+    {
+        _polygonTool->cancelPolygonDrawing();
+    }
 }
 
 void XYWndManager::updateAllViews(bool force)
@@ -528,6 +576,8 @@ void XYWndManager::initialiseModule(const IApplicationContext& ctx)
 
     toolGroup.registerMouseTool(std::make_shared<BrushCreatorTool>());
     toolGroup.registerMouseTool(std::make_shared<ClipperTool>());
+    _polygonTool = std::make_shared<PolygonTool>();
+    toolGroup.registerMouseTool(_polygonTool);
     toolGroup.registerMouseTool(std::make_shared<ZoomTool>());
     toolGroup.registerMouseTool(std::make_shared<CameraAngleTool>());
     toolGroup.registerMouseTool(std::make_shared<CameraMoveTool>());
@@ -543,6 +593,7 @@ void XYWndManager::shutdownModule()
 
 	// Clear all tracked references
     _xyWnds.clear();
+    _polygonTool.reset();
 
 	OrthoView::releaseStates();
 }

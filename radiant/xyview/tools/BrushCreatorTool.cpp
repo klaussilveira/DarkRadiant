@@ -10,6 +10,7 @@
 #include "XYMouseToolEvent.h"
 #include "ui/texturebrowser/TextureBrowserPanel.h"
 #include "ui/texturebrowser/TextureBrowserManager.h"
+#include "../GlobalXYWnd.h"
 
 namespace ui
 {
@@ -30,9 +31,10 @@ MouseTool::Result BrushCreatorTool::onMouseDown(Event& ev)
 {
     try
     {
-        if (GlobalClipper().clipMode() || GlobalMapModule().getEditMode() == IMap::EditMode::Merge)
+        if (GlobalClipper().clipMode() || GlobalMapModule().getEditMode() == IMap::EditMode::Merge ||
+            GlobalXYWnd().polygonMode())
         {
-            return Result::Ignored; // no brush creation in clip or merge mode
+            return Result::Ignored; // no brush creation in clip, merge or polygon mode
         }
 
         // We only operate on XY view events, so attempt to cast

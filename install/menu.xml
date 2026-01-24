@@ -227,6 +227,7 @@
 			<menuItem name="splitSelection" caption="Split Selection" command="SplitSelected" />
 			<menuItem name="flipClipOrientation" caption="Flip Clip Orientation" command="FlipClip" />
 		</subMenu>
+		<menuItem name="togglePolygonMode" caption="Polygon Mode" command="TogglePolygonMode" />
 
 		<menuSeparator />
 		<menuItem name="texturelock" caption="Texture lock" command="TogTexLock" />

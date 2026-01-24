@@ -10,6 +10,7 @@
       <tool name="CameraAngleTool" button="MMB" modifiers="" />
       <tool name="CameraMoveTool" button="MMB" modifiers="CONTROL" />
       <tool name="ClipperTool" button="LMB" modifiers="" />
+      <tool name="PolygonTool" button="LMB" modifiers="" />
       <tool name="MoveViewTool" button="RMB" modifiers="" />
       <tool name="ZoomTool" button="RMB" modifiers="SHIFT" />
       <tool name="MeasurementTool" button="MMB" modifiers="CONTROL+ALT" />
@@ -156,6 +157,7 @@
 		<shortcut command="ThickenPatchDialog" key="T" modifiers="CONTROL" />
 		<shortcut command="ToggleShowAllLightRadii" key="F" modifiers="CONTROL+SHIFT+ALT" />
 		<shortcut command="ToggleClipper" key="X" />
+		<shortcut command="TogglePolygonMode" key="P" modifiers="CONTROL" />
 		<shortcut command="MouseTranslate" key="W" />
 		<shortcut command="MouseRotate" key="R" />
 		<shortcut command="MouseDrag" key="Q" />
