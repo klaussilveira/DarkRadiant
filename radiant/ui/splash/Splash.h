@@ -20,6 +20,8 @@ private:
 	wxGauge* _progressBar;
 	wxImagePanel* _imagePanel;
 
+  sigc::connection _moduleProgressConnection;
+
     // Private constructor, creates all the widgets
     Splash();
 

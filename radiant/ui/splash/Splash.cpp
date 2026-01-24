@@ -87,8 +87,11 @@ Splash::Splash() :
 	Show();
 
     // Subscribe to the post-module init event to destroy ourselves
-    module::GlobalModuleRegistry().signal_allModulesInitialised().connect(
-        sigc::hide_return(sigc::mem_fun(this, &Splash::Destroy)));
+    module::GlobalModuleRegistry().signal_allModulesInitialised().connect([this]
+    { 
+      _moduleProgressConnection.disconnect();
+      Destroy();
+    });
 }
 
 void Splash::queueDraw()
@@ -127,7 +130,7 @@ Splash& Splash::Instance()
 void Splash::OnAppStartup()
 {
 	// Connect the module progress callback
-	module::GlobalModuleRegistry().signal_moduleInitialisationProgress().connect(
+  Instance()._moduleProgressConnection = module::GlobalModuleRegistry().signal_moduleInitialisationProgress().connect(
 		sigc::mem_fun(Instance(), &Splash::setProgressAndText));
 }
 
