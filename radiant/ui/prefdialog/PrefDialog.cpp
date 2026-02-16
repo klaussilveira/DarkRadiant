@@ -21,7 +21,7 @@ namespace ui
 using NotebookType = wxListbook;
 
 PrefDialog::PrefDialog(wxWindow* parent)
-: DialogBase(_("DarkRadiant Preferences"), parent)
+: DialogBase(_("HellForge Preferences"), parent)
 {
     wxBoxSizer* mainVbox = new wxBoxSizer(wxVERTICAL);
 
