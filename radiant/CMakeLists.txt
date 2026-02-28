@@ -8,6 +8,7 @@ add_executable(darkradiant
                eventmanager/Accelerator.cpp
                eventmanager/EventManager.cpp
                eventmanager/GlobalKeyEventFilter.cpp
+               eventmanager/GtkMenuAccel.cpp
                eventmanager/MouseToolGroup.cpp
                eventmanager/MouseToolManager.cpp
                eventmanager/Statement.cpp
@@ -182,11 +183,12 @@ add_executable(darkradiant
                xyview/tools/MeasurementTool.cpp
                xyview/tools/PolygonTool.cpp
                xyview/OrthoView.cpp)
-target_compile_options(darkradiant PRIVATE ${FREETYPE_CFLAGS} ${GLIB_CFLAGS})
+target_compile_options(darkradiant PRIVATE ${FREETYPE_CFLAGS} ${GLIB_CFLAGS} ${GTK3_CFLAGS})
 target_include_directories(darkradiant PRIVATE .)
 target_link_libraries(darkradiant PRIVATE
                       math xmlutil scene wxutil module
-                      ${GLIB_LIBRARIES})
+                      ${GLIB_LIBRARIES}
+                      ${GTK3_LIBRARIES})
 
 # Enable precompiled header for radiant
 if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.16.0")

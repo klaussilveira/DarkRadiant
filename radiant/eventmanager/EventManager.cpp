@@ -21,6 +21,7 @@
 #include "RegistryToggle.h"
 #include "KeyEvent.h"
 #include "ShortcutSaver.h"
+#include "GtkKeyNormalize.h"
 
 #include "module/StaticModule.h"
 
@@ -110,7 +111,7 @@ void EventManager::resetAcceleratorBindings()
 
 	for (const auto& pair : _menuItems)
 	{
-		Event::setMenuItemAccelerator(pair.second, std::string());
+		Event::clearMenuItemAccelerator(pair.second);
 	}
 
 	rMessage() << "EventManager: Default shortcuts found in Registry: " << shortcutList.size() << std::endl;
@@ -129,7 +130,7 @@ IEventPtr EventManager::findEvent(const std::string& name)
 
 std::string EventManager::findEventForAccelerator(wxKeyEvent& ev)
 {
-	int keyval = ev.GetKeyCode(); // is always uppercase
+	int keyval = normalizeGtkKeyCode(ev.GetKeyCode()); // is always uppercase
 
 	auto it = findAccelerator(keyval, wxutil::Modifier::GetStateForKeyEvent(ev));
 
@@ -411,8 +412,8 @@ Accelerator& EventManager::connectAccelerator(int keyCode, unsigned int modifier
 
 	auto result = _accelerators.emplace(command, accelerator);
 
+	setMenuItemAccelerator(command, *accelerator);
 	std::string acceleratorStr = accelerator->getString(true);
-	setMenuItemAccelerator(command, acceleratorStr);
 	setToolItemAccelerator(command, acceleratorStr);
 
 	return *result.first->second;
@@ -421,7 +422,7 @@ Accelerator& EventManager::connectAccelerator(int keyCode, unsigned int modifier
 // Connects the given accelerator to the given command (identified by the string)
 void EventManager::connectAccelerator(wxKeyEvent& keyEvent, const std::string& command)
 {
-	int keyCode = keyEvent.GetKeyCode();
+	int keyCode = normalizeGtkKeyCode(keyEvent.GetKeyCode());
 	unsigned int modifierFlags = wxutil::Modifier::GetStateForKeyEvent(keyEvent);
 
 	connectAccelerator(keyCode, modifierFlags, command);
@@ -461,6 +462,15 @@ void EventManager::setMenuItemAccelerator(const std::string& command, const std:
 		 it != _menuItems.end() && it != _menuItems.upper_bound(command); ++it)
 	{
 		Event::setMenuItemAccelerator(it->second, acceleratorStr);
+	}
+}
+
+void EventManager::setMenuItemAccelerator(const std::string& command, Accelerator& accel)
+{
+	for (auto it = _menuItems.lower_bound(command);
+		 it != _menuItems.end() && it != _menuItems.upper_bound(command); ++it)
+	{
+		Event::setMenuItemAccelerator(it->second, accel);
 	}
 }
 
@@ -663,7 +673,7 @@ EventManager::AcceleratorMap::iterator EventManager::findAccelerator(unsigned in
 
 Accelerator& EventManager::findAccelerator(wxKeyEvent& ev)
 {
-	int keyval = ev.GetKeyCode(); // is always uppercase
+	int keyval = normalizeGtkKeyCode(ev.GetKeyCode()); // is always uppercase
 
 	auto it = findAccelerator(keyval, wxutil::Modifier::GetStateForKeyEvent(ev));
 
@@ -714,7 +724,7 @@ bool EventManager::handleKeyEvent(wxKeyEvent& keyEvent)
 
 bool EventManager::isModifier(wxKeyEvent& ev)
 {
-	int keyCode = ev.GetKeyCode();
+	int keyCode = normalizeGtkKeyCode(ev.GetKeyCode());
 
 	return (keyCode == WXK_SHIFT || keyCode == WXK_CONTROL ||
 		keyCode == WXK_ALT || keyCode == WXK_WINDOWS_LEFT ||
@@ -726,7 +736,7 @@ namespace
 
 std::string getKeyString(wxKeyEvent& ev)
 {
-	int keycode = ev.GetKeyCode();
+	int keycode = normalizeGtkKeyCode(ev.GetKeyCode());
 	std::string virtualKeyCodeName = Accelerator::getNameFromKeyCode(keycode);
 
 	if (!virtualKeyCodeName.empty())
