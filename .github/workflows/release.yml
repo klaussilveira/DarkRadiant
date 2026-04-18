@@ -1,0 +1,55 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+      - '[0-9]*'
+
+permissions:
+  contents: write
+
+jobs:
+  linux:
+    uses: ./.github/workflows/linux.yml
+
+  windows:
+    uses: ./.github/workflows/windows.yml
+
+  appimage:
+    uses: ./.github/workflows/appimage.yml
+
+  flatpak:
+    uses: ./.github/workflows/flatpak.yml
+
+  release:
+    name: Draft release
+    needs: [linux, windows, appimage, flatpak]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+
+      - name: Package artifacts
+        run: |
+          cd artifacts
+          tar czf darkradiant-linux-x86_64.tar.gz -C darkradiant-linux-x86_64 .
+          cd darkradiant-windows-x64
+          zip -r ../darkradiant-windows-x64.zip .
+          cd ..
+          cp darkradiant-appimage-x86_64/*.AppImage .
+          cp darkradiant-flatpak-x86_64/darkradiant.flatpak .
+
+      - name: Create draft release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          generate_release_notes: true
+          files: |
+            artifacts/darkradiant-linux-x86_64.tar.gz
+            artifacts/darkradiant-windows-x64.zip
+            artifacts/*.AppImage
+            artifacts/darkradiant.flatpak

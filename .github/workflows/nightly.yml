@@ -1,0 +1,69 @@
+name: Nightly
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  linux:
+    uses: ./.github/workflows/linux.yml
+
+  windows:
+    uses: ./.github/workflows/windows.yml
+
+  appimage:
+    uses: ./.github/workflows/appimage.yml
+
+  flatpak:
+    uses: ./.github/workflows/flatpak.yml
+
+  publish:
+    name: Publish nightly
+    needs: [linux, windows, appimage, flatpak]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+
+      - name: Package artifacts
+        run: |
+          cd artifacts
+
+          tar czf darkradiant-nightly-linux-x86_64.tar.gz -C darkradiant-linux-x86_64 .
+
+          cd darkradiant-windows-x64
+          zip -r ../darkradiant-nightly-windows-x64.zip .
+          cd ..
+
+          cp darkradiant-appimage-x86_64/*.AppImage darkradiant-nightly-x86_64.AppImage
+
+          cp darkradiant-flatpak-x86_64/darkradiant.flatpak darkradiant-nightly-x86_64.flatpak
+
+      - name: Delete existing nightly release
+        run: gh release delete nightly --cleanup-tag --yes || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+
+      - name: Create nightly release
+        run: |
+          gh release create nightly \
+            --prerelease \
+            --title "Nightly Build" \
+            --notes "Automated nightly build from \`master\` ($(date -u '+%Y-%m-%d %H:%M UTC')).
+
+          **Warning:** These builds are untested and may be unstable." \
+            artifacts/darkradiant-nightly-linux-x86_64.tar.gz \
+            artifacts/darkradiant-nightly-windows-x64.zip \
+            artifacts/darkradiant-nightly-x86_64.AppImage \
+            artifacts/darkradiant-nightly-x86_64.flatpak
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}

@@ -1,0 +1,137 @@
+app-id: net.darkradiant.DarkRadiant
+runtime: org.freedesktop.Platform
+runtime-version: '24.08'
+sdk: org.freedesktop.Sdk
+command: darkradiant
+
+finish-args:
+  - --share=ipc
+  - --share=network
+  - --socket=x11
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --socket=pulseaudio
+  - --device=dri
+  - --filesystem=home
+  - --env=DCONF_USER_CONFIG_DIR=.config/dconf
+
+modules:
+  - name: eigen
+    buildsystem: cmake-ninja
+    builddir: true
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+    cleanup:
+      - '*'
+    sources:
+      - type: archive
+        url: https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz
+        sha256: 8586084f71f9bde545ee7fa6d00288b264a2b7ac3607b974e54d13e7162c1c72
+
+  - name: libsigc++
+    buildsystem: meson
+    config-opts:
+      - -Dbuild-examples=false
+      - -Dbuild-tests=false
+      - -Dbuild-documentation=false
+    sources:
+      - type: archive
+        url: https://download.gnome.org/sources/libsigc++/2.12/libsigc++-2.12.1.tar.xz
+        sha256: a9dbee323351d109b7aee074a9cb89ca3e7bcf8ad8edef1851f4cf359bd50843
+
+  - name: glew
+    buildsystem: simple
+    build-commands:
+      - make GLEW_PREFIX=/app GLEW_DEST=/app LIBDIR=/app/lib -j$FLATPAK_BUILDER_N_JOBS
+      - make GLEW_PREFIX=/app GLEW_DEST=/app LIBDIR=/app/lib install
+    sources:
+      - type: archive
+        url: https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0.tgz
+        sha256: d4fc82893cfb00109578d0a1a2337fb8ca335b3ceccf97b97e5cc7f08e4353e1
+
+  - name: glu
+    buildsystem: meson
+    config-opts:
+      - -Dgl_provider=gl
+    sources:
+      - type: archive
+        url: https://archive.mesa3d.org/glu/glu-9.0.3.tar.xz
+        sha256: bd43fe12f374b1192eb15fe20e45ff456b9bc26ab57f0eee919f96ca0f8a330f
+
+  - name: ftgl
+    buildsystem: autotools
+    build-options:
+      cxxflags: -fpermissive
+    sources:
+      - type: archive
+        url: https://github.com/frankheckenbach/ftgl/archive/refs/tags/v2.4.0.tar.gz
+        sha256: aa97da1c3442a8fd3941037655df18016d70b5266381c81d81e8b5335f196ea8
+
+  - name: libgit2
+    buildsystem: cmake-ninja
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DBUILD_TESTS=OFF
+      - -DUSE_SSH=OFF
+    sources:
+      - type: archive
+        url: https://github.com/libgit2/libgit2/archive/refs/tags/v1.8.4.tar.gz
+        sha256: 49d0fc50ab931816f6bfc1ac68f8d74b760450eebdb5374e803ee36550f26774
+
+  - name: openal-soft
+    buildsystem: cmake-ninja
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DALSOFT_EXAMPLES=OFF
+      - -DALSOFT_UTILS=OFF
+      - -DALSOFT_TESTS=OFF
+    sources:
+      - type: archive
+        url: https://github.com/kcat/openal-soft/archive/refs/tags/1.23.1.tar.gz
+        sha256: dfddf3a1f61059853c625b7bb03de8433b455f2f79f89548cbcbd5edca3d4a4a
+
+  - name: freealut
+    buildsystem: autotools
+    sources:
+      - type: archive
+        url: https://github.com/vancegroup/freealut/archive/refs/tags/freealut_1_1_0.tar.gz
+        sha256: c3880d7dbb90c7db54e1d6b88aa0a34dd9e2d828fd389be0d2cbb2632b0885dd
+      - type: shell
+        commands:
+          - autoreconf -fi
+
+  - name: wxwidgets
+    buildsystem: simple
+    build-commands:
+      - ./configure --prefix=/app --with-gtk=3 --disable-debug --enable-unicode
+        --with-opengl --without-libtiff --disable-sdltest --disable-webview
+      - make -j$FLATPAK_BUILDER_N_JOBS
+      - make install
+    cleanup:
+      - /bin/wx-config
+      - /bin/wxrc*
+      - /include
+      - /lib/cmake
+      - /lib/pkgconfig
+      - /lib/wx
+      - /share/aclocal
+      - /share/bakefile
+    sources:
+      - type: archive
+        url: https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.6/wxWidgets-3.2.6.tar.bz2
+        sha256: 939e5b77ddc5b6092d1d7d29491fe67010a2433cf9b9c0d841ee4d04acb9dce7
+
+  - name: darkradiant
+    buildsystem: cmake-ninja
+    builddir: true
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DENABLE_RELOCATION=ON
+    sources:
+      - type: dir
+        path: ..
+    post-install:
+      - mv /app/share/applications/darkradiant.desktop
+        /app/share/applications/net.darkradiant.DarkRadiant.desktop
+      - sed -i 's|Exec=.*/darkradiant|Exec=darkradiant|'
+        /app/share/applications/net.darkradiant.DarkRadiant.desktop
