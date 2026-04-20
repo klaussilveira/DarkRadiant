@@ -102,10 +102,27 @@ void WindowPosition::loadFromPath(const std::string& path)
     _size.at(0) = registry::getValue<int>(path + "/width");
     _size.at(1) = registry::getValue<int>(path + "/height");
 
-    if (_size.at(0) == 0 || _size.at(1) == 0)
+    // Legacy fallback: older versions stored position/size as attributes on
+    // the node itself rather than as child nodes
+    if (_position.at(0) == 0 && _position.at(1) == 0)
+    {
+        _position.at(0) = string::convert<int>(GlobalRegistry().getAttribute(path, "xPosition"));
+        _position.at(1) = string::convert<int>(GlobalRegistry().getAttribute(path, "yPosition"));
+    }
+
+    if (_size.at(0) <= 0 || _size.at(1) <= 0)
+    {
+        _size.at(0) = string::convert<int>(GlobalRegistry().getAttribute(path, "width"));
+        _size.at(1) = string::convert<int>(GlobalRegistry().getAttribute(path, "height"));
+    }
+
+    if (_size.at(0) <= 0 || _size.at(1) <= 0)
     {
         auto defaultXFraction = string::convert<float>(GlobalRegistry().getAttribute(path, "defaultWidthFraction"));
         auto defaultYFraction = string::convert<float>(GlobalRegistry().getAttribute(path, "defaultHeightFraction"));
+
+        if (defaultXFraction <= 0.0f) defaultXFraction = 0.6f;
+        if (defaultYFraction <= 0.0f) defaultYFraction = 0.8f;
 
         fitToScreen(defaultXFraction, defaultYFraction);
     }
@@ -117,9 +134,9 @@ void WindowPosition::applyPosition()
 {
     if (_window == nullptr) return;
 
-    if (_size.at(0) == 0 || _size.at(1) == 0)
+    if (_size.at(0) <= 0 || _size.at(1) <= 0)
     {
-        // Don't apply empty sizes
+        // Don't apply empty or negative sizes
         return;
     }
 
