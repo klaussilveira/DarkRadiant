@@ -617,7 +617,10 @@ void Face::applyShaderFromFace(const Face& other)
         SetTexdef(projection);
 
         // Pick a reference vertex on the target face and compute the UV
-        auto& refVertex = m_winding[0].vertex;
+        Vector3 refVertex = sharedVertices.size() == 1
+            ? m_winding[sharedVertices[0].second].vertex
+            : m_winding[0].vertex;
+
         auto sourceUV = other.m_texdefTransformed.getTextureCoordsForVertex(
             refVertex, other.m_planeTransformed.getPlane().normal(), Matrix4::getIdentity()
         );

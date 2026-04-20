@@ -12,6 +12,7 @@
 #include "registry/registry.h"
 #include "render/CameraView.h"
 #include "algorithm/View.h"
+#include "texturelib.h"
 
 namespace test
 {
@@ -448,6 +449,90 @@ TEST_F(TextureManipulationTest, PasteTextureToOrthogonalFace2)
         EXPECT_TRUE(math::isNear(pair.first->texcoord, pair.second->texcoord, 0.01))
             << "Texture coordinates should be the same after pasting the texture projection";
     }
+}
+
+// Regression test for: https://bugs.thedarkmod.com/view.php?id=6547
+TEST_F(TextureManipulationTest, PasteTextureToAngledFaceWithoutSharedEdge)
+{
+    std::string mapPath = "maps/paste_shader_angled.map";
+    GlobalCommandSystem().executeCommand("OpenMap", mapPath);
+
+    auto worldspawn = GlobalMapModule().findOrInsertWorldspawn();
+
+    // Source: axis-aligned brush (textures/numbers/1)
+    auto sourceBrushNode = algorithm::findFirstBrushWithMaterial(worldspawn, "textures/numbers/1");
+    ASSERT_TRUE(sourceBrushNode) << "Couldn't find source brush";
+    auto sourceBrush = Node_getIBrush(sourceBrushNode);
+    auto sourceFace = algorithm::findBrushFaceWithNormal(sourceBrush, Vector3(0, -1, 0));
+    ASSERT_TRUE(sourceFace) << "Couldn't find source face with normal (0, -1, 0)";
+
+    // Target: triangular prism with an angled 45-degree face (textures/numbers/2)
+    auto targetBrushNode = algorithm::findFirstBrushWithMaterial(worldspawn, "textures/numbers/2");
+    ASSERT_TRUE(targetBrushNode) << "Couldn't find target brush";
+    auto targetBrush = Node_getIBrush(targetBrushNode);
+    Vector3 angledNormal(0.7071067811865476, -0.7071067811865476, 0);
+    auto targetFace = algorithm::findBrushFaceWithNormal(targetBrush, angledNormal);
+    ASSERT_TRUE(targetFace) << "Couldn't find angled target face";
+
+    // The test relies on a single shared vertex (no full edge) to drive the
+    // "no shared edge" branch of applyShaderFromFace while still having a
+    // common seam to align on.
+    auto sharedVertices = findSharedVertices(*sourceFace, *targetFace);
+    ASSERT_EQ(sharedVertices.size(), 1)
+        << "Test setup error: expected exactly one shared vertex between source and target";
+
+    auto sharedVertex = sharedVertices[0].second->vertex;
+
+    // Source texel-scale along its own S/T axes; the target must keep this
+    // magnitude after the paste (i.e. no stretching).
+    auto sourceTexelScale = sourceFace->getTexelScale();
+
+    // UV the source projection gives at the shared vertex — the target must
+    // end up with the same UV at that vertex.
+    Matrix4 sourceWorldToUv = getMatrix4FromTextureMatrix(sourceFace->getProjectionMatrix());
+    sourceWorldToUv.multiplyBy(getBasisTransformForNormal(sourceFace->getPlane3().normal()));
+    auto sourceUvAtShared3 = sourceWorldToUv.transformPoint(sharedVertex);
+    Vector2 expectedUvAtShared(sourceUvAtShared3.x(), sourceUvAtShared3.y());
+
+    // Pick the source face via a camera looking perpendicularly at it (+Y direction,
+    // matching the pattern used for a face whose outward normal is (0, -1, 0)).
+    render::View viewSource(true);
+    algorithm::constructCameraView(viewSource, sourceBrushNode->localAABB(),
+        Vector3(0, 1, 0), Vector3(0, 90, 0));
+    SelectionVolume testSource(viewSource);
+    GlobalShaderClipboard().pickFromSelectionTest(testSource);
+
+    ASSERT_EQ(GlobalShaderClipboard().getSourceType(), selection::IShaderClipboard::SourceType::Face)
+        << "Failed to pick source face into the shader clipboard";
+
+    // Paste onto the angled target face. Camera looks along -angledNormal into the face.
+    render::View viewTarget(true);
+    algorithm::constructCameraView(viewTarget, targetBrushNode->localAABB(),
+        -angledNormal, Vector3(0, 135, 0));
+    ConstructSelectionTest(viewTarget, selection::Rectangle::ConstructFromPoint({ 0, 0 }, { 0.1, 0.1 }));
+    SelectionVolume testTarget(viewTarget);
+    GlobalShaderClipboard().pasteShader(testTarget, selection::PasteMode::Natural, false);
+
+    // The target face should now carry the source's material
+    EXPECT_EQ(targetFace->getShader(), sourceFace->getShader())
+        << "Target face's shader wasn't updated to the source's material";
+
+    // Alignment: UV at the shared vertex must match the source's UV there.
+    auto sharedWindingVertex = std::find_if(
+        targetFace->getWinding().begin(), targetFace->getWinding().end(),
+        [&](const WindingVertex& v) { return math::isNear(v.vertex, sharedVertex, 0.01); });
+    ASSERT_NE(sharedWindingVertex, targetFace->getWinding().end());
+    EXPECT_TRUE(math::isNear(sharedWindingVertex->texcoord, expectedUvAtShared, 0.01))
+        << "Target UV at the shared vertex " << sharedVertex
+        << " is " << sharedWindingVertex->texcoord
+        << ", expected " << expectedUvAtShared;
+
+    // No stretching: the target face's texel scale along its own S/T axes must
+    // match the source's texel scale (the 3-point approach fails this).
+    auto targetTexelScale = targetFace->getTexelScale();
+    EXPECT_TRUE(math::isNear(targetTexelScale, sourceTexelScale, 0.01))
+        << "Target texel scale " << targetTexelScale
+        << " should equal source's " << sourceTexelScale << " (no stretching)";
 }
 
 TEST_F(TextureManipulationTest, NormaliseFace)
