@@ -54,10 +54,18 @@ jobs:
           wget -q https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
           chmod +x linuxdeploy-x86_64.AppImage
           export LD_LIBRARY_PATH="${{ github.workspace }}/AppDir/usr/lib/x86_64-linux-gnu/darkradiant:${LD_LIBRARY_PATH}"
+
+          LIB_ARGS=()
+          for so in AppDir/usr/lib/x86_64-linux-gnu/darkradiant/modules/*.so \
+                    AppDir/usr/lib/x86_64-linux-gnu/darkradiant/plugins/*.so; do
+              [ -e "$so" ] && LIB_ARGS+=(--library="$so")
+          done
+
           ./linuxdeploy-x86_64.AppImage \
             --appdir AppDir \
             --desktop-file AppDir/usr/share/applications/net.darkradiant.DarkRadiant.desktop \
             --icon-file AppDir/usr/share/icons/hicolor/128x128/apps/net.darkradiant.DarkRadiant.png \
+            "${LIB_ARGS[@]}" \
             --output appimage
 
           rm linuxdeploy-x86_64.AppImage
