@@ -688,7 +688,7 @@ void createTrimForSelectedFaces(const cmd::ArgumentList& args)
 {
 	if (args.size() < 4)
 	{
-		rError() << "Usage: CreateTrimForFaces <height> <depth> <fitTo> <mitered>" << std::endl;
+		rError() << "Usage: CreateTrimForFaces <height> <depth> <fitTo> <mitered> [coverEntireFace]" << std::endl;
 		return;
 	}
 
@@ -696,17 +696,16 @@ void createTrimForSelectedFaces(const cmd::ArgumentList& args)
 	double depth = args[1].getDouble();
 	int fitToInt = args[2].getInt();
 	bool mitered = args[3].getInt() != 0;
+	bool coverEntireFace = args.size() >= 5 && args[4].getInt() != 0;
 
 	if (FaceInstance::Selection().empty())
 	{
 		throw cmd::ExecutionNotPossible(_("No faces selected."));
-		return;
 	}
 
-	if (height <= 0 || depth <= 0)
+	if ((!coverEntireFace && height <= 0) || depth <= 0)
 	{
 		throw cmd::ExecutionFailure(_("Height and depth must be positive."));
-		return;
 	}
 
 	UndoableCommand cmd("createTrimForSelectedFaces");
@@ -727,6 +726,8 @@ void createTrimForSelectedFaces(const cmd::ArgumentList& args)
 	ShiftScaleRotation ssr;
 	ssr.scale[0] = naturalScale;
 	ssr.scale[1] = naturalScale;
+
+	std::string clipboardShader = ShaderClipboard::Instance().getSource().getShader();
 
 	for (FaceInstance* fi : faceInstances)
 	{
@@ -765,29 +766,38 @@ void createTrimForSelectedFaces(const cmd::ArgumentList& args)
 			rMax = std::max(rMax, r);
 		}
 
+		// When covering the entire face, the effective height equals the full face
+		// extent along the axis that the trim runs perpendicular to
+		double effectiveHeight = height;
+
+		if (coverEntireFace)
+		{
+			effectiveHeight = (fitToInt == 2 || fitToInt == 3) ? (rMax - rMin) : (uMax - uMin);
+		}
+
 		// Compute trim bounds in face-local coordinates
 		double trimUMin, trimUMax, trimRMin, trimRMax;
 
 		switch (fitToInt)
 		{
 		case 0: // Bottom
-			trimUMin = uMin; trimUMax = uMin + height;
+			trimUMin = uMin; trimUMax = uMin + effectiveHeight;
 			trimRMin = rMin; trimRMax = rMax;
 			break;
 		case 1: // Top
-			trimUMin = uMax - height; trimUMax = uMax;
+			trimUMin = uMax - effectiveHeight; trimUMax = uMax;
 			trimRMin = rMin; trimRMax = rMax;
 			break;
 		case 2: // Left
 			trimUMin = uMin; trimUMax = uMax;
-			trimRMin = rMin; trimRMax = rMin + height;
+			trimRMin = rMin; trimRMax = rMin + effectiveHeight;
 			break;
 		case 3: // Right
 			trimUMin = uMin; trimUMax = uMax;
-			trimRMin = rMax - height; trimRMax = rMax;
+			trimRMin = rMax - effectiveHeight; trimRMax = rMax;
 			break;
 		default:
-			trimUMin = uMin; trimUMax = uMin + height;
+			trimUMin = uMin; trimUMax = uMin + effectiveHeight;
 			trimRMin = rMin; trimRMax = rMax;
 			break;
 		}
@@ -814,7 +824,7 @@ void createTrimForSelectedFaces(const cmd::ArgumentList& args)
 		scene::INodePtr brushNode = GlobalBrushCreator().createBrush();
 		Brush* brush = Node_getBrush(brushNode);
 
-		std::string shader = face.getShader();
+		std::string shader = !clipboardShader.empty() ? clipboardShader : face.getShader();
 		TextureProjection projection;
 
 		brush->clear();

@@ -18,6 +18,7 @@ public:
 		double depth;
 		FitTo fitTo;
 		bool mitered;
+		bool coverEntireFace;
 	};
 
 private:
@@ -25,6 +26,7 @@ private:
 	Handle _depthHandle;
 	Handle _fitToHandle;
 	Handle _miteredHandle;
+	Handle _coverEntireFaceHandle;
 
 public:
 	CreateTrimDialog();

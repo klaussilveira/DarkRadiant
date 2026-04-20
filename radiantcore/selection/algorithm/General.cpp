@@ -1018,7 +1018,8 @@ void registerCommands()
     GlobalCommandSystem().addWithCheck(
         "CreateTrimForFaces", createTrimForSelectedFaces,
         [] { return !FaceInstance::Selection().empty(); },
-        { cmd::ARGTYPE_DOUBLE, cmd::ARGTYPE_DOUBLE, cmd::ARGTYPE_INT, cmd::ARGTYPE_INT }
+        { cmd::ARGTYPE_DOUBLE, cmd::ARGTYPE_DOUBLE, cmd::ARGTYPE_INT, cmd::ARGTYPE_INT,
+          cmd::ARGTYPE_INT | cmd::ARGTYPE_OPTIONAL }
     );
 
     GlobalCommandSystem().addCommand("Copy", clipboard::copy);
