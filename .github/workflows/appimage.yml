@@ -49,26 +49,46 @@ jobs:
           sed -i 's|Exec=.*/darkradiant|Exec=darkradiant|' \
             AppDir/usr/share/applications/net.darkradiant.DarkRadiant.desktop
 
+          PYVER=$(python3 -c 'import sys;print(f"{sys.version_info.major}.{sys.version_info.minor}")')
+          mkdir -p AppDir/usr/lib/python${PYVER}
+          cp -a /usr/lib/python${PYVER}/. AppDir/usr/lib/python${PYVER}/
+          rm -rf AppDir/usr/lib/python${PYVER}/test \
+                 AppDir/usr/lib/python${PYVER}/config-${PYVER}-x86_64-linux-gnu \
+                 AppDir/usr/lib/python${PYVER}/__pycache__ \
+                 AppDir/usr/lib/python${PYVER}/*/__pycache__
+          find AppDir/usr/lib/python${PYVER} -name __pycache__ -type d -exec rm -rf {} +
+
       - name: Build AppImage
         run: |
           wget -q https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
           chmod +x linuxdeploy-x86_64.AppImage
-          export LD_LIBRARY_PATH="${{ github.workspace }}/AppDir/usr/lib/x86_64-linux-gnu/darkradiant:${LD_LIBRARY_PATH}"
+          export LD_LIBRARY_PATH="${{ github.workspace }}/AppDir/usr/lib/x86_64-linux-gnu/darkradiant:${LD_LIBRARY_PATH:-}"
 
-          LIB_ARGS=()
-          for so in AppDir/usr/lib/x86_64-linux-gnu/darkradiant/modules/*.so \
-                    AppDir/usr/lib/x86_64-linux-gnu/darkradiant/plugins/*.so; do
-              [ -e "$so" ] && LIB_ARGS+=(--library="$so")
-          done
+          cat > AppRun <<'EOF'
+          #!/bin/bash
+          HERE="$(dirname "$(readlink -f "${0}")")"
+          export PATH="${HERE}/usr/bin:${PATH}"
+          export LD_LIBRARY_PATH="${HERE}/usr/lib:${HERE}/usr/lib/x86_64-linux-gnu:${HERE}/usr/lib/x86_64-linux-gnu/darkradiant:${LD_LIBRARY_PATH}"
+          export PYTHONHOME="${HERE}/usr"
+          unset PYTHONPATH
+          exec "${HERE}/usr/bin/darkradiant" "$@"
+          EOF
+          chmod +x AppRun
 
           ./linuxdeploy-x86_64.AppImage \
             --appdir AppDir \
+            --custom-apprun "$(pwd)/AppRun" \
             --desktop-file AppDir/usr/share/applications/net.darkradiant.DarkRadiant.desktop \
             --icon-file AppDir/usr/share/icons/hicolor/128x128/apps/net.darkradiant.DarkRadiant.png \
-            "${LIB_ARGS[@]}" \
+            --exclude-library='libmath.so' \
+            --exclude-library='libscene.so' \
+            --exclude-library='libwxutil.so' \
+            --exclude-library='libxmlutil.so' \
+            --deploy-deps-only=AppDir/usr/lib/x86_64-linux-gnu/darkradiant/modules \
+            --deploy-deps-only=AppDir/usr/lib/x86_64-linux-gnu/darkradiant/plugins \
             --output appimage
 
-          rm linuxdeploy-x86_64.AppImage
+          rm linuxdeploy-x86_64.AppImage AppRun
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
