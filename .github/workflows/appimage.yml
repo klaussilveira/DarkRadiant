@@ -48,21 +48,19 @@ jobs:
              AppDir/usr/share/applications/net.darkradiant.DarkRadiant.desktop
           sed -i 's|Exec=.*/darkradiant|Exec=darkradiant|' \
             AppDir/usr/share/applications/net.darkradiant.DarkRadiant.desktop
+          rm -f AppDir/usr/bin/drtest
 
           PYVER=$(python3 -c 'import sys;print(f"{sys.version_info.major}.{sys.version_info.minor}")')
           mkdir -p AppDir/usr/lib/python${PYVER}
           cp -a /usr/lib/python${PYVER}/. AppDir/usr/lib/python${PYVER}/
           rm -rf AppDir/usr/lib/python${PYVER}/test \
-                 AppDir/usr/lib/python${PYVER}/config-${PYVER}-x86_64-linux-gnu \
-                 AppDir/usr/lib/python${PYVER}/__pycache__ \
-                 AppDir/usr/lib/python${PYVER}/*/__pycache__
+                 AppDir/usr/lib/python${PYVER}/config-${PYVER}-x86_64-linux-gnu
           find AppDir/usr/lib/python${PYVER} -name __pycache__ -type d -exec rm -rf {} +
 
       - name: Build AppImage
         run: |
           wget -q https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
           chmod +x linuxdeploy-x86_64.AppImage
-          export LD_LIBRARY_PATH="${{ github.workspace }}/AppDir/usr/lib/x86_64-linux-gnu/darkradiant:${LD_LIBRARY_PATH:-}"
 
           cat > AppRun <<'EOF'
           #!/bin/bash
