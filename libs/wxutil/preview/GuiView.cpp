@@ -81,8 +81,6 @@ void GuiView::setGLViewPort()
 
 bool GuiView::draw()
 {
-	if (!_gui) return false;
-
 	debug::assertNoGlErrors();
 
 	// Clear the window
@@ -91,6 +89,8 @@ bool GuiView::draw()
 	glClearColor(0.0, 0.0, 0.0, 0);
 	glClearDepth(100.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	if (!_gui) return true;
 
 	// Set up the camera
 	glMatrixMode(GL_PROJECTION);

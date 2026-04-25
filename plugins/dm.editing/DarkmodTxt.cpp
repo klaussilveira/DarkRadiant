@@ -109,9 +109,13 @@ DarkmodTxtPtr DarkmodTxt::CreateFromString(const std::string& contents)
 {
 	DarkmodTxtPtr info(new DarkmodTxt);
 
+	if (contents.find_first_not_of(" \t\r\n") == std::string::npos)
+	{
+		return info;
+	}
+
 	try
 	{
-		// Determine the positions in the file
 		std::size_t titlePos = contents.find("Title:");
 		std::size_t missionTitlesPos = contents.find("Mission 1 Title:");
 		std::size_t descPos = contents.find("Description:");
@@ -119,25 +123,25 @@ DarkmodTxtPtr DarkmodTxt::CreateFromString(const std::string& contents)
 		std::size_t versionPos = contents.find("\nVersion:");
 		std::size_t reqVersionPos = contents.find("Required TDM Version:");
 
-		// Validate the order of the markers in the file
-		bool positionsValid = titlePos != std::string::npos && titlePos < descPos && // Title is required & before description (or EOF)
-			(missionTitlesPos == std::string::npos || missionTitlesPos < descPos) && // Optional Mission Titles & before description (or EOF)
-			(descPos == std::string::npos || descPos < authorPos) &&				 // Optional description & before author (or EOF)
-			(authorPos == std::string::npos || authorPos < versionPos) &&			 // Author optional & before description (or EOF)
-			(versionPos == std::string::npos || versionPos < reqVersionPos);		 // Version optional & before req version (or EOF)
-
-		if (!positionsValid)
-		{
-			throw ParseException(_("Order of the elements Title/Description/Author/etc. is incorrect"));
-		}
-
 		std::size_t len = contents.size();
+
+		auto nextMarker = [&](std::size_t after) -> std::size_t
+		{
+			std::size_t result = len;
+			for (std::size_t pos : { missionTitlesPos, descPos, authorPos, versionPos, reqVersionPos })
+			{
+				if (pos != std::string::npos && pos > after && pos < result)
+				{
+					result = pos;
+				}
+			}
+			return result;
+		};
 
 		if (titlePos != std::string::npos)
 		{
-			std::size_t endPos = (missionTitlesPos != std::string::npos) ? missionTitlesPos : descPos;
-
-			info->_title = contents.substr(titlePos, (endPos != std::string::npos) ? endPos - titlePos : len - titlePos);
+			std::size_t endPos = nextMarker(titlePos);
+			info->_title = contents.substr(titlePos, endPos - titlePos);
 			string::trim_left(info->_title, "Title:");
 			string::trim(info->_title);
 		}
@@ -147,37 +151,39 @@ DarkmodTxtPtr DarkmodTxt::CreateFromString(const std::string& contents)
 
 		if (missionTitlesPos != std::string::npos)
 		{
-			std::string missionTitles = contents.substr(missionTitlesPos, (descPos != std::string::npos) ? descPos - missionTitlesPos: len - missionTitlesPos);
+			std::size_t endPos = nextMarker(missionTitlesPos);
+			std::string missionTitles = contents.substr(missionTitlesPos, endPos - missionTitlesPos);
 			ParseMissionTitles(info->_missionTitles, missionTitles);
 		}
 
 		if (descPos != std::string::npos)
 		{
-			info->_description = contents.substr(descPos, (authorPos != std::string::npos) ? authorPos - descPos : len - descPos);
+			std::size_t endPos = nextMarker(descPos);
+			info->_description = contents.substr(descPos, endPos - descPos);
 			string::trim_left(info->_description, "Description:");
 			string::trim(info->_description);
 		}
 
 		if (authorPos != std::string::npos)
 		{
-			std::size_t endPos = (versionPos != std::string::npos) ? versionPos : reqVersionPos;
-
-			info->_author = contents.substr(authorPos, (endPos != std::string::npos) ? endPos - authorPos : len - authorPos);
+			std::size_t endPos = nextMarker(authorPos);
+			info->_author = contents.substr(authorPos, endPos - authorPos);
 			string::trim_left(info->_author, "Author:");
 			string::trim(info->_author);
 		}
 
 		if (versionPos != std::string::npos)
 		{
-			info->_version = contents.substr(versionPos, (reqVersionPos != std::string::npos) ? reqVersionPos - versionPos : len - versionPos);
+			std::size_t endPos = nextMarker(versionPos);
+			info->_version = contents.substr(versionPos, endPos - versionPos);
 			string::trim_left(info->_version, "\nVersion:");
 			string::trim(info->_version);
 		}
 
 		if (reqVersionPos != std::string::npos)
 		{
-			info->_reqTdmVersion = contents.substr(reqVersionPos, len - reqVersionPos);
-
+			std::size_t endPos = nextMarker(reqVersionPos);
+			info->_reqTdmVersion = contents.substr(reqVersionPos, endPos - reqVersionPos);
 			string::trim_left(info->_reqTdmVersion, "Required TDM Version:");
 			string::trim_left(info->_reqTdmVersion, "v");
 			string::trim(info->_reqTdmVersion);

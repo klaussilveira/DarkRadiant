@@ -11,6 +11,9 @@ add_executable(drtest
                ContinuousBuffer.cpp
                CSG.cpp
                Curves.cpp
+               DarkmodTxt.cpp
+               ../plugins/dm.editing/DarkmodTxt.cpp
+               ../plugins/dm.editing/MissionInfoTextFile.cpp
                DeclManager.cpp
                DefBlockSyntaxParser.cpp
                DefTokenisers.cpp
@@ -72,6 +75,8 @@ find_package(Threads REQUIRED)
 # and the core binary in the build workspace (in install/ and test/resources/)
 get_filename_component(TEST_BASE_PATH "./" ABSOLUTE)
 add_compile_definitions(TEST_BASE_PATH="${TEST_BASE_PATH}")
+
+target_include_directories(drtest PRIVATE ../plugins/dm.editing)
 
 target_link_libraries(drtest PUBLIC
                       math xmlutil scene module

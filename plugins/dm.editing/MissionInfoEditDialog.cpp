@@ -152,6 +152,7 @@ void MissionInfoEditDialog::populateWindow()
 	setupNamedEntryBox("MissionInfoEditDialogAuthorEntry");
 	setupNamedEntryBox("MissionInfoEditDialogDescriptionEntry");
 	setupNamedEntryBox("MissionInfoEditDialogVersionEntry");
+	setupNamedEntryBox("MissionInfoEditDialogReqTdmVersionEntry");
 
 	// Setup the event for the readme.txt button
 	wxButton* editReadmeButton = findNamedObject<wxButton>(this, "MissionInfoEditDialogEditReadmeButton");

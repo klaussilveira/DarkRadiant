@@ -268,6 +268,306 @@ TEST_F(GuiTokeniser, ParseObjectivesMacroExpansion)
     });
 }
 
+TEST_F(GuiTokeniser, ObjectLikeMacroWithParenthesisedBody)
+{
+    std::string contents = R"(
+    #define MM_POS_HASMOD_SHIFT ("gui::hasCurrentMod" || "gui::inGame")
+    #define ROW(i) 10 + 20*(i + 2*MM_POS_HASMOD_SHIFT)
+
+    windowDef Test
+    {
+        rect 0, ROW(1), 100, 16
+    }
+    )";
+
+    expectTokenSequence(_context, contents,
+    {
+        "windowDef", "Test",
+        "{",
+            "rect", "0", ",",
+                "10", "+", "20", "*", "(", "1", "+", "2", "*",
+                "(", "gui::hasCurrentMod", "||", "gui::inGame", ")", ")",
+                ",", "100", ",", "16",
+        "}",
+    });
+}
+
+TEST_F(GuiTokeniser, MacroTokenMergeOperator)
+{
+    std::string contents = R"(
+    #define MAKE_NAME(prefix, suffix) prefix ## suffix
+
+    windowDef MAKE_NAME(Foo, Bar)
+    {
+        rect 0, 0, 100, 16
+    }
+    )";
+
+    expectTokenSequence(_context, contents,
+    {
+        "windowDef", "FooBar",
+        "{",
+            "rect", "0", ",", "0", ",", "100", ",", "16",
+        "}",
+    });
+}
+
+TEST_F(GuiTokeniser, MacroTokenMergeWithoutWhitespace)
+{
+    std::string contents = R"(
+    #define ROW(idx) windowDef Row##idx##End
+
+    ROW(7)
+    {
+        rect 0, 0, 100, 16
+    }
+    )";
+
+    expectTokenSequence(_context, contents,
+    {
+        "windowDef", "Row7End",
+        "{",
+            "rect", "0", ",", "0", ",", "100", ",", "16",
+        "}",
+    });
+}
+
+TEST_F(GuiTokeniser, MacroTokenMergeLeadingParameter)
+{
+    std::string contents = R"(
+    #define DECL(name) name##Parent
+
+    windowDef DECL(Foo) {}
+    )";
+
+    expectTokenSequence(_context, contents,
+    {
+        "windowDef", "FooParent", "{", "}",
+    });
+}
+
+TEST_F(GuiTokeniser, MacroTokenMergeTrailingParameter)
+{
+    std::string contents = R"(
+    #define DECL(name) Foo##name
+
+    windowDef DECL(Bar) {}
+    )";
+
+    expectTokenSequence(_context, contents,
+    {
+        "windowDef", "FooBar", "{", "}",
+    });
+}
+
+TEST_F(GuiTokeniser, MacroStringizeGluedToIdentifier)
+{
+    std::string contents = R"(
+    #define LABEL(idx) prefix#idx
+
+    windowDef Test
+    {
+        text LABEL(42)
+    }
+    )";
+
+    expectTokenSequence(_context, contents,
+    {
+        "windowDef", "Test",
+        "{",
+            "text", "prefix", "42",
+        "}",
+    });
+}
+
+TEST_F(GuiTokeniser, MacroBodyPreservesHashStrLiteral)
+{
+    std::string contents = R"(
+    #define EXAMPLE_TEXT "#str_02925"
+
+    windowDef Test
+    {
+        text EXAMPLE_TEXT
+    }
+    )";
+
+    expectTokenSequence(_context, contents,
+    {
+        "windowDef", "Test",
+        "{",
+            "text", "#str_02925",
+        "}",
+    });
+}
+
+TEST_F(GuiTokeniser, MacroBodyMergeAdjacentToConstants)
+{
+    std::string contents = R"(
+    #define LINK(a, b) "gui::"##a##"::"##b
+
+    windowDef Test
+    {
+        text LINK(panel, visible)
+    }
+    )";
+
+    expectTokenSequence(_context, contents,
+    {
+        "windowDef", "Test",
+        "{",
+            "text", "gui::panel::visible",
+        "}",
+    });
+}
+
+TEST_F(GuiTokeniser, MacroStringizeOperator)
+{
+    std::string contents = R"(
+    #define OBJ_TEXT(idx) "gui::obj"## #idx ##"_text"
+
+    windowDef Test
+    {
+        text OBJ_TEXT(3)
+    }
+    )";
+
+    expectTokenSequence(_context, contents,
+    {
+        "windowDef", "Test",
+        "{",
+            "text", "gui::obj3_text",
+        "}",
+    });
+}
+
+TEST_F(GuiTokeniser, MacroArgumentWithNestedParens)
+{
+    std::string contents = R"(
+    #define WRAP(x) [ x ]
+    #define INNER(a, b) a + b
+
+    windowDef Test
+    {
+        rect WRAP(INNER(1, 2)), 0, 100, 16
+    }
+    )";
+
+    expectTokenSequence(_context, contents,
+    {
+        "windowDef", "Test",
+        "{",
+            "rect", "[", "1", "+", "2", "]", ",", "0", ",", "100", ",", "16",
+        "}",
+    });
+}
+
+TEST_F(GuiTokeniser, ArgumentPreExpansionThroughIndirection)
+{
+    std::string contents = R"(
+    #define PREFIX Foo
+    #define CONCATX(a, b) a##b
+    #define CONCAT(a, b) CONCATX(a, b)
+
+    windowDef CONCAT(PREFIX, Bar) {}
+    )";
+
+    expectTokenSequence(_context, contents,
+    {
+        "windowDef", "FooBar", "{", "}",
+    });
+}
+
+TEST_F(GuiTokeniser, ArgumentNotPreExpandedWhenAdjacentToMerge)
+{
+    std::string contents = R"(
+    #define PREFIX ShouldNotExpand
+    #define DIRECT(a, b) a##b
+
+    windowDef DIRECT(PREFIX, Tail) {}
+    )";
+
+    expectTokenSequence(_context, contents,
+    {
+        "windowDef", "PREFIXTail", "{", "}",
+    });
+}
+
+TEST_F(GuiTokeniser, ArgumentPreExpansionWithFunctionLikeSubMacro)
+{
+    std::string contents = R"(
+    #define DOUBLE(x) (x + x)
+    #define WRAP(y) [ y ]
+
+    windowDef Test
+    {
+        rect WRAP(DOUBLE(5)), 0, 0, 0
+    }
+    )";
+
+    expectTokenSequence(_context, contents,
+    {
+        "windowDef", "Test",
+        "{",
+            "rect", "[", "(", "5", "+", "5", ")", "]",
+                ",", "0", ",", "0", ",", "0",
+        "}",
+    });
+}
+
+TEST_F(GuiTokeniser, FunctionLikeMacroBodyStartsWithParen)
+{
+    std::string contents = R"(
+    #define YPOS(idx) (50 + idx * 10)
+
+    windowDef Test
+    {
+        rect 0, YPOS(3), 100, 16
+    }
+    )";
+
+    expectTokenSequence(_context, contents,
+    {
+        "windowDef", "Test",
+        "{",
+            "rect", "0", ",",
+                "(", "50", "+", "3", "*", "10", ")",
+                ",", "100", ",", "16",
+        "}",
+    });
+}
+
+TEST_F(GuiTokeniser, NestedParameterizedMacroExpansion)
+{
+    std::string contents = R"(
+    #define MULT 2
+    #define HEIGHT (10 * MULT)
+    #define YPOS(idx) (50 + (idx - 1) * HEIGHT)
+    #define VISIBLE(idx) (idx >= 1 && YPOS(idx) <= 200)
+    #define DEFINE_ROW(idx)              \
+    windowDef Row##idx                   \
+    {                                    \
+        rect 0, YPOS(idx), 100, HEIGHT   \
+        visible VISIBLE(idx)             \
+    }
+
+    DEFINE_ROW(1)
+    )";
+
+    expectTokenSequence(_context, contents,
+    {
+        "windowDef", "Row1",
+        "{",
+            "rect", "0", ",",
+                "(", "50", "+", "(", "1", "-", "1", ")", "*", "(", "10", "*", "2", ")", ")",
+                ",", "100", ",", "(", "10", "*", "2", ")",
+            "visible",
+                "(", "1", ">=", "1", "&&",
+                "(", "50", "+", "(", "1", "-", "1", ")", "*", "(", "10", "*", "2", ")", ")",
+                "<=", "200", ")",
+        "}",
+    });
+}
+
 TEST_F(GuiTokeniser, PreprocessorDirectives)
 {
     // The file contains a couple of preprocessor expressions
