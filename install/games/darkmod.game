@@ -207,6 +207,8 @@
 		<property match="skin" category="Model" type="skin" />
 		<property match="noshadows" category="Model" type="bool" />
 		<property match="solid" category="Model" type="bool" />
+		<property match="gui" category="Model" type="gui">The GUI definition (.gui file) attached to this entity</property>
+		<property match="gui[0-9]+" category="Model" type="gui">Additional GUI definition slot</property>
 		<property match="target" category="Links" type="entity" />
 		<property match="target0" category="Links" type="entity" />
 		<property match="target1" category="Links" type="entity" />

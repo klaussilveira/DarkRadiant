@@ -13,6 +13,7 @@
 #include "ClassnamePropertyEditor.h"
 #include "AnglePropertyEditor.h"
 #include "FxPropertyEditor.h"
+#include "GuiPropertyEditor.h"
 #include "InheritPropertyEditor.h"
 
 #include <regex>
@@ -51,6 +52,7 @@ void PropertyEditorFactory::registerBuiltinTypes()
     _peMap["inherit"] = InheritPropertyEditor::CreateNew;
     _peMap["angle"] = AnglePropertyEditor::CreateNew;
     _peMap["fx"] = FxPropertyEditor::CreateNew;
+    _peMap["gui"] = GuiPropertyEditor::CreateNew;
 
     _dialogs["skin"] = []() { return std::make_shared<SkinChooserDialogWrapper>(); };
 }

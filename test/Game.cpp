@@ -48,6 +48,21 @@ TEST_F(GameTest, GetGameKeyValues)
     EXPECT_EQ(game->getKeyValue("maptypes"), "mapdoom3");
 }
 
+TEST_F(GameTest, GuiPropertyTypeRegistered)
+{
+    // adding the GUI chooser requires registering type="gui" for keys named
+    // "gui" and "gui<digits>" so the editor is picked up
+    auto game = GlobalGameManager().currentGame();
+
+    auto guiNodes = game->getLocalXPath("/entityInspector//property[@match='gui']");
+    ASSERT_EQ(guiNodes.size(), 1u) << "darkmod.game should declare a property mapping for the 'gui' key";
+    EXPECT_EQ(guiNodes[0].getAttributeValue("type"), "gui");
+
+    auto numberedGuiNodes = game->getLocalXPath("/entityInspector//property[@match='gui[0-9]+']");
+    ASSERT_EQ(numberedGuiNodes.size(), 1u) << "darkmod.game should declare a property mapping for 'gui<n>' keys";
+    EXPECT_EQ(numberedGuiNodes[0].getAttributeValue("type"), "gui");
+}
+
 TEST_F(GameTest, GetOptionalFeatures)
 {
     auto games = GlobalGameManager().getSortedGameList();

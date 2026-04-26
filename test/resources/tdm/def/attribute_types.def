@@ -35,4 +35,5 @@ entityDef attribute_type_test
     "editor_text a_text"        "A text"
     "editor_vector a_vector"    "A vector"
     "editor_hurk a_hurk"        "A hurk"
+    "editor_gui a_gui"          "A gui description"
 }

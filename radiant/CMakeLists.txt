@@ -40,6 +40,7 @@ add_executable(darkradiant
                ui/common/ImageFileSelector.cpp
                ui/common/MapPreview.cpp
                ui/common/TexturePreviewCombo.cpp
+               ui/common/GuiChooser.cpp
                ui/common/SkinChooser.cpp
                ui/common/SoundChooser.cpp
                ui/common/SoundShaderPreview.cpp
@@ -60,6 +61,7 @@ add_executable(darkradiant
                ui/einspector/EntityPropertyEditor.cpp
                ui/einspector/FloatPropertyEditor.cpp
                ui/einspector/FxPropertyEditor.cpp
+               ui/einspector/GuiPropertyEditor.cpp
                ui/einspector/InheritPropertyEditor.cpp
                ui/einspector/ModelPropertyEditor.cpp
                ui/einspector/PropertyEditor.cpp

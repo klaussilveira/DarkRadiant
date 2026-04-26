@@ -540,6 +540,9 @@ TEST_F(EntityClassTest, GetNonInheritedAttributeType)
 
     // The "undefined_bool" is not directly set on the eclass
     EXPECT_EQ(eclass->getAttributeType("undefined_bool"), "bool");
+
+    // editor_gui descriptors should propagate as type "gui" so the GUI property editor picks them up
+    EXPECT_EQ(eclass->getAttributeType("a_gui"), "gui");
 }
 
 TEST_F(EntityClassTest, GetInheritedAttributeType)
