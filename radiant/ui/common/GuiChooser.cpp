@@ -2,11 +2,13 @@
 
 #include "i18n.h"
 #include "ifilesystem.h"
+#include "igui.h"
 
 #include "wxutil/Bitmap.h"
 
 #include <wx/sizer.h>
 #include <wx/button.h>
+#include <wx/splitter.h>
 
 namespace ui
 {
@@ -15,8 +17,8 @@ namespace
 {
 	const char* const WINDOW_TITLE = N_("Choose GUI Definition");
 
-	const int WINDOW_WIDTH = 500;
-	const int WINDOW_HEIGHT = 600;
+	const int WINDOW_WIDTH = 900;
+	const int WINDOW_HEIGHT = 650;
 
 	const char* const GUI_ICON = "sr_icon_readable.png";
 	const char* const FOLDER_ICON = "folder16.png";
@@ -29,6 +31,8 @@ GuiChooser::GuiChooser(const std::string& initialSelection) :
 	DialogBase(_(WINDOW_TITLE), "GuiChooser"),
 	_store(new wxutil::TreeModel(_columns)),
 	_treeView(nullptr),
+	_preview(nullptr),
+	_panedPosition("guiChooserSplitter"),
 	_guiIcon(wxutil::GetLocalBitmap(GUI_ICON)),
 	_folderIcon(wxutil::GetLocalBitmap(FOLDER_ICON)),
 	_initialSelection(initialSelection)
@@ -39,6 +43,8 @@ GuiChooser::GuiChooser(const std::string& initialSelection) :
 	fillTree();
 
 	FindWindowById(wxID_OK, this)->Enable(false);
+
+	RegisterPersistableObject(&_panedPosition);
 }
 
 void GuiChooser::populateWindow()
@@ -48,7 +54,11 @@ void GuiChooser::populateWindow()
 	wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
 	GetSizer()->Add(vbox, 1, wxEXPAND | wxALL, 12);
 
-	_treeView = wxutil::TreeView::CreateWithModel(this, _store.get(), wxDV_NO_HEADER);
+	auto splitter = new wxSplitterWindow(this, wxID_ANY,
+		wxDefaultPosition, wxDefaultSize, wxSP_3D | wxSP_LIVE_UPDATE);
+	splitter->SetMinimumPaneSize(10);
+
+	_treeView = wxutil::TreeView::CreateWithModel(splitter, _store.get(), wxDV_NO_HEADER);
 	_treeView->AppendIconTextColumn(_("GUI Path"), _columns.name.getColumnIndex(),
 		wxDATAVIEW_CELL_INERT, wxCOL_WIDTH_AUTOSIZE, wxALIGN_NOT, wxDATAVIEW_COL_SORTABLE);
 
@@ -59,7 +69,14 @@ void GuiChooser::populateWindow()
 	_treeView->Bind(wxEVT_DATAVIEW_ITEM_ACTIVATED,
 		&GuiChooser::onItemActivated, this);
 
-	vbox->Add(_treeView, 1, wxEXPAND | wxBOTTOM, 6);
+	_preview = new wxutil::GuiView(splitter);
+
+	splitter->SplitVertically(_treeView, _preview,
+		static_cast<int>(WINDOW_WIDTH * 0.35f));
+
+	_panedPosition.connect(splitter);
+
+	vbox->Add(splitter, 1, wxEXPAND | wxBOTTOM, 6);
 	vbox->Add(CreateStdDialogButtonSizer(wxOK | wxCANCEL), 0, wxALIGN_RIGHT);
 }
 
@@ -120,6 +137,32 @@ int GuiChooser::ShowModal()
 	return DialogBase::ShowModal();
 }
 
+void GuiChooser::updatePreview()
+{
+	gui::IGuiPtr gui;
+
+	if (!_selection.empty())
+	{
+		try
+		{
+			gui = GlobalGuiManager().getGui(_selection);
+		}
+		catch (const std::exception&)
+		{
+			gui.reset();
+		}
+	}
+
+	_preview->setGui(gui);
+
+	if (gui)
+	{
+		gui->initTime(0);
+	}
+
+	_preview->redraw();
+}
+
 void GuiChooser::onSelectionChanged(wxDataViewEvent&)
 {
 	auto item = _treeView->GetSelection();
@@ -129,6 +172,7 @@ void GuiChooser::onSelectionChanged(wxDataViewEvent&)
 	{
 		_selection.clear();
 		okButton->Enable(false);
+		updatePreview();
 		return;
 	}
 
@@ -138,11 +182,13 @@ void GuiChooser::onSelectionChanged(wxDataViewEvent&)
 	{
 		_selection.clear();
 		okButton->Enable(false);
+		updatePreview();
 		return;
 	}
 
 	_selection = row[_columns.fullName];
 	okButton->Enable(true);
+	updatePreview();
 }
 
 void GuiChooser::onItemActivated(wxDataViewEvent&)

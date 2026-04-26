@@ -241,6 +241,9 @@
     <ClCompile Include="..\..\radiant\ui\common\EntityChooser.cpp">
       <Filter>src\ui\common</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\radiant\ui\common\GuiChooser.cpp">
+      <Filter>src\ui\common</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\radiant\ui\common\MapPreview.cpp">
       <Filter>src\ui\common</Filter>
     </ClCompile>
@@ -796,6 +799,9 @@
       <Filter>src\ui\commandlist</Filter>
     </ClInclude>
     <ClInclude Include="..\..\radiant\ui\common\EntityChooser.h">
+      <Filter>src\ui\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\radiant\ui\common\GuiChooser.h">
       <Filter>src\ui\common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\radiant\ui\common\MapPreview.h">

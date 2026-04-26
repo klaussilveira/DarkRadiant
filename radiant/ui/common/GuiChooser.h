@@ -6,6 +6,8 @@
 #include "wxutil/dataview/TreeModel.h"
 #include "wxutil/dataview/TreeView.h"
 #include "wxutil/dataview/VFSTreePopulator.h"
+#include "wxutil/preview/GuiView.h"
+#include "wxutil/PanedPosition.h"
 #include "wxutil/Icon.h"
 
 namespace ui
@@ -34,6 +36,8 @@ private:
 	Columns _columns;
 	wxutil::TreeModel::Ptr _store;
 	wxutil::TreeView* _treeView;
+	wxutil::GuiView* _preview;
+	wxutil::PanedPosition _panedPosition;
 
 	wxutil::Icon _guiIcon;
 	wxutil::Icon _folderIcon;
@@ -55,6 +59,7 @@ private:
 	void populateWindow();
 	void fillTree();
 	void selectInitialItem();
+	void updatePreview();
 
 	void onSelectionChanged(wxDataViewEvent& ev);
 	void onItemActivated(wxDataViewEvent& ev);
