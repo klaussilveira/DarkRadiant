@@ -6,11 +6,14 @@
 #include "generic/callback.h"
 #include "registry/CachedKey.h"
 
+#include <sigc++/trackable.h>
+
 namespace camera
 {
 
 class Camera :
-	public ICameraView
+	public ICameraView,
+	public sigc::trackable
 {
 	static Vector3 _prevOrigin;
 	static Vector3 _prevAngles;
@@ -82,6 +85,7 @@ private:
 	void doSetOrigin(const Vector3& origin, bool updateModelView);
 	void doSetAngles(const Vector3& angles, bool updateModelView);
 	void updateProjection();
+	void onFieldOfViewChanged();
 };
 
 } // namespace

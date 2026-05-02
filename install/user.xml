@@ -209,6 +209,7 @@
       <invertMouseVerticalAxis value="0" />
       <movementSpeed value="100" />
       <rotationSpeed value="3" />
+      <fieldOfView value="90" />
       <strafespeed value="0.65" />
       <!-- Use the forward strafe factor to invert the direction of the mouse movement -->
       <forwardStrafeFactor value="1" />

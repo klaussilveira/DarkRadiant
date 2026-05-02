@@ -14,6 +14,7 @@ namespace camera
 namespace
 {
 	const std::string RKEY_SELECT_EPSILON = "user/ui/selectionEpsilon";
+	const std::string RKEY_FIELD_OF_VIEW = "user/ui/camera/fieldOfView";
 }
 
 Vector3 Camera::_prevOrigin(0,0,0);
@@ -23,7 +24,7 @@ Camera::Camera(render::IRenderView& view, const std::function<void(bool)>& reque
 	_origin(_prevOrigin), // Use previous origin for camera position
 	_angles(_prevAngles),
 	_requestRedraw(requestRedraw),
-	_fieldOfView(90.0f),
+	_fieldOfView(registry::getValue<float>(RKEY_FIELD_OF_VIEW, 90.0f)),
 	_farClipPlane(32768),
 	_farClipPlaneEnabled(true),
 	_width(0),
@@ -32,7 +33,18 @@ Camera::Camera(render::IRenderView& view, const std::function<void(bool)>& reque
 	_modelview(Matrix4::getIdentity()),
 	_view(view),
     _dragSelectionEnabled(RKEY_CAMERA_DRAG_SELECTION_ENABLED)
-{}
+{
+	GlobalRegistry().signalForKey(RKEY_FIELD_OF_VIEW).connect(
+		sigc::mem_fun(this, &Camera::onFieldOfViewChanged)
+	);
+}
+
+void Camera::onFieldOfViewChanged()
+{
+	_fieldOfView = registry::getValue<float>(RKEY_FIELD_OF_VIEW, 90.0f);
+	updateProjection();
+	_requestRedraw(true);
+}
 
 void Camera::updateModelview()
 {

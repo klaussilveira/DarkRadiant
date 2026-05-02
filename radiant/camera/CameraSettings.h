@@ -35,6 +35,7 @@ namespace
     const std::string RKEY_CAMERA_FONT_STYLE = RKEY_CAMERA_ROOT + "/fontStyle";
     const std::string RKEY_CAMERA_GRID_ENABLED = RKEY_CAMERA_ROOT + "/gridEnabled";
     const std::string RKEY_CAMERA_GRID_SPACING = RKEY_CAMERA_ROOT + "/gridSpacing";
+    const std::string RKEY_CAMERA_FIELD_OF_VIEW = RKEY_CAMERA_ROOT + "/fieldOfView";
 }
 
 inline float calculateFarPlaneDistance(int cubicScale)
