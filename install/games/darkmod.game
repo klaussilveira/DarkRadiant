@@ -227,6 +227,7 @@
     <property match="fx" category="Basic" type="fx" />
     <property match="fx_.+" category="Basic" type="fx" />
 		<property match="snd_.*" category="Sound" type="sound" hidden="1" />
+		<property match="efx_preset" category="Sound" type="efxpreset" />
 		<property match="s_mindistance" category="Sound" type="text" />
 		<property match="s_maxdistance" category="Sound" type="text" />
 		<property match="s_looping" category="Sound" type="bool" />

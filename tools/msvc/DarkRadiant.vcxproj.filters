@@ -706,6 +706,9 @@
     <ClCompile Include="..\..\radiant\ui\einspector\FxPropertyEditor.cpp">
       <Filter>src\ui\einspector</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\radiant\ui\einspector\EfxPresetPropertyEditor.cpp">
+      <Filter>src\ui\einspector</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\radiant\ui\einspector\EntityInspectorModule.cpp">
       <Filter>src\ui\einspector</Filter>
     </ClCompile>
@@ -1432,6 +1435,9 @@
       <Filter>src\ui\fx</Filter>
     </ClInclude>
     <ClInclude Include="..\..\radiant\ui\einspector\FxPropertyEditor.h">
+      <Filter>src\ui\einspector</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\radiant\ui\einspector\EfxPresetPropertyEditor.h">
       <Filter>src\ui\einspector</Filter>
     </ClInclude>
     <ClInclude Include="..\..\radiant\ui\console\ConsoleControl.h">

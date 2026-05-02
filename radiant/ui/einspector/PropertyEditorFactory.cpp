@@ -15,6 +15,7 @@
 #include "FxPropertyEditor.h"
 #include "GuiPropertyEditor.h"
 #include "InheritPropertyEditor.h"
+#include "EfxPresetPropertyEditor.h"
 
 #include <regex>
 
@@ -53,6 +54,7 @@ void PropertyEditorFactory::registerBuiltinTypes()
     _peMap["angle"] = AnglePropertyEditor::CreateNew;
     _peMap["fx"] = FxPropertyEditor::CreateNew;
     _peMap["gui"] = GuiPropertyEditor::CreateNew;
+    _peMap["efxpreset"] = EfxPresetPropertyEditor::CreateNew;
 
     _dialogs["skin"] = []() { return std::make_shared<SkinChooserDialogWrapper>(); };
 }
