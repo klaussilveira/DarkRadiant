@@ -1,7 +1,6 @@
 #pragma once
 
 #include <map>
-#include <wx/bookctrl.h>
 #include "iradiant.h"
 #include "icommandsystem.h"
 
@@ -16,7 +15,7 @@ namespace ui
 /// Dialog for editing user preferences
 class PrefDialog: public wxutil::DialogBase
 {
-    wxBookCtrlBase* _notebook = nullptr;
+    wxTreebook* _notebook = nullptr;
 
     // Each notebook page is created and maintained by a PrefPage class
     // Map the page path to its widget

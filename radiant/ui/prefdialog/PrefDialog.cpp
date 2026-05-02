@@ -9,7 +9,7 @@
 #include "wxutil/dialog/DialogBase.h"
 
 #include <wx/sizer.h>
-#include <wx/listbook.h>
+#include <wx/treebook.h>
 #include <wx/treectrl.h>
 #include "string/split.h"
 #include "string/join.h"
@@ -18,15 +18,14 @@
 namespace ui
 {
 
-using NotebookType = wxListbook;
-
 PrefDialog::PrefDialog(wxWindow* parent)
 : DialogBase(_("DarkRadiant Preferences"), parent)
 {
     wxBoxSizer* mainVbox = new wxBoxSizer(wxVERTICAL);
 
     // Notebook widget (shows tree of pages and the space for each page to be shown)
-    _notebook = new NotebookType(this, wxID_ANY);
+    _notebook = new wxTreebook(this, wxID_ANY);
+    _notebook->GetTreeCtrl()->SetMinClientSize(wxSize(200, -1));
     mainVbox->Add(_notebook, 1, wxEXPAND | wxTOP | wxLEFT | wxRIGHT, 12);
 
     // Button box
