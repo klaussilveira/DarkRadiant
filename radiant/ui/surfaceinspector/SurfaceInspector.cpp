@@ -496,7 +496,7 @@ SurfaceInspector::createManipulatorRow(const std::string& label, wxutil::FormLay
 
 	// Create the entry field
 	manipRow.value = new wxTextCtrl(this, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
-	manipRow.value->SetMinSize(PixelSize(50, -1));
+	manipRow.value->SetMinSize(PixelSize(75, -1));
 	manipRow.value->Bind(wxEVT_TEXT_ENTER, &SurfaceInspector::onValueEntryActivate, this);
 
     // Create the nudge buttons
@@ -512,7 +512,7 @@ SurfaceInspector::createManipulatorRow(const std::string& label, wxutil::FormLay
 
 	// Create the entry field
 	manipRow.stepEntry = new wxTextCtrl(this, wxID_ANY, "");
-    manipRow.stepEntry->SetMinSize(PixelSize(30, -1));
+    manipRow.stepEntry->SetMinSize(PixelSize(50, -1));
 
 	// Arrange all items in a row
     hbox->Add(manipRow.value, 1, wxALIGN_CENTER_VERTICAL);
