@@ -24,6 +24,7 @@ jobs:
   publish:
     name: Publish nightly
     needs: [linux, windows, appimage, flatpak]
+    if: ${{ always() && needs.linux.result == 'success' && needs.windows.result == 'success' && needs.flatpak.result == 'success' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -42,7 +43,9 @@ jobs:
           zip -r ../darkradiant-nightly-windows-x64.zip .
           cd ..
 
-          cp darkradiant-appimage-x86_64/*.AppImage darkradiant-nightly-x86_64.AppImage
+          if [ -d darkradiant-appimage-x86_64 ]; then
+            cp darkradiant-appimage-x86_64/*.AppImage darkradiant-nightly-x86_64.AppImage
+          fi
 
           cp darkradiant-flatpak-x86_64/darkradiant.flatpak darkradiant-nightly-x86_64.flatpak
 
@@ -54,16 +57,21 @@ jobs:
 
       - name: Create nightly release
         run: |
+          files=(
+            artifacts/darkradiant-nightly-linux-x86_64.tar.gz
+            artifacts/darkradiant-nightly-windows-x64.zip
+            artifacts/darkradiant-nightly-x86_64.flatpak
+          )
+          if [ -f artifacts/darkradiant-nightly-x86_64.AppImage ]; then
+            files+=(artifacts/darkradiant-nightly-x86_64.AppImage)
+          fi
           gh release create nightly \
             --prerelease \
             --title "Nightly Build" \
             --notes "Automated nightly build from \`master\` ($(date -u '+%Y-%m-%d %H:%M UTC')).
 
           **Warning:** These builds are untested and may be unstable." \
-            artifacts/darkradiant-nightly-linux-x86_64.tar.gz \
-            artifacts/darkradiant-nightly-windows-x64.zip \
-            artifacts/darkradiant-nightly-x86_64.AppImage \
-            artifacts/darkradiant-nightly-x86_64.flatpak
+            "${files[@]}"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
