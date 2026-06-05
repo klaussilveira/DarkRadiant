@@ -3,6 +3,7 @@
 #include "iselectable.h"
 #include "iselection.h"
 #include "ishaderclipboard.h"
+#include "registry/registry.h"
 
 #include "testutil/CommandFailureHelper.h"
 #include "testutil/MapOperationMonitor.h"
@@ -143,6 +144,57 @@ TEST_F(ClipboardTest, CopyFaceSelection)
     EXPECT_TRUE(operationMonitor.messageReceived()) << "Command should have sent out an OperationMessage";
 
     // Check the shader clipboard, it should contain the material name
+    EXPECT_EQ(GlobalShaderClipboard().getShaderName(), "textures/common/caulk") << "Shaderclipboard should contain the material name now";
+}
+
+TEST_F(ClipboardTest, CopyShaderToClipboardOnFaceSelectionDisabled)
+{
+    registry::setValue("user/ui/textures/copyShaderToClipboardOnSelect", false);
+
+    // Create a brush and select a single face
+    auto worldspawn = GlobalMapModule().findOrInsertWorldspawn();
+    auto brush = algorithm::createCubicBrush(worldspawn, { 0, 0 ,0 }, "textures/common/caulk");
+
+    render::View view(true);
+    algorithm::constructCameraView(view, brush->worldAABB(), Vector3(0, 0, -1), Vector3(-90, 0, 0));
+
+    auto rectangle = selection::Rectangle::ConstructFromPoint(Vector2(0, 0), Vector2(8.0 / algorithm::DeviceWidth, 8.0 / algorithm::DeviceHeight));
+    ConstructSelectionTest(view, rectangle);
+
+    GlobalShaderClipboard().clear();
+
+    SelectionVolume test(view);
+    GlobalSelectionSystem().selectPoint(test, selection::SelectionSystem::eToggle, true);
+
+    EXPECT_EQ(GlobalSelectionSystem().getSelectedFaceCount(), 1) << "One face should be selected now";
+
+    // The preference is disabled, so selecting a face must not touch the shader clipboard
+    EXPECT_NE(GlobalShaderClipboard().getShaderName(), "textures/common/caulk") << "Shaderclipboard should still be empty";
+}
+
+TEST_F(ClipboardTest, CopyShaderToClipboardOnFaceSelectionEnabled)
+{
+    registry::setValue("user/ui/textures/copyShaderToClipboardOnSelect", true);
+
+    // Create a brush and select a single face
+    auto worldspawn = GlobalMapModule().findOrInsertWorldspawn();
+    auto brush = algorithm::createCubicBrush(worldspawn, { 0, 0 ,0 }, "textures/common/caulk");
+
+    render::View view(true);
+    algorithm::constructCameraView(view, brush->worldAABB(), Vector3(0, 0, -1), Vector3(-90, 0, 0));
+
+    auto rectangle = selection::Rectangle::ConstructFromPoint(Vector2(0, 0), Vector2(8.0 / algorithm::DeviceWidth, 8.0 / algorithm::DeviceHeight));
+    ConstructSelectionTest(view, rectangle);
+
+    GlobalShaderClipboard().clear();
+    EXPECT_NE(GlobalShaderClipboard().getShaderName(), "textures/common/caulk");
+
+    SelectionVolume test(view);
+    GlobalSelectionSystem().selectPoint(test, selection::SelectionSystem::eToggle, true);
+
+    EXPECT_EQ(GlobalSelectionSystem().getSelectedFaceCount(), 1) << "One face should be selected now";
+
+    // Selecting the face should have copied its shader to the clipboard automatically
     EXPECT_EQ(GlobalShaderClipboard().getShaderName(), "textures/common/caulk") << "Shaderclipboard should contain the material name now";
 }
 

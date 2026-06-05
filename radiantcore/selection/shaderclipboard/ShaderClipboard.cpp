@@ -2,16 +2,20 @@
 
 #include "i18n.h"
 #include "imap.h"
+#include "iselection.h"
 #include "iselectiontest.h"
 #include "iscenegraph.h"
 #include "ishaders.h"
 #include "iclipboard.h"
+#include "ipreferencesystem.h"
+#include "registry/registry.h"
 #include "string/trim.h"
 #include "ClosestTexturableFinder.h"
 
 #include "util/ScopedBoolLock.h"
 #include "patch/PatchNode.h"
 #include "brush/BrushNode.h"
+#include "brush/FaceInstance.h"
 #include "module/StaticModule.h"
 #include "../clipboard/Clipboard.h"
 
@@ -21,6 +25,7 @@ namespace selection
 namespace
 {
 	const char* const LAST_USED_MATERIAL_KEY = "LastShaderClipboardMaterial";
+	const char* const RKEY_COPY_SHADER_ON_SELECT = "user/ui/textures/copyShaderToClipboardOnSelect";
 }
 
 ShaderClipboard::ShaderClipboard() :
@@ -199,6 +204,17 @@ void ShaderClipboard::onMapEvent(IMap::MapEvent ev)
 	};
 }
 
+void ShaderClipboard::onSelectionChanged(const ISelectable& selectable)
+{
+	if (_updatesDisabled) return;
+
+	if (FaceInstance::Selection().size() != 1) return;
+
+	if (!registry::getValue<bool>(RKEY_COPY_SHADER_ON_SELECT)) return;
+
+	setSource(FaceInstance::Selection().back()->getFace());
+}
+
 std::string ShaderClipboard::getName() const
 {
 	static std::string _name(MODULE_SHADERCLIPBOARD);
@@ -207,7 +223,7 @@ std::string ShaderClipboard::getName() const
 
 StringSet ShaderClipboard::getDependencies() const
 {
-    static StringSet _dependencies{ MODULE_MAP };
+    static StringSet _dependencies{ MODULE_MAP, MODULE_SELECTIONSYSTEM, MODULE_PREFERENCESYSTEM };
 	return _dependencies;
 }
 
@@ -220,6 +236,12 @@ void ShaderClipboard::initialiseModule(const IApplicationContext& ctx)
 
 	_mapEventConn = GlobalMapModule().signal_mapEvent().connect(
 		sigc::mem_fun(this, &ShaderClipboard::onMapEvent));
+
+	_selectionChangedConn = GlobalSelectionSystem().signal_selectionChanged().connect(
+		sigc::mem_fun(this, &ShaderClipboard::onSelectionChanged));
+
+	GlobalPreferenceSystem().getPage("Textures").appendCheckBox(
+		_("Copy shader to clipboard when selecting a face"), RKEY_COPY_SHADER_ON_SELECT);
 
 	clear();
 
@@ -234,6 +256,7 @@ void ShaderClipboard::shutdownModule()
 	_postRedoConn.disconnect();
 	_mapEventConn.disconnect();
     _clipboardContentsChangedConn.disconnect();
+	_selectionChangedConn.disconnect();
 }
 
 void ShaderClipboard::postModuleInitialisation()

@@ -7,6 +7,8 @@
 #include <sigc++/trackable.h>
 #include <sigc++/connection.h>
 
+class ISelectable;
+
 namespace selection
 {
 
@@ -25,6 +27,7 @@ private:
 	sigc::connection _postRedoConn;
 	sigc::connection _mapEventConn;
 	sigc::connection _clipboardContentsChangedConn;
+	sigc::connection _selectionChangedConn;
 
 public:
 	ShaderClipboard();
@@ -78,6 +81,8 @@ private:
 	void onUndoRedoOperation();
 
 	void onMapEvent(IMap::MapEvent ev);
+
+	void onSelectionChanged(const ISelectable& selectable);
 
 	/** greebo: Retrieves the best texturable object from the
 	 * 			given SelectionTest.
