@@ -1101,7 +1101,10 @@ void Map::openMapCmd(const cmd::ArgumentList& args)
         // in the active project as well as files in registered PK4)
         if (GlobalFileSystem().openTextFile(candidate))
         {
-            mapToLoad = candidate;
+            auto vfsRoot = GlobalFileSystem().findFile(candidate);
+
+            mapToLoad = !vfsRoot.empty() ?
+                os::standardPathWithSlash(vfsRoot) + candidate : candidate;
         }
         else
         {
