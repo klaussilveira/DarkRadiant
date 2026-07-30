@@ -5,7 +5,10 @@
 #include <sigc++/connection.h>
 
 #include "wxutil/DockablePanel.h"
+#include "wxutil/dataview/TreeModelFilter.h"
 #include "wxutil/event/SingleIdleCallback.h"
+
+#include <wx/timer.h>
 
 namespace wxutil
 {
@@ -13,6 +16,7 @@ namespace wxutil
 }
 
 class wxCheckBox;
+class wxTextCtrl;
 
 namespace ui
 {
@@ -29,6 +33,13 @@ private:
 	bool _callbackActive;
 
 	wxutil::TreeView* _treeView;
+
+	wxutil::TreeModelFilter::Ptr _treeModelFilter;
+	std::vector<wxutil::TreeModel::Column> _filterColumns;
+	wxString _filterText;
+
+	wxTextCtrl* _filterBox;
+	wxTimer _filterDebounceTimer;
 
 	wxCheckBox* _focusSelected;
 	wxCheckBox* _visibleOnly;
@@ -79,6 +90,14 @@ private:
 	// Called when the user is updating the treeview selection
 	void onSelection(wxDataViewEvent& ev);
 	void onVisibleOnlyToggle(wxCommandEvent& ev);
+	void onFilterTextChanged(wxCommandEvent& ev);
+	void onFilterDebounceTimer(wxTimerEvent& ev);
+	void onFilterBoxKey(wxKeyEvent& ev);
+	void onTreeViewChar(wxKeyEvent& ev);
+
+	void setupTreeModelFilter();
+	void applyFilter();
+	bool treeModelRowIsVisible(wxutil::TreeModel::Row& row);
 
 	void expandRootNode();
 };
