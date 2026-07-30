@@ -31,6 +31,7 @@ private:
 	GraphTreeModel _treeModel;
 
 	bool _callbackActive;
+	bool _refreshTreeModelOnIdle;
 
 	wxutil::TreeView* _treeView;
 
@@ -70,6 +71,9 @@ private:
 	/** greebo: Updates the treeview contents
 	 */
 	void updateSelectionStatus();
+
+    // Request a full treestore refresh during the next idle period
+    void scheduleTreeModelRefresh();
 
     // Repopulate the entire treestore from the scenegraph
     void refreshTreeModel();

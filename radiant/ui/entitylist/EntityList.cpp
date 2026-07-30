@@ -33,6 +33,7 @@ namespace
 EntityList::EntityList(wxWindow* parent) :
     DockablePanel(parent),
 	_callbackActive(false),
+	_refreshTreeModelOnIdle(false),
 	_filterDebounceTimer(this)
 {
 	populateWindow();
@@ -62,9 +63,8 @@ void EntityList::onPanelActivated()
 {
     connectListeners();
 
-    // Repopulate the model before showing the dialog
-    util::ScopedBoolLock lock(_callbackActive);
-    refreshTreeModel();
+    // Avoid repopulatig inside the event handler
+    scheduleTreeModelRefresh();
 }
 
 void EntityList::onPanelDeactivated()
@@ -78,6 +78,7 @@ void EntityList::onPanelDeactivated()
     _treeView->UnselectAll();
 
     cancelCallbacks();
+    _refreshTreeModelOnIdle = false;
     _itemToScrollToWhenIdle.Unset();
     _nodesToUpdate.clear();
 }
@@ -174,6 +175,12 @@ void EntityList::updateSelectionStatus()
 		std::placeholders::_1, std::placeholders::_2));
 }
 
+void EntityList::scheduleTreeModelRefresh()
+{
+    _refreshTreeModelOnIdle = true;
+    requestIdleCallback();
+}
+
 void EntityList::refreshTreeModel()
 {
     // Refresh the whole tree
@@ -216,7 +223,7 @@ void EntityList::onFilterConfigChanged()
 	{
 		// When filters are changed possibly any node could have changed 
         // its visibility, so refresh the whole tree
-        refreshTreeModel();
+        scheduleTreeModelRefresh();
 	}
 }
 
@@ -234,7 +241,7 @@ void EntityList::onVisibleOnlyToggle(wxCommandEvent& ev)
     _treeModel.setConsiderVisibleNodesOnly(_visibleOnly->GetValue());
 
 	// Update the whole tree
-	refreshTreeModel();
+	scheduleTreeModelRefresh();
 }
 
 void EntityList::setupTreeModelFilter()
@@ -331,6 +338,21 @@ void EntityList::expandRootNode()
 
 void EntityList::onIdle()
 {
+    if (_refreshTreeModelOnIdle)
+    {
+        if (wxWindow::GetCapture() != nullptr)
+        {
+            requestIdleCallback();
+            return;
+        }
+
+        _refreshTreeModelOnIdle = false;
+
+        util::ScopedBoolLock lock(_callbackActive);
+        refreshTreeModel();
+        return;
+    }
+
     if (!_nodesToUpdate.empty())
     {
         for (const auto& weakNode : _nodesToUpdate)
