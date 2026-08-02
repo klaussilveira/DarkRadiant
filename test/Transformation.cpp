@@ -9,6 +9,7 @@
 #include "scene/EntityNode.h"
 #include "itransformable.h"
 #include "icommandsystem.h"
+#include "registry/registry.h"
 #include "scenelib.h"
 #include "selection/SingleItemSelector.h"
 #include "selection/SelectedPlaneSet.h"
@@ -103,6 +104,52 @@ TEST_F(TransformationTest, RotateSelectionBackAndForthKeepsPosition)
     EXPECT_TRUE(math::isNear(originalBounds.getOrigin(), finalBounds.getOrigin(), 0.01))
         << "Selection drifted to " << finalBounds.getOrigin() << " after rotating back and forth, "
         << "expected " << originalBounds.getOrigin();
+}
+
+// #6729: Cloned/copied object rotates around some arbitrary origin after being moved
+TEST_F(TransformationTest, RotationPivotFollowsMovedSelection)
+{
+    registry::setValue("user/ui/offsetClonedObjects", 0);
+
+    auto worldspawn = GlobalMapModule().findOrInsertWorldspawn();
+    auto brush = algorithm::createCuboidBrush(worldspawn, AABB(Vector3(64, 0, 0), Vector3(32, 8, 8)));
+    Node_setSelected(brush, true);
+
+    GlobalCommandSystem().executeCommand("CloneSelection");
+    ASSERT_EQ(GlobalSelectionSystem().countSelected(), 1);
+
+    auto clone = GlobalSelectionSystem().ultimateSelected();
+
+    GlobalCommandSystem().executeCommand("RotateSelectedEulerXYZ", cmd::Argument(Vector3(0, 0, 90)));
+    GlobalCommandSystem().executeCommand("MoveSelection", cmd::Argument(Vector3(256, 128, 0)));
+
+    Vector3 centerBeforeRotation = clone->worldAABB().getOrigin();
+    GlobalCommandSystem().executeCommand("RotateSelectedEulerXYZ", cmd::Argument(Vector3(0, 0, 90)));
+
+    EXPECT_TRUE(math::isNear(clone->worldAABB().getOrigin(), centerBeforeRotation, 0.01))
+        << "Rotation used a stale pivot, the clone moved from " << centerBeforeRotation
+        << " to " << clone->worldAABB().getOrigin();
+}
+
+// #6729: Object rotates around some arbitrary origin after switching off "rotate objects independently"
+TEST_F(TransformationTest, RotationPivotIsUpdatedAfterFreeObjectRotation)
+{
+    auto entityNode = algorithm::createEntityByClassName("func_static");
+    GlobalMapModule().getRoot()->addChildNode(entityNode);
+    algorithm::createCuboidBrush(entityNode, AABB(Vector3(128, 0, 0), Vector3(8, 8, 8)));
+    Node_setSelected(entityNode, true);
+
+    registry::setValue("user/ui/rotateObjectsIndependently", true);
+    GlobalCommandSystem().executeCommand("RotateSelectedEulerXYZ", cmd::Argument(Vector3(0, 0, 90)));
+
+    registry::setValue("user/ui/rotateObjectsIndependently", false);
+
+    Vector3 centerBeforeRotation = entityNode->worldAABB().getOrigin();
+    GlobalCommandSystem().executeCommand("RotateSelectedEulerXYZ", cmd::Argument(Vector3(0, 0, 90)));
+
+    EXPECT_TRUE(math::isNear(entityNode->worldAABB().getOrigin(), centerBeforeRotation, 0.01))
+        << "Rotation used a stale pivot, the entity moved from " << centerBeforeRotation
+        << " to " << entityNode->worldAABB().getOrigin();
 }
 
 scene::INodePtr createAndSelectLight()

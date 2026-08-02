@@ -204,9 +204,9 @@ void RadiantSelectionSystem::pivotChanged()
     SceneChangeNotify();
 }
 
-void RadiantSelectionSystem::lockPivot()
+void RadiantSelectionSystem::preservePivotPosition()
 {
-	_pivot.setUserLocked(true);
+	_pivot.setNeedsRecalculation(false);
 }
 
 void RadiantSelectionSystem::pivotChangedSelection(const ISelectable& selectable) {
