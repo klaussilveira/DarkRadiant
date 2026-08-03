@@ -81,7 +81,7 @@ private:
 	static PrefabSelectorPtr& InstancePtr();
 
 	// Helper functions to configure GUI components
-	void setupTreeView(wxWindow* parent);
+	wxWindow* setupTreeView(wxWindow* parent);
     void setupPathSelector(wxSizer* parentSizer);
 
 	// Populate the tree view with prefabs
