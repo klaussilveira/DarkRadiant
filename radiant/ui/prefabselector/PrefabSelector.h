@@ -18,6 +18,8 @@ class wxCheckBox;
 class wxSizer;
 class wxRadioButton;
 
+namespace wxutil { class ResourceTreeViewToolbar; }
+
 namespace ui
 {
 
@@ -46,6 +48,7 @@ private:
 
 	// Main tree view with the folder hierarchy
 	wxutil::FileSystemView* _treeView = nullptr;
+	wxutil::ResourceTreeViewToolbar* _treeViewToolbar = nullptr;
 
 	// The window position tracker
 	wxutil::WindowPosition _position;

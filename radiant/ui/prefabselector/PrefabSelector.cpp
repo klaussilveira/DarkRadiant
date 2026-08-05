@@ -236,6 +236,8 @@ int PrefabSelector::ShowModal()
 	// Populate the tree
 	populatePrefabs();
 
+	_treeViewToolbar->FocusFilterEntry();
+
 	// Enter the main loop
 	int returnCode = DialogBase::ShowModal();
 
@@ -331,10 +333,10 @@ wxWindow* PrefabSelector::setupTreeView(wxWindow* parent)
     _treeView->Bind(wxutil::EV_FSVIEW_SELECTION_CHANGED, &PrefabSelector::onSelectionChanged, this);
     _treeView->signal_TreePopulated().connect(sigc::mem_fun(this, &PrefabSelector::onFileViewTreePopulated));
 
-    auto* toolbar = new wxutil::ResourceTreeViewToolbar(panel, _treeView);
-    toolbar->EnableFavouriteManagement(false);
+    _treeViewToolbar = new wxutil::ResourceTreeViewToolbar(panel, _treeView);
+    _treeViewToolbar->EnableFavouriteManagement(false);
 
-    panel->GetSizer()->Add(toolbar, 0, wxEXPAND | wxBOTTOM, 6);
+    panel->GetSizer()->Add(_treeViewToolbar, 0, wxEXPAND | wxBOTTOM, 6);
     panel->GetSizer()->Add(_treeView, 1, wxEXPAND);
 
     // Get the extensions from all possible patterns (e.g. *.pfb or *.pfbx)

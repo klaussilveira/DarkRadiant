@@ -128,6 +128,12 @@ void ResourceTreeViewToolbar::ClearFilter()
     _signalFilterTextChanged.emit("");
 }
 
+void ResourceTreeViewToolbar::FocusFilterEntry()
+{
+    _filterEntry->SetFocus();
+    _filterEntry->SelectAll();
+}
+
 std::string ResourceTreeViewToolbar::GetFilterText() const
 {
     return _filterEntry->GetValue().ToStdString();

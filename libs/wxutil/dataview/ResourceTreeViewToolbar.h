@@ -51,6 +51,8 @@ public:
 
     void ClearFilter();
 
+    void FocusFilterEntry();
+
     // Returns the current filter text
     std::string GetFilterText() const;
 
