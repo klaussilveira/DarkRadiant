@@ -152,6 +152,291 @@ TEST_F(TransformationTest, RotationPivotIsUpdatedAfterFreeObjectRotation)
         << " to " << entityNode->worldAABB().getOrigin();
 }
 
+namespace
+{
+
+constexpr double DevicePointOnManipulatorSphere = 0.1;
+
+Vector3 getSelectionBoundsCenter()
+{
+    AABB bounds;
+
+    GlobalSelectionSystem().foreachSelected([&](const scene::INodePtr& node)
+    {
+        bounds.includeAABB(node->worldAABB());
+    });
+
+    return bounds.getOrigin();
+}
+
+void selectThreeSpreadOutBrushes()
+{
+    auto worldspawn = GlobalMapModule().findOrInsertWorldspawn();
+
+    Node_setSelected(algorithm::createCuboidBrush(worldspawn, AABB(Vector3(-64, 96, 0), Vector3(8, 8, 8))), true);
+    Node_setSelected(algorithm::createCuboidBrush(worldspawn, AABB(Vector3(0, 0, 0), Vector3(8, 8, 8))), true);
+    Node_setSelected(algorithm::createCuboidBrush(worldspawn, AABB(Vector3(96, 96, 0), Vector3(8, 8, 8))), true);
+}
+
+// Rotates the current selection using the rotate manipulator, as if the user
+// dragged the mouse from the pivot to the given device point
+void rotateUsingManipulator(const Vector2& devicePoint)
+{
+    GlobalSelectionSystem().setActiveManipulator(selection::IManipulator::Rotate);
+
+    auto manipulator = GlobalSelectionSystem().getActiveManipulator();
+    auto pivot2World = GlobalSelectionSystem().getPivot2World();
+
+    render::View view(false);
+    algorithm::constructCenteredOrthoview(view, pivot2World.translation());
+
+    manipulator->setSelected(false);
+
+    GlobalSelectionSystem().onManipulationStart();
+    manipulator->getActiveComponent()->beginTransformation(pivot2World, view, Vector2(0, 0));
+    manipulator->getActiveComponent()->transform(pivot2World, view, devicePoint, 0);
+    GlobalSelectionSystem().onManipulationChanged();
+    GlobalSelectionSystem().onManipulationEnd();
+}
+
+// Grabs the pivot point of the rotate manipulator and drags it to the given device point
+void dragPivotUsingManipulator(const Vector2& devicePoint, bool cancel)
+{
+    GlobalSelectionSystem().setActiveManipulator(selection::IManipulator::Rotate);
+
+    auto manipulator = GlobalSelectionSystem().getActiveManipulator();
+    auto pivot2World = GlobalSelectionSystem().getPivot2World();
+
+    render::View view(false);
+    algorithm::constructCenteredOrthoview(view, pivot2World.translation());
+    auto test = algorithm::constructOrthoviewSelectionTest(view);
+
+    manipulator->setSelected(false);
+    manipulator->testSelect(test, pivot2World);
+    ASSERT_TRUE(manipulator->isSelected()) << "Failed to grab the pivot point of the rotate manipulator";
+
+    GlobalSelectionSystem().onManipulationStart();
+    manipulator->getActiveComponent()->beginTransformation(pivot2World, view, Vector2(0, 0));
+    manipulator->getActiveComponent()->transform(pivot2World, view, devicePoint, 0);
+    GlobalSelectionSystem().onManipulationChanged();
+
+    if (cancel)
+    {
+        GlobalSelectionSystem().onManipulationCancelled();
+    }
+    else
+    {
+        GlobalSelectionSystem().onManipulationEnd();
+    }
+}
+
+}
+
+// #5096: The anchored pivot must not be dropped by bounds changes elsewhere in the scene
+TEST_F(TransformationTest, RotationPivotSurvivesUnrelatedSceneChanges)
+{
+    selectThreeSpreadOutBrushes();
+
+    auto originalCenter = getSelectionBoundsCenter();
+
+    GlobalCommandSystem().executeCommand("RotateSelectedEulerXYZ", cmd::Argument(Vector3(0, 0, 15)));
+
+    // An unrelated brush appears in the scene, marking the pivot dirty
+    algorithm::createCuboidBrush(GlobalMapModule().findOrInsertWorldspawn(),
+        AABB(Vector3(512, 512, 0), Vector3(8, 8, 8)));
+
+    GlobalCommandSystem().executeCommand("RotateSelectedEulerXYZ", cmd::Argument(Vector3(0, 0, -15)));
+
+    EXPECT_TRUE(math::isNear(getSelectionBoundsCenter(), originalCenter, 0.01))
+        << "Selection drifted to " << getSelectionBoundsCenter()
+        << " after an unrelated scene change discarded the rotation pivot, expected " << originalCenter;
+}
+
+// #5096: Rotating with the mouse must keep the pivot at the point we rotated about
+TEST_F(TransformationTest, ManipulatorRotationKeepsPivotInPlace)
+{
+    selectThreeSpreadOutBrushes();
+
+    GlobalSelectionSystem().setActiveManipulator(selection::IManipulator::Rotate);
+
+    auto pivotBeforeRotation = GlobalSelectionSystem().getPivot2World().translation();
+    ASSERT_TRUE(math::isNear(pivotBeforeRotation, getSelectionBoundsCenter(), 0.01));
+
+    rotateUsingManipulator(Vector2(DevicePointOnManipulatorSphere, DevicePointOnManipulatorSphere));
+
+    ASSERT_FALSE(math::isNear(getSelectionBoundsCenter(), pivotBeforeRotation, 0.01))
+        << "Test setup problem: the bounds center is expected to shift when the selection is rotated";
+
+    EXPECT_TRUE(math::isNear(GlobalSelectionSystem().getPivot2World().translation(), pivotBeforeRotation, 0.01))
+        << "Pivot jumped from " << pivotBeforeRotation << " to the new bounds center "
+        << GlobalSelectionSystem().getPivot2World().translation() << " after a mouse rotation";
+}
+
+// #6729: After a mouse rotation the pivot must still follow the selection when it is moved
+TEST_F(TransformationTest, PivotFollowsSelectionMovedAfterManipulatorRotation)
+{
+    selectThreeSpreadOutBrushes();
+
+    rotateUsingManipulator(Vector2(DevicePointOnManipulatorSphere, DevicePointOnManipulatorSphere));
+
+    auto pivotAfterRotation = GlobalSelectionSystem().getPivot2World().translation();
+
+    Vector3 translation(256, 128, 64);
+    GlobalCommandSystem().executeCommand("MoveSelection", cmd::Argument(translation));
+
+    EXPECT_TRUE(math::isNear(GlobalSelectionSystem().getPivot2World().translation(),
+        pivotAfterRotation + translation, 0.01))
+        << "Pivot is at " << GlobalSelectionSystem().getPivot2World().translation()
+        << " after the selection moved, expected " << pivotAfterRotation + translation;
+}
+
+// #6729: A manually placed pivot must not stay behind when the selection is moved
+TEST_F(TransformationTest, UserPlacedPivotFollowsMovedSelection)
+{
+    auto worldspawn = GlobalMapModule().findOrInsertWorldspawn();
+    auto brush = algorithm::createCuboidBrush(worldspawn, AABB(Vector3(0, 0, 0), Vector3(64, 64, 64)));
+    Node_setSelected(brush, true);
+
+    dragPivotUsingManipulator(Vector2(0.25, 0.25), false);
+
+    auto userPivot = GlobalSelectionSystem().getPivot2World().translation();
+    ASSERT_FALSE(math::isNear(userPivot, brush->worldAABB().getOrigin(), 0.01))
+        << "Test setup problem: the pivot was expected to be dragged away from the brush center";
+
+    Vector3 translation(128, 256, 0);
+    GlobalCommandSystem().executeCommand("MoveSelection", cmd::Argument(translation));
+
+    EXPECT_TRUE(math::isNear(GlobalSelectionSystem().getPivot2World().translation(),
+        userPivot + translation, 0.01))
+        << "The manually placed pivot stayed at " << GlobalSelectionSystem().getPivot2World().translation()
+        << " instead of following the selection to " << userPivot + translation;
+}
+
+TEST_F(TransformationTest, UserPlacedPivotIsKeptWhenRotating)
+{
+    auto worldspawn = GlobalMapModule().findOrInsertWorldspawn();
+    auto brush = algorithm::createCuboidBrush(worldspawn, AABB(Vector3(0, 0, 0), Vector3(64, 64, 64)));
+    Node_setSelected(brush, true);
+
+    dragPivotUsingManipulator(Vector2(0.25, 0.25), false);
+
+    auto userPivot = GlobalSelectionSystem().getPivot2World().translation();
+
+    GlobalCommandSystem().executeCommand("RotateSelectedEulerXYZ", cmd::Argument(Vector3(0, 0, 90)));
+
+    EXPECT_TRUE(math::isNear(GlobalSelectionSystem().getPivot2World().translation(), userPivot, 0.01))
+        << "The manually placed pivot should not move when the selection is rotated about it";
+}
+
+TEST_F(TransformationTest, UserPlacedPivotIsResetOnSelectionChange)
+{
+    auto worldspawn = GlobalMapModule().findOrInsertWorldspawn();
+    auto brush = algorithm::createCuboidBrush(worldspawn, AABB(Vector3(0, 0, 0), Vector3(64, 64, 64)));
+    Node_setSelected(brush, true);
+
+    dragPivotUsingManipulator(Vector2(0.25, 0.25), false);
+
+    ASSERT_FALSE(math::isNear(GlobalSelectionSystem().getPivot2World().translation(),
+        brush->worldAABB().getOrigin(), 0.01));
+
+    Node_setSelected(brush, false);
+    Node_setSelected(brush, true);
+
+    EXPECT_TRUE(math::isNear(GlobalSelectionSystem().getPivot2World().translation(),
+        brush->worldAABB().getOrigin(), 0.01))
+        << "Re-selecting the brush should have re-centered the pivot";
+}
+
+TEST_F(TransformationTest, CancellingPivotPlacementRestoresPivot)
+{
+    auto worldspawn = GlobalMapModule().findOrInsertWorldspawn();
+    auto brush = algorithm::createCuboidBrush(worldspawn, AABB(Vector3(0, 0, 0), Vector3(64, 64, 64)));
+    Node_setSelected(brush, true);
+
+    dragPivotUsingManipulator(Vector2(0.25, 0.25), true);
+
+    EXPECT_TRUE(math::isNear(GlobalSelectionSystem().getPivot2World().translation(),
+        brush->worldAABB().getOrigin(), 0.01))
+        << "Cancelling the pivot placement should have restored the pivot to the brush center";
+}
+
+TEST_F(TransformationTest, RotationPivotIsResetAfterUndo)
+{
+    selectThreeSpreadOutBrushes();
+
+    auto originalCenter = getSelectionBoundsCenter();
+
+    GlobalCommandSystem().executeCommand("RotateSelectedEulerXYZ", cmd::Argument(Vector3(0, 0, 45)));
+
+    ASSERT_FALSE(math::isNear(getSelectionBoundsCenter(), originalCenter, 0.01))
+        << "Test setup problem: the bounds center is expected to shift when the selection is rotated";
+
+    GlobalCommandSystem().executeCommand("Undo");
+
+    ASSERT_TRUE(math::isNear(getSelectionBoundsCenter(), originalCenter, 0.01))
+        << "Undo did not restore the selection";
+
+    EXPECT_TRUE(math::isNear(GlobalSelectionSystem().getPivot2World().translation(), originalCenter, 0.01))
+        << "Pivot is at " << GlobalSelectionSystem().getPivot2World().translation()
+        << " after undoing the rotation, expected " << originalCenter;
+}
+
+// #6729: The reported case, an entity whose bounding box is not centered on its origin
+TEST_F(TransformationTest, RotatingMovedEntityKeepsItInPlace)
+{
+    auto entityNode = algorithm::createEntityByClassName("offset_box_entity");
+    GlobalMapModule().getRoot()->addChildNode(entityNode);
+    Node_setSelected(entityNode, true);
+
+    GlobalCommandSystem().executeCommand("RotateSelectedEulerXYZ", cmd::Argument(Vector3(0, 0, 90)));
+    GlobalCommandSystem().executeCommand("MoveSelection", cmd::Argument(Vector3(512, -256, 0)));
+
+    auto positionBeforeRotation = entityNode->worldAABB().getOrigin();
+    GlobalCommandSystem().executeCommand("RotateSelectedEulerXYZ", cmd::Argument(Vector3(0, 0, 90)));
+
+    EXPECT_TRUE(math::isNear(entityNode->worldAABB().getOrigin(), positionBeforeRotation, 0.01))
+        << "The entity was expected to rotate on the spot, but it moved from "
+        << positionBeforeRotation << " to " << entityNode->worldAABB().getOrigin();
+}
+
+// #6729: Same as above, but the entity is moved with the drag manipulator
+TEST_F(TransformationTest, RotatingDragMovedEntityKeepsItInPlace)
+{
+    auto entityNode = algorithm::createEntityByClassName("offset_box_entity");
+    GlobalMapModule().getRoot()->addChildNode(entityNode);
+    Node_setSelected(entityNode, true);
+
+    GlobalCommandSystem().executeCommand("RotateSelectedEulerXYZ", cmd::Argument(Vector3(0, 0, 90)));
+
+    GlobalSelectionSystem().setSelectionMode(selection::SelectionMode::Entity);
+    GlobalSelectionSystem().setActiveManipulator(selection::IManipulator::Drag);
+
+    render::View view(false);
+    algorithm::constructCenteredOrthoview(view, entityNode->worldAABB().getOrigin());
+    auto test = algorithm::constructOrthoviewSelectionTest(view);
+
+    auto manipulator = GlobalSelectionSystem().getActiveManipulator();
+    auto pivot2World = GlobalSelectionSystem().getPivot2World();
+
+    manipulator->testSelect(test, pivot2World);
+    ASSERT_TRUE(manipulator->isSelected());
+
+    GlobalSelectionSystem().onManipulationStart();
+    manipulator->getActiveComponent()->beginTransformation(pivot2World, view, Vector2(0, 0));
+    manipulator->getActiveComponent()->transform(pivot2World, view, Vector2(0.5, 0.5), 0);
+    GlobalSelectionSystem().onManipulationChanged();
+    GlobalSelectionSystem().onManipulationEnd();
+
+    auto positionBeforeRotation = entityNode->worldAABB().getOrigin();
+    ASSERT_FALSE(math::isNear(positionBeforeRotation, Vector3(0, 0, 34), 0.01)) << "The entity should have been dragged";
+
+    GlobalCommandSystem().executeCommand("RotateSelectedEulerXYZ", cmd::Argument(Vector3(0, 0, 90)));
+
+    EXPECT_TRUE(math::isNear(entityNode->worldAABB().getOrigin(), positionBeforeRotation, 0.01))
+        << "The entity was expected to rotate on the spot, but it moved from "
+        << positionBeforeRotation << " to " << entityNode->worldAABB().getOrigin();
+}
+
 scene::INodePtr createAndSelectLight()
 {
     // Create an entity which has editor_mins/editor_maxs defined (GenericEntity)

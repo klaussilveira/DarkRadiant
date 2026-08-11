@@ -5,6 +5,7 @@
 #include "iselectiontest.h"
 #include "icommandsystem.h"
 #include "imap.h"
+#include "iundo.h"
 
 #include "selectionlib.h"
 #include "SelectedNodeList.h"
@@ -69,6 +70,8 @@ private:
 
     bool _selectionFocusActive;
     std::set<scene::INodePtr> _selectionFocusPool;
+
+    sigc::connection _undoEventConnection;
 
 public:
 	RadiantSelectionSystem();
@@ -220,6 +223,7 @@ private:
 	void deselectCmd(const cmd::ArgumentList& args);
 
 	void onMapEvent(IMap::MapEvent ev);
+	void onUndoEvent(IUndoSystem::EventType type, const std::string& operationName);
 };
 
 }

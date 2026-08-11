@@ -78,11 +78,7 @@ void rotateSelected(const Quaternion& rotation)
 
 	GlobalSceneGraph().foreachNode(scene::freezeTransformableNode);
 
-	if (GlobalSelectionSystem().getSelectionMode() == SelectionMode::Component ||
-		!registry::getValue<bool>(RKEY_FREE_OBJECT_ROTATION))
-	{
-		GlobalSelectionSystem().preservePivotPosition();
-	}
+	GlobalSelectionSystem().preservePivotPosition();
 }
 
 // greebo: see header for documentation
