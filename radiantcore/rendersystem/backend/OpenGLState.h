@@ -214,6 +214,10 @@ public:
     // in which case only the _colour member will be used.
     bool ignoreStageColour;
 
+    // Whether to ignore the texture matrix defined by the associated shader stages
+    // in which case the identity matrix will be used.
+    bool ignoreStageTextureTransform;
+
     /// Default constructor
     OpenGLState()
     : _colour(Colour4::WHITE()),
@@ -237,7 +241,8 @@ public:
       m_linestipple_pattern(0xAAAA),
       glProgram(nullptr),
       cubeMapMode(IShaderLayer::CUBE_MAP_NONE),
-      ignoreStageColour(false)
+      ignoreStageColour(false),
+      ignoreStageTextureTransform(false)
     { }
 
     // Determines the difference between this state and the target (current) state.
@@ -508,7 +513,7 @@ private:
         glActiveTexture(textureUnit);
         glClientActiveTexture(textureUnit);
 
-        if (!stage)
+        if (!stage || ignoreStageTextureTransform)
         {
             glLoadIdentity();
             return;

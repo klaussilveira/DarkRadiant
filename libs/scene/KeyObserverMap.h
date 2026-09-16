@@ -141,15 +141,12 @@ public:
             conn = _keySignals[key].connect(func);
 
             // Create and attach an internal KeyObserver to respond to keyvalue
-            // changes and emit the associated signal. Note that we don't just wrap
-            // the slot in a delegate to invoke it directly — we need the
-            // intervening sigc::signal to allow for auto-disconnection.
+            // changes and emit the associated signal
             auto delegate = std::make_shared<KeyObserverDelegate>(
                 [=](const std::string& value) { _keySignals[key].emit(value); }
             );
 
-            // Store the observer internally. We must only do this once per key;
-            // multiple observers would result in multiple signal emissions.
+            // Store the observer internally
             _keyObservers.insert({key, delegate});
 
             // Send initial value and attach to EntityKeyValue immediately if needed

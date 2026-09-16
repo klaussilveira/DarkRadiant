@@ -46,6 +46,20 @@ namespace
 
         return found;
     }
+
+    bool editorImageMatchesStage(const MaterialPtr& material, const IShaderLayer::Ptr& stage)
+    {
+        auto editorImage = material->getEditorImageExpression();
+
+        // Without an explicit qer_editorimage the preview falls back to a layer image
+        if (!editorImage) return true;
+
+        if (!stage) return false;
+
+        auto stageImage = stage->getMapExpression();
+
+        return stageImage && stageImage->getExpressionString() == editorImage->getExpressionString();
+    }
 }
 
 OpenGLShader::OpenGLShader(const std::string& name, OpenGLRenderSystem& renderSystem) :
@@ -548,6 +562,10 @@ void OpenGLShader::constructEditorPreviewPassFromMaterial()
     // If there's a diffuse stage's, link it to this shader pass to inherit
     // settings like scale and translate
     previewPass.stage0 = findFirstLayerOfType(_material, IShaderLayer::DIFFUSE);
+
+    // The texture matrix of that stage only applies to the editor image if both
+    // are showing the same image, otherwise the preview ends up distorted
+    previewPass.ignoreStageTextureTransform = !editorImageMatchesStage(_material, previewPass.stage0);
 
     // Evaluate the expressions of the diffuse stage once to be able to get a meaningful alphatest value
     if (previewPass.stage0)

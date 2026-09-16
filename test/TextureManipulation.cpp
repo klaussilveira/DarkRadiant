@@ -482,20 +482,14 @@ TEST_F(TextureManipulationTest, PasteTextureToAngledFaceWithoutSharedEdge)
         << "Test setup error: expected exactly one shared vertex between source and target";
 
     auto sharedVertex = sharedVertices[0].second->vertex;
-
-    // Source texel-scale along its own S/T axes; the target must keep this
-    // magnitude after the paste (i.e. no stretching).
     auto sourceTexelScale = sourceFace->getTexelScale();
 
-    // UV the source projection gives at the shared vertex — the target must
-    // end up with the same UV at that vertex.
     Matrix4 sourceWorldToUv = getMatrix4FromTextureMatrix(sourceFace->getProjectionMatrix());
     sourceWorldToUv.multiplyBy(getBasisTransformForNormal(sourceFace->getPlane3().normal()));
+
     auto sourceUvAtShared3 = sourceWorldToUv.transformPoint(sharedVertex);
     Vector2 expectedUvAtShared(sourceUvAtShared3.x(), sourceUvAtShared3.y());
 
-    // Pick the source face via a camera looking perpendicularly at it (+Y direction,
-    // matching the pattern used for a face whose outward normal is (0, -1, 0)).
     render::View viewSource(true);
     algorithm::constructCameraView(viewSource, sourceBrushNode->localAABB(),
         Vector3(0, 1, 0), Vector3(0, 90, 0));
