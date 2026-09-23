@@ -1,7 +1,6 @@
 #include "GltfModelLoader.h"
 
 #include <istream>
-//#include "AseModel.h"
 
 #include "os/path.h"
 #include "string/case_conv.h"
