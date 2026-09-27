@@ -5,6 +5,9 @@
 
 #ifdef WIN32
 #include <GL/wglew.h>
+#elif defined(__APPLE__)
+#include <GL/glew.h>
+#include <OpenGL/OpenGL.h>
 #elif defined(POSIX)
 #include <stdio.h>
 #include <stdlib.h>
@@ -142,6 +145,61 @@ public:
 	{
 	    // Nothing to do here, the context is owned by the HeadlessOpenGLEnvironment
 	}
+};
+
+#elif defined(__APPLE__)
+
+class HeadlessOpenGLContext :
+	public IGLContext
+{
+private:
+	CGLContextObj _context;
+
+public:
+    HeadlessOpenGLContext() :
+        _context(nullptr)
+    {
+        CGLPixelFormatAttribute attributes[] =
+        {
+            kCGLPFAAllowOfflineRenderers,
+            static_cast<CGLPixelFormatAttribute>(0)
+        };
+
+        CGLPixelFormatObj pixelFormat = nullptr;
+        GLint numPixelFormats = 0;
+
+        if (CGLChoosePixelFormat(attributes, &pixelFormat, &numPixelFormats) != kCGLNoError || pixelFormat == nullptr)
+        {
+            throw std::runtime_error("Failed to choose a CGL pixel format");
+        }
+
+        auto error = CGLCreateContext(pixelFormat, nullptr, &_context);
+        CGLDestroyPixelFormat(pixelFormat);
+
+        if (error != kCGLNoError)
+        {
+            throw std::runtime_error("Failed to create CGL context");
+        }
+
+        if (CGLSetCurrentContext(_context) != kCGLNoError)
+        {
+            throw std::runtime_error("Failed to make CGL context current");
+        }
+
+        auto err = glewInit();
+
+        if (err != GLEW_OK)
+        {
+            rError() << "GLEW error: " << reinterpret_cast<const char*>(glewGetErrorString(err));
+            throw std::runtime_error("Failed to initialise GLEW");
+        }
+    }
+
+    ~HeadlessOpenGLContext()
+    {
+        CGLSetCurrentContext(nullptr);
+        CGLDestroyContext(_context);
+    }
 };
 
 #elif defined(POSIX)

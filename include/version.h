@@ -10,7 +10,11 @@
 #define RADIANT_APPNAME "DarkRadiant"
 #define RADIANT_BLANK " "
 
-#if defined(_M_X64) || defined(__amd64__) || defined(_WIN64)
+#if defined(__aarch64__) || defined(_M_ARM64)
+
+#define RADIANT_PLATFORM "arm64"
+
+#elif defined(_M_X64) || defined(__amd64__) || defined(_WIN64)
 
 // 64 bit architecture names (according to platform convention)
 #if defined(__linux__)

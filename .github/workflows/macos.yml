@@ -1,0 +1,63 @@
+name: macOS
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_call:
+
+concurrency:
+  group: macos-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: macOS arm64
+    runs-on: macos-latest
+
+    env:
+      BUILD_TYPE: Release
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          brew install ninja pkgconf wxwidgets libsigc++@2 ftgl glew freetype jpeg-turbo \
+            libpng libvorbis glib eigen pugixml libgit2 googletest
+
+      - name: Configure
+        run: >
+          cmake -S . -B build -G Ninja
+          -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+          -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/install-root
+
+      - name: Build
+        run: cmake --build build --parallel $(sysctl -n hw.ncpu)
+
+      - name: Run unit tests
+        run: build/darkradiant/DarkRadiant.app/Contents/MacOS/drtest
+
+      - name: Install
+        run: cmake --build build --target install
+
+      - name: Bundle dependencies
+        run: tools/macos/bundle_dependencies.sh install-root/DarkRadiant.app
+
+      - name: Create disk image
+        run: |
+          mkdir dmg
+          ditto install-root/DarkRadiant.app dmg/DarkRadiant.app
+          ln -s /Applications dmg/Applications
+          for _ in 1 2 3; do
+            hdiutil create -volname DarkRadiant -srcfolder dmg -format UDZO darkradiant-macos-arm64.dmg && break
+            sleep 10
+          done
+          test -f darkradiant-macos-arm64.dmg
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: darkradiant-macos-arm64
+          path: darkradiant-macos-arm64.dmg

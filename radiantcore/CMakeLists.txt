@@ -304,7 +304,7 @@ add_library(radiantcore MODULE
 target_include_directories(radiantcore PRIVATE .)
 target_link_libraries(radiantcore PUBLIC
                       math xmlutil scene wxutil module
-                      ${JPEG_LIBRARIES} ${PNG_LIBRARIES} ${ZLIB_LIBRARIES})
+                      ${JPEG_LINK_LIBRARIES} ${PNG_LINK_LIBRARIES} ${ZLIB_LINK_LIBRARIES})
 set_target_properties(
     radiantcore PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${DR_STAGING_MODULESDIR}"
 )

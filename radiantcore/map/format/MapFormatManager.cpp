@@ -90,9 +90,9 @@ std::set<MapFormatPtr> MapFormatManager::getMapFormatList(const std::string& ext
 	std::set<MapFormatPtr> list;
 	std::string extLower = string::to_lower_copy(extension);
 
-	for (auto it = _mapFormats.find(extLower);
-		 it != _mapFormats.upper_bound(extLower) && it != _mapFormats.end();
-		 ++it)
+	auto range = _mapFormats.equal_range(extLower);
+
+	for (auto it = range.first; it != range.second; ++it)
 	{
 		list.insert(it->second);
 	}

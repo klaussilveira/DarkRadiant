@@ -37,7 +37,11 @@ const char* const LocalisationProvider::RKEY_LANGUAGE = "user/ui/language";
 LocalisationProvider::LocalisationProvider(IApplicationContext& ctx)
 {
 	// Point wxWidgets to the folder where the catalog files are stored
+#if defined(__APPLE__)
+	_i18nPath = os::standardPathWithSlash(ctx.getRuntimeDataPath() + "i18n");
+#else
 	_i18nPath = os::standardPathWithSlash(ctx.getApplicationPath() + "i18n");
+#endif
 	wxFileTranslationsLoader::AddCatalogLookupPathPrefix(_i18nPath);
 
 	// Load the persisted language setting

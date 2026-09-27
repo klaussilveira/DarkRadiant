@@ -168,7 +168,7 @@ public:
 	// Entity::Observer implementation, gets called on key insert
 	void onKeyInsert(const std::string& key, EntityKeyValue& value)
 	{
-		for (KeyObservers::const_iterator i = _keyObservers.find(key);
+		for (KeyObservers::const_iterator i = _keyObservers.lower_bound(key);
 			 i != _keyObservers.upper_bound(key) && i != _keyObservers.end();
 			 ++i)
 		{
@@ -179,7 +179,7 @@ public:
 	// Entity::Observer implementation, gets called on Key erase
 	void onKeyErase(const std::string& key, EntityKeyValue& value)
 	{
-		for (KeyObservers::const_iterator i = _keyObservers.find(key);
+		for (KeyObservers::const_iterator i = _keyObservers.lower_bound(key);
 			 i != _keyObservers.upper_bound(key) && i != _keyObservers.end();
 			 ++i)
 		{

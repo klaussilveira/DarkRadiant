@@ -15,6 +15,9 @@ jobs:
   windows:
     uses: ./.github/workflows/windows.yml
 
+  macos:
+    uses: ./.github/workflows/macos.yml
+
   appimage:
     uses: ./.github/workflows/appimage.yml
 
@@ -23,8 +26,8 @@ jobs:
 
   publish:
     name: Publish nightly
-    needs: [linux, windows, appimage, flatpak]
-    if: ${{ always() && needs.linux.result == 'success' && needs.windows.result == 'success' && needs.flatpak.result == 'success' }}
+    needs: [linux, windows, macos, appimage, flatpak]
+    if: ${{ always() && needs.linux.result == 'success' && needs.windows.result == 'success' && needs.macos.result == 'success' && needs.flatpak.result == 'success' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -48,6 +51,8 @@ jobs:
           cd darkradiant-windows-x64
           zip -r ../darkradiant-nightly-windows-x64.zip .
           cd ..
+
+          cp darkradiant-macos-arm64/darkradiant-macos-arm64.dmg darkradiant-nightly-macos-arm64.dmg
 
           if [ -d darkradiant-appimage-x86_64 ]; then
             cp darkradiant-appimage-x86_64/*.AppImage darkradiant-nightly-x86_64.AppImage
@@ -83,6 +88,7 @@ jobs:
           files=(
             artifacts/darkradiant-nightly-linux-x86_64.tar.gz
             artifacts/darkradiant-nightly-windows-x64.zip
+            artifacts/darkradiant-nightly-macos-arm64.dmg
             artifacts/darkradiant-nightly-x86_64.flatpak
           )
           if [ -f artifacts/darkradiant-nightly-x86_64.AppImage ]; then

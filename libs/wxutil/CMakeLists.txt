@@ -46,7 +46,7 @@ target_link_libraries(wxutil PUBLIC
                       scene
                       xmlutil
                       ${wxWidgets_LIBRARIES}
-                      ${SIGC_LIBRARIES}
-                      ${FTGL_LIBRARIES}
-                      ${GLEW_LIBRARIES}
-                      ${GL_LIBRARIES})
+                      ${SIGC_LINK_LIBRARIES}
+                      ${FTGL_LINK_LIBRARIES}
+                      ${GLEW_LINK_LIBRARIES}
+                      ${GL_LINK_LIBRARIES})

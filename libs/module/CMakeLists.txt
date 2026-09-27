@@ -5,3 +5,6 @@ add_library(module STATIC
             StaticModule.cpp)
 target_compile_options(module PUBLIC -fPIC ${EIGEN_CFLAGS})
 target_link_libraries(module PUBLIC dl)
+if (TARGET pugixml::pugixml)
+  target_link_libraries(module PUBLIC pugixml::pugixml)
+endif()

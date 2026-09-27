@@ -34,7 +34,7 @@ target_include_directories(script SYSTEM PUBLIC
                            ${Python_INCLUDE_DIRS})
 target_link_libraries(script PUBLIC
                       math scene
-                      ${Python_LIBRARIES} ${SIGC_LIBRARIES})
+                      ${Python_LIBRARIES} ${SIGC_LINK_LIBRARIES})
 set_target_properties(
     script PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${DR_STAGING_MODULESDIR}"
 )

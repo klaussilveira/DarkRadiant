@@ -54,7 +54,7 @@ SettingPtr DifficultySettings::findOrCreateOverrule(const SettingPtr& existing)
     std::string inheritanceKey = getInheritanceKey(existing->className);
 
     // Check if there is already an override active for the <existing> setting
-    for (SettingsMap::iterator i = _settings.find(inheritanceKey);
+    for (SettingsMap::iterator i = _settings.lower_bound(inheritanceKey);
          i != _settings.upper_bound(inheritanceKey) && i != _settings.end();
          ++i)
     {
@@ -211,7 +211,7 @@ bool DifficultySettings::isOverridden(const SettingPtr& setting)
     std::string inheritanceKey = getInheritanceKey(setting->className);
 
     // Search all other settings for the same className/spawnArg combination
-    for (SettingsMap::iterator i = _settings.find(inheritanceKey);
+    for (SettingsMap::iterator i = _settings.lower_bound(inheritanceKey);
          i != _settings.upper_bound(inheritanceKey) && i != _settings.end();
          ++i)
     {
