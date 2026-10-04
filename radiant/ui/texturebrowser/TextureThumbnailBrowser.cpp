@@ -730,6 +730,15 @@ void TextureThumbnailBrowser::draw()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
+    if (GLEW_VERSION_1_3)
+    {
+        glActiveTexture(GL_TEXTURE0);
+        glClientActiveTexture(GL_TEXTURE0);
+    }
+
+    glMatrixMode(GL_TEXTURE);
+    glLoadIdentity();
+
 	glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
