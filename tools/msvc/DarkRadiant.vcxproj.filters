@@ -86,6 +86,9 @@
     <Filter Include="src\ui\cut">
       <UniqueIdentifier>{f6422cef-0b50-4aa5-949f-31e5f8645f4a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\ui\stairs">
+      <UniqueIdentifier>{e4853ba4-bd52-4b22-866e-b44f9f9c801f}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\xyview">
       <UniqueIdentifier>{c770bd9e-5b03-48c4-8410-e4db36fd6057}</UniqueIdentifier>
     </Filter>
@@ -381,6 +384,9 @@
     </ClCompile>
     <ClCompile Include="..\..\radiant\ui\cut\CutToolDialog.cpp">
       <Filter>src\ui\cut</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\radiant\ui\stairs\StairsGeneratorDialog.cpp">
+      <Filter>src\ui\stairs</Filter>
     </ClCompile>
     <ClCompile Include="..\..\radiant\xyview\GlobalXYWnd.cpp">
       <Filter>src\xyview</Filter>
@@ -962,6 +968,18 @@
     </ClInclude>
     <ClInclude Include="..\..\radiant\ui\cut\CutRules.h">
       <Filter>src\ui\cut</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\radiant\ui\stairs\StairsGeneratorDialog.h">
+      <Filter>src\ui\stairs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\radiant\ui\stairs\StairsGeometry.h">
+      <Filter>src\ui\stairs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\radiant\ui\common\GeneratorPreview.h">
+      <Filter>src\ui\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\radiant\ui\common\GeneratorSpawn.h">
+      <Filter>src\ui\common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\radiant\xyview\GlobalXYWnd.h">
       <Filter>src\xyview</Filter>

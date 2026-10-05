@@ -69,6 +69,7 @@
 #include "ui/brush/CreateTrimDialog.h"
 #include "ui/brush/FindBrush.h"
 #include "ui/cut/CutToolDialog.h"
+#include "ui/stairs/StairsGeneratorDialog.h"
 #include "ui/array/ArrayDialog.h"
 #include "ui/mousetool/RegistrationHelper.h"
 #include "ui/mapselector/MapSelector.h"
@@ -568,6 +569,8 @@ void UserInterfaceModule::registerUICommands()
     GlobalCommandSystem().addWithCheck("QueryBrushPrefabSidesDialog", QuerySidesDialog::Show,
                                        selection::pred::haveBrush, {cmd::ARGTYPE_INT});
     GlobalCommandSystem().addCommand("CreateTrimDialog", CreateTrimDialog::CreateTrimCmd);
+
+    GlobalCommandSystem().addCommand("StairsGeneratorDialog", StairsGeneratorDialog::Show);
 
     GlobalCommandSystem().addWithCheck("CutBrushDialog", CutToolDialog::Show,
         selection::pred::haveBrush);

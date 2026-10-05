@@ -32,6 +32,7 @@ add_executable(darkradiant
                ui/array/ArrayDialog.cpp
                ui/brush/CreateTrimDialog.cpp
                ui/cut/CutToolDialog.cpp
+               ui/stairs/StairsGeneratorDialog.cpp
                ui/brush/FindBrush.cpp
                ui/brush/QuerySidesDialog.cpp
                ui/commandlist/CommandList.cpp

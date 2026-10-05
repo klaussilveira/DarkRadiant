@@ -376,6 +376,7 @@
     <ClCompile Include="..\..\radiant\ui\brush\QuerySidesDialog.cpp" />
     <ClCompile Include="..\..\radiant\ui\brush\CreateTrimDialog.cpp" />
     <ClCompile Include="..\..\radiant\ui\cut\CutToolDialog.cpp" />
+    <ClCompile Include="..\..\radiant\ui\stairs\StairsGeneratorDialog.cpp" />
     <ClCompile Include="..\..\radiant\ui\transform\TransformPanel.cpp" />
     <ClCompile Include="..\..\radiant\ui\terrain\TerrainGeneratorDialog.cpp" />
     <ClCompile Include="..\..\radiant\ui\UserInterfaceModule.cpp" />
@@ -630,6 +631,10 @@
     <ClInclude Include="..\..\radiant\ui\cut\CutToolDialog.h" />
     <ClInclude Include="..\..\radiant\ui\cut\CutGeometry.h" />
     <ClInclude Include="..\..\radiant\ui\cut\CutRules.h" />
+    <ClInclude Include="..\..\radiant\ui\stairs\StairsGeneratorDialog.h" />
+    <ClInclude Include="..\..\radiant\ui\stairs\StairsGeometry.h" />
+    <ClInclude Include="..\..\radiant\ui\common\GeneratorPreview.h" />
+    <ClInclude Include="..\..\radiant\ui\common\GeneratorSpawn.h" />
     <ClInclude Include="..\..\radiant\ui\transform\TransformPanel.h" />
     <ClInclude Include="..\..\radiant\ui\transform\TransformPanelControl.h" />
     <ClInclude Include="..\..\radiant\ui\terrain\TerrainGeneratorDialog.h" />

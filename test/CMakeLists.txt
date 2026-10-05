@@ -11,6 +11,8 @@ add_executable(drtest
                ContinuousBuffer.cpp
                CSG.cpp
                Curves.cpp
+               CutGeometry.cpp
+               CutRules.cpp
                DarkmodTxt.cpp
                ../plugins/dm.editing/DarkmodTxt.cpp
                ../plugins/dm.editing/MissionInfoTextFile.cpp
@@ -58,6 +60,7 @@ add_executable(drtest
                SelectionGroup.cpp
                Settings.cpp
                SoundManager.cpp
+               StairsGenerator.cpp
                TerrainGenerator.cpp
                TextureManipulation.cpp
                TestOrthoViewManager.cpp
@@ -77,6 +80,7 @@ get_filename_component(TEST_BASE_PATH "./" ABSOLUTE)
 add_compile_definitions(TEST_BASE_PATH="${TEST_BASE_PATH}")
 
 target_include_directories(drtest PRIVATE ../plugins/dm.editing)
+target_include_directories(drtest PRIVATE ${CMAKE_SOURCE_DIR}/radiant)
 
 target_link_libraries(drtest PUBLIC
                       math xmlutil scene module
