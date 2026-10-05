@@ -83,6 +83,9 @@
     <Filter Include="src\ui\brush">
       <UniqueIdentifier>{0ae68f58-f970-474c-9701-1681aa612cfb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\ui\cut">
+      <UniqueIdentifier>{f6422cef-0b50-4aa5-949f-31e5f8645f4a}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\xyview">
       <UniqueIdentifier>{c770bd9e-5b03-48c4-8410-e4db36fd6057}</UniqueIdentifier>
     </Filter>
@@ -375,6 +378,9 @@
     </ClCompile>
     <ClCompile Include="..\..\radiant\ui\brush\CreateTrimDialog.cpp">
       <Filter>src\ui\brush</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\radiant\ui\cut\CutToolDialog.cpp">
+      <Filter>src\ui\cut</Filter>
     </ClCompile>
     <ClCompile Include="..\..\radiant\xyview\GlobalXYWnd.cpp">
       <Filter>src\xyview</Filter>
@@ -947,6 +953,15 @@
     </ClInclude>
     <ClInclude Include="..\..\radiant\ui\brush\CreateTrimDialog.h">
       <Filter>src\ui\brush</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\radiant\ui\cut\CutToolDialog.h">
+      <Filter>src\ui\cut</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\radiant\ui\cut\CutGeometry.h">
+      <Filter>src\ui\cut</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\radiant\ui\cut\CutRules.h">
+      <Filter>src\ui\cut</Filter>
     </ClInclude>
     <ClInclude Include="..\..\radiant\xyview\GlobalXYWnd.h">
       <Filter>src\xyview</Filter>

@@ -331,6 +331,8 @@ public:
 
 	// Returns the IBrush interface
 	virtual IBrush& getIBrush() = 0;
+
+	virtual void setCutPlanes(const std::vector<Plane3>& planes) = 0;
 };
 typedef std::shared_ptr<IBrushNode> IBrushNodePtr;
 
