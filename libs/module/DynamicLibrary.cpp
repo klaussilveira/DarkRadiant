@@ -81,10 +81,12 @@ DynamicLibrary::DynamicLibrary(const std::string& filename) :
 
 DynamicLibrary::~DynamicLibrary() 
 {
+#if !defined(__APPLE__)
 	if (!failed()) 
 	{
 		dlclose(_dlHandle);
 	}
+#endif
 }
 
 bool DynamicLibrary::failed() 

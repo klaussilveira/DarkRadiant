@@ -100,7 +100,7 @@ void SelectedNodeList::erase(const scene::INodePtr& selected) {
 	std::size_t lastTime(0);
 
 	// Lookup the instance selected last
-	for (iterator it = MapType::find(selected);
+	for (iterator it = MapType::lower_bound(selected);
 		 it != upper_bound(selected) && it != end();
 		 it++)
 	{

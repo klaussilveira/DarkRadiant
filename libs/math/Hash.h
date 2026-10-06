@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <cstdlib>
 #include <memory>
 #include "Vector3.h"
@@ -25,7 +26,7 @@ inline void combineHash(std::size_t& seed, std::size_t hash)
 
 inline std::size_t hashDouble(double value, std::size_t significantDigits)
 {
-    return static_cast<std::size_t>(value * detail::RoundingFactor(significantDigits));
+    return static_cast<std::size_t>(static_cast<std::int64_t>(value * detail::RoundingFactor(significantDigits)));
 }
 
 template<typename ElementType>
@@ -61,8 +62,7 @@ public:
 
     void addDouble(double value, std::size_t significantDigits)
     {
-        auto intValue = static_cast<std::size_t>(value * detail::RoundingFactor(significantDigits));
-        addSizet(intValue);
+        addSizet(hashDouble(value, significantDigits));
     }
 
     template<typename ElementType>
@@ -70,9 +70,9 @@ public:
     {
         std::size_t components[3] =
         {
-            static_cast<std::size_t>(v.x() * detail::RoundingFactor(significantDigits)),
-            static_cast<std::size_t>(v.y() * detail::RoundingFactor(significantDigits)),
-            static_cast<std::size_t>(v.z() * detail::RoundingFactor(significantDigits)),
+            hashDouble(v.x(), significantDigits),
+            hashDouble(v.y(), significantDigits),
+            hashDouble(v.z(), significantDigits),
         };
         
         sha256_update(_context.get(), reinterpret_cast<const uint8_t*>(&components), sizeof(components));

@@ -101,28 +101,34 @@ Other useful variables are `CMAKE_BUILD_TYPE` to choose Debug or Release builds,
 
 ## Prerequisites
 
-You'll need an Xcode version supporting C++17 and the macOS 10.15 (Catalina) target at minimum. Xcode 11.3 should be working fine. You will need to install the Xcode command line tools to install MacPorts (run `xcode-select --install`)
-
-To compile DarkRadiant, a number of libraries (with development headers) are
-required. You can obtain them by using [MacPorts](https://distfiles.macports.org/MacPorts/):
-
-Install MacPorts, then open a fresh console and issue these commands:
+You'll need the Xcode command line tools (run `xcode-select --install`) and
+[Homebrew](https://brew.sh) to install the required libraries:
 
 ```
-sudo port install jpeg wxwidgets-3.0 pkgconfig libsigcxx2 freetype ftgl glew
-sudo port install libxml2 freealut libvorbis libogg openal-soft eigen3
+brew install cmake ninja pkgconf wxwidgets libsigc++@2 ftgl glew freetype jpeg-turbo \
+    libpng libvorbis glib eigen pugixml libgit2 googletest python
 ```
 
 ## Build
 
-Start Xcode and open the project file in `tools/xcode/DarkRadiant.xcodeproj`.
-Hit CMD-B to start the build, the output files will be placed to a folder
-similar to this:
+To build DarkRadiant the standard CMake build process is used:
 
-`~/Library/Developer/Xcode/DerivedData/DarkRadiant-somethingsomething/Build/Products/Release`
+```
+cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+cmake --build build
+```
 
-The `DarkRadiant.app` package in that folder can be launched right away or
-copied to some location of your preference.
+The build produces an application bundle at `build/darkradiant/DarkRadiant.app`,
+which can be launched right away. The unit tests can be run with
+`build/darkradiant/DarkRadiant.app/Contents/MacOS/drtest`.
+
+To create a self-contained bundle that runs without Homebrew, install it to a
+prefix and copy the required libraries (including Python) into it:
+
+```
+cmake --install build --prefix install-root
+tools/macos/bundle_dependencies.sh install-root/DarkRadiant.app
+```
 
 # More Build Information
 

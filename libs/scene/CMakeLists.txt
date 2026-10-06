@@ -36,4 +36,5 @@ add_library(scene
             TraversableNodeSet.cpp
             Traverse.cpp)
 target_compile_options(scene PUBLIC ${SIGC_CFLAGS})
-target_link_libraries(scene PUBLIC ${SIGC_LIBRARIES} math xmlutil ${GLEW_LIBRARIES})
+target_link_libraries(scene PUBLIC ${SIGC_LINK_LIBRARIES} math xmlutil ${GLEW_LINK_LIBRARIES}
+                      ${GL_LINK_LIBRARIES})

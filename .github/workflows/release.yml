@@ -16,6 +16,9 @@ jobs:
   windows:
     uses: ./.github/workflows/windows.yml
 
+  macos:
+    uses: ./.github/workflows/macos.yml
+
   appimage:
     uses: ./.github/workflows/appimage.yml
 
@@ -24,7 +27,7 @@ jobs:
 
   release:
     name: Draft release
-    needs: [linux, windows, appimage, flatpak]
+    needs: [linux, windows, macos, appimage, flatpak]
     runs-on: ubuntu-latest
 
     steps:
@@ -40,6 +43,7 @@ jobs:
           cd darkradiant-windows-x64
           zip -r ../darkradiant-windows-x64.zip .
           cd ..
+          cp darkradiant-macos-arm64/darkradiant-macos-arm64.dmg .
           cp darkradiant-appimage-x86_64/*.AppImage .
           cp darkradiant-flatpak-x86_64/darkradiant.flatpak .
 
@@ -51,5 +55,6 @@ jobs:
           files: |
             artifacts/darkradiant-linux-x86_64.tar.gz
             artifacts/darkradiant-windows-x64.zip
+            artifacts/darkradiant-macos-arm64.dmg
             artifacts/*.AppImage
             artifacts/darkradiant.flatpak

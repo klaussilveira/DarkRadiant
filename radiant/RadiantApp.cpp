@@ -14,6 +14,7 @@
 
 #include <wx/wxprec.h>
 #include <wx/event.h>
+#include <wx/menu.h>
 #include <wx/cmdline.h>
 #include <wx/xrc/xmlres.h>
 #include <sigc++/functors/mem_fun.h>
@@ -131,6 +132,10 @@ bool RadiantApp::OnInit()
     // Avoid assertions from wxWidgets itself (particularly stuff to do with art provider
     // destruction, which we have no control over).
     wxSetAssertHandler(assertToConsole);
+#endif
+
+#if defined(__WXOSX__)
+    wxMenuBar::SetAutoWindowMenu(false);
 #endif
 
 	// Initialise the context (application path / settings path, is

@@ -194,7 +194,26 @@ target_compile_options(darkradiant PRIVATE ${FREETYPE_CFLAGS} ${GLIB_CFLAGS})
 target_include_directories(darkradiant PRIVATE .)
 target_link_libraries(darkradiant PRIVATE
                       math xmlutil scene wxutil module
-                      ${GLIB_LIBRARIES})
+                      ${GLIB_LINK_LIBRARIES})
+
+if (APPLE)
+    set_target_properties(darkradiant PROPERTIES
+                          MACOSX_BUNDLE TRUE
+                          OUTPUT_NAME DarkRadiant
+                          MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/tools/macos/Info.plist.in"
+                          MACOSX_BUNDLE_BUNDLE_NAME DarkRadiant
+                          MACOSX_BUNDLE_GUI_IDENTIFIER net.darkradiant.DarkRadiant
+                          MACOSX_BUNDLE_ICON_FILE darkradiant.icns
+                          MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION}
+                          MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION})
+    add_custom_command(
+        TARGET darkradiant POST_BUILD
+        COMMAND
+            ${CMAKE_COMMAND} -E copy
+            "${CMAKE_SOURCE_DIR}/tools/xcode/darkradiant.icns"
+            "${DR_STAGING_DATADIR}/darkradiant.icns"
+    )
+endif()
 
 # Enable precompiled header for radiant
 if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.16.0")

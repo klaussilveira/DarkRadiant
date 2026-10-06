@@ -84,9 +84,13 @@ target_include_directories(drtest PRIVATE ${CMAKE_SOURCE_DIR}/radiant)
 
 target_link_libraries(drtest PUBLIC
                       math xmlutil scene module
-                      ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARIES}
-                      ${SIGC_LIBRARIES} ${GLEW_LIBRARIES} ${X11_LIBRARIES}
+                      ${GTEST_LINK_LIBRARIES} ${GTEST_MAIN_LINK_LIBRARIES}
+                      ${SIGC_LINK_LIBRARIES} ${GLEW_LINK_LIBRARIES} ${X11_LINK_LIBRARIES}
                       PRIVATE Threads::Threads)
-install(TARGETS drtest)
+if (APPLE)
+    set_target_properties(drtest PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${DR_STAGING_LIBDIR}")
+else()
+    install(TARGETS drtest)
+endif()
 
 gtest_discover_tests(drtest)

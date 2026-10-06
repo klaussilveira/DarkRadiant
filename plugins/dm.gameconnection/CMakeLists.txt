@@ -10,6 +10,9 @@ add_library(dm_gameconnection MODULE
             MessageTcp.cpp)
 target_compile_options(dm_gameconnection PUBLIC ${SIGC_CFLAGS})
 target_link_libraries(dm_gameconnection PUBLIC wxutil)
+if (APPLE)
+    target_compile_definitions(dm_gameconnection PRIVATE _DARWIN)
+endif()
 set_target_properties(
     dm_gameconnection PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${DR_STAGING_PLUGINSDIR}"
 )

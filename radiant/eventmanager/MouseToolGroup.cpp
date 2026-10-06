@@ -68,7 +68,7 @@ MouseToolStack MouseToolGroup::getMappedTools(unsigned int state)
 {
     MouseToolStack stack;
 
-    for (ToolMapping::const_iterator i = _toolMapping.find(state);
+    for (ToolMapping::const_iterator i = _toolMapping.lower_bound(state);
          i != _toolMapping.upper_bound(state) && i != _toolMapping.end();
          ++i)
     {

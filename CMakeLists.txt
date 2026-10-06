@@ -34,7 +34,10 @@ endif()
 
 # Build shared libraries by default
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
-if (${ENABLE_RELOCATION})
+if (APPLE)
+    set(CMAKE_INSTALL_RPATH "@executable_path")
+    set(CMAKE_BUILD_RPATH "@executable_path")
+elseif (${ENABLE_RELOCATION})
     set(CMAKE_INSTALL_RPATH "$ORIGIN/${RELATIVE_LIBDIR}")
 else()
     set(CMAKE_INSTALL_RPATH "${PKGLIBDIR}")
@@ -54,17 +57,25 @@ include(FindPkgConfig)
 pkg_check_modules(SIGC sigc++-2.0 REQUIRED)
 pkg_check_modules(FTGL ftgl REQUIRED)
 pkg_check_modules(FREETYPE freetype2 REQUIRED)
-pkg_check_modules(GL gl REQUIRED)
 pkg_check_modules(GLEW glew REQUIRED)
 pkg_check_modules(JPEG libjpeg REQUIRED)
 pkg_check_modules(PNG libpng REQUIRED)
-pkg_check_modules(AL openal REQUIRED)
 pkg_check_modules(OGG ogg REQUIRED)
 pkg_check_modules(VORBIS vorbisfile REQUIRED)
-pkg_check_modules(X11 x11 REQUIRED)
 pkg_check_modules(ZLIB zlib REQUIRED)
 pkg_check_modules(GLIB glib-2.0 REQUIRED)
 pkg_check_modules(EIGEN eigen3 REQUIRED)
+
+if (APPLE)
+    find_package(OpenGL REQUIRED)
+    find_library(OPENAL_FRAMEWORK OpenAL REQUIRED)
+    set(GL_LINK_LIBRARIES OpenGL::GL)
+    set(AL_LINK_LIBRARIES ${OPENAL_FRAMEWORK})
+else()
+    pkg_check_modules(GL gl REQUIRED)
+    pkg_check_modules(AL openal REQUIRED)
+    pkg_check_modules(X11 x11 REQUIRED)
+endif()
 
 # Locate a packaged pugixml, if installed if not, fall back to embedded code copy.
 find_package(pugixml QUIET)
@@ -84,26 +95,44 @@ find_package(Python REQUIRED COMPONENTS Development)
 
 # Global includes and flags
 include_directories(libs libs/libfmt include)
+include_directories(${GLEW_INCLUDE_DIRS} ${JPEG_INCLUDE_DIRS} ${PNG_INCLUDE_DIRS}
+                    ${VORBIS_INCLUDE_DIRS} ${ZLIB_INCLUDE_DIRS})
 add_compile_options(${SIGC_CFLAGS})
 add_compile_definitions(POSIX
                         WXINTL_NO_GETTEXT_MACRO
                         FMT_HEADER_ONLY
                         HAVE_STD_FILESYSTEM)
-add_link_options(LINKER:-z,defs)
+if (APPLE)
+    add_compile_definitions(GL_SILENCE_DEPRECATION)
+else()
+    add_link_options(LINKER:-z,defs)
+endif()
 
 # Generate config.h
 configure_file(config.h.in config.h)
 add_compile_definitions(HAVE_CONFIG_H)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
+if (APPLE)
+    set(PKGLIBDIR "DarkRadiant.app/Contents/MacOS")
+    set(PKGDATADIR "DarkRadiant.app/Contents/Resources")
+endif()
+
 # Set up a usable installation tree within the binary dir so developers don't
 # have to install to a temporary location
 set(DR_STAGING_ROOT "${CMAKE_BINARY_DIR}/darkradiant")
-set(DR_STAGING_LIBDIR "${DR_STAGING_ROOT}/lib/darkradiant")
+if (APPLE)
+    set(DR_STAGING_BUNDLE "${DR_STAGING_ROOT}/DarkRadiant.app")
+    set(DR_STAGING_LIBDIR "${DR_STAGING_BUNDLE}/Contents/MacOS")
+    set(DR_STAGING_DATADIR "${DR_STAGING_BUNDLE}/Contents/Resources")
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${DR_STAGING_ROOT}")
+else()
+    set(DR_STAGING_LIBDIR "${DR_STAGING_ROOT}/lib/darkradiant")
+    set(DR_STAGING_DATADIR "${DR_STAGING_ROOT}/share/darkradiant")
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${DR_STAGING_ROOT}/bin")
+endif()
 set(DR_STAGING_MODULESDIR "${DR_STAGING_LIBDIR}/modules")
 set(DR_STAGING_PLUGINSDIR "${DR_STAGING_LIBDIR}/plugins")
-set(DR_STAGING_DATADIR "${DR_STAGING_ROOT}/share/darkradiant")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${DR_STAGING_ROOT}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${DR_STAGING_LIBDIR}")
 
 # Supporting libraries
